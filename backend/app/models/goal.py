@@ -7,7 +7,6 @@ from decimal import Decimal
 if TYPE_CHECKING:
     from models.user import User
 
-
 # Goal model
 class Goal(SQLModel, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True, index=True)
