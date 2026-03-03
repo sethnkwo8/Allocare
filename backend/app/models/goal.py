@@ -8,14 +8,16 @@ if TYPE_CHECKING:
     from models.user import User
 
 
-# Expense model
-class Expense(SQLModel, table=True):
+# Goal model
+class Goal(SQLModel, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True, index=True)
-    amount: Decimal
-    category: str = Field(index=True)
+    type: str = Field(index=True) # rent, investment, emergency
+    target_amount: Decimal
+    current_amount: Decimal = Field(default=Decimal("0.00"))
+    target_date: datetime
     description: str
-    spent_at: datetime = Field(
+    created_at: datetime = Field(
         default_factory=lambda: datetime.now(timezone.utc)
     )
     user_id: uuid.UUID = Field(foreign_key="user.id", index=True)
-    user: "User" = Relationship(back_populates="expenses")
+    user: "User" = Relationship(back_populates="goals")

@@ -16,7 +16,7 @@ class Frequency_Status(str, Enum):
 # Income model
 class Income(SQLModel, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True, index=True)
-    amount: float = Field()
+    amount: float
     frequency: Frequency_Status = Field(default=Frequency_Status.MONTHLY)
     currency: str = Field(default="NGN")
     created_at: datetime = Field(
