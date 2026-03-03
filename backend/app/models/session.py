@@ -1,9 +1,11 @@
 import uuid     # For primary keys
-from typing import Optional
+from typing import TYPE_CHECKING
 from sqlmodel import Field, SQLModel, Relationship
 from sqlalchemy import DateTime
 from datetime import datetime, timedelta, timezone
-from models.user import User
+
+if TYPE_CHECKING:
+    from models.user import User
 
 def get_expiration():
     return datetime.now(timezone.utc) + timedelta(days=7)
@@ -14,5 +16,5 @@ class Session(SQLModel, table=True):
     token: str = Field(unique=True, index=True)
     expires_at: datetime = Field(sa_type=DateTime(timezone=True), # Ensures DB stores TZ info
         default_factory=get_expiration)
-    user_id: uuid.UUID = Field(default=False, foreign_key="user.id")
-    user: User = Relationship(back_populates="sessions")
+    user_id: uuid.UUID = Field(foreign_key="user.id")
+    user: "User" = Relationship(back_populates="sessions")
