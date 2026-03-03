@@ -16,5 +16,5 @@ class Allocation(SQLModel, table=True):
         default_factory=lambda: datetime.now(timezone.utc),
         sa_column_kwargs={"onupdate": lambda: datetime.now(timezone.utc)}
     )
-    user_id: uuid.UUID = Field(foreign_key="user.id", unique=True)
+    user_id: uuid.UUID = Field(foreign_key="user.id", index=True, unique=True)
     user: "User" = Relationship(back_populates="allocation")

@@ -16,5 +16,5 @@ class Session(SQLModel, table=True):
     token: str = Field(unique=True, index=True)
     expires_at: datetime = Field(sa_type=DateTime(timezone=True), # Ensures DB stores TZ info
         default_factory=get_expiration)
-    user_id: uuid.UUID = Field(foreign_key="user.id")
+    user_id: uuid.UUID = Field(foreign_key="user.id", index=True)
     user: "User" = Relationship(back_populates="sessions")
