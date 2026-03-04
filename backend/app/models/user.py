@@ -14,6 +14,7 @@ if TYPE_CHECKING:
 class User(SQLModel, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True, index=True)
     email: str = Field(unique=True,index=True)
+    hashed_password: str 
     currency: str = Field(default="NGN")
     onboarding: bool = Field(default=False)
     sessions: List["Session"] = Relationship(back_populates="user")
