@@ -1,6 +1,7 @@
 from . import schema
 from . import service
-from fastapi import APIRouter, Depends, Response
+from fastapi import APIRouter, Depends, Response, Cookie
+from typing import Annotated
 from app.database import get_session
 from sqlmodel import Session
 
@@ -54,3 +55,18 @@ def login(
                         )
     
     return schema.LoginResponse(email=user.email, id=user.id, onboarding=user.onboarding, created_at=user.created_at)
+
+# POST route for logout
+@router.post('/logout', status_code=200)
+def logout(
+    response: Response,
+    session_token: Annotated[str | None, Cookie()] = None, # Cookie that was set
+    db_session: Session = Depends(get_session)
+):
+    # Call logout logic
+    service.logout_user(session_token, db_session)
+
+    # Clear cookie from browser
+    response.delete_cookie(key="session_token")
+
+    return {"detail": "Successfully logged out"}

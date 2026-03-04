@@ -68,4 +68,17 @@ def create_session(user_id: uuid.UUID, db_session):
     db_session.commit()
     return session_token
 
+# Logout function
+def logout_user(session_token: str, db_session):
+    # Check if session exists
+    result = db_session.exec(select(Session).where(Session.token == session_token))
+    existing_session = result.first()
+
+    # Delete session
+    if existing_session:
+        db_session.delete(existing_session)
+
+    db_session.commit()
+    return None
+
 
