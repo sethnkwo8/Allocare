@@ -1,6 +1,6 @@
 from passlib.context import CryptContext
 from sqlmodel import select
-from backend.app.auth.schema import RegisterRequest
+from . import schema
 from app.models.base import User, Session
 import secrets, uuid
 from datetime import datetime, timedelta, timezone
@@ -10,7 +10,7 @@ from pydantic import EmailStr
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # Function for user creation
-def create_user(user_data: RegisterRequest, db_session):
+def create_user(user_data: schema.RegisterRequest, db_session):
     # Check if user exists already
     result = db_session.exec(select(User).where(User.email == user_data.email))
     existing_user = result.first() # Get first result
@@ -30,9 +30,9 @@ def create_user(user_data: RegisterRequest, db_session):
     return user
 
 # Authenticate user
-def authenticate_user(email: EmailStr, password: str, db_session):
+def authenticate_user(user_data: schema.LoginRequest, db_session):
     # Find user by email
-    result = db_session.exec(select(User).where(User.email == email))
+    result = db_session.exec(select(User).where(User.email == user_data.email))
     user = result.first()
 
     # Check if user exists
@@ -40,7 +40,7 @@ def authenticate_user(email: EmailStr, password: str, db_session):
         raise InvalidCredentialsError()
     
     # Verify password
-    if not pwd_context.verify(password, user.hashed_password):
+    if not pwd_context.verify(user_data.password.get_secret_value(), user.hashed_password):
         raise InvalidCredentialsError()
     
     return user
