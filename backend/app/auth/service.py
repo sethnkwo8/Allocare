@@ -1,19 +1,13 @@
 from passlib.context import CryptContext
 from sqlmodel import select
-from app.schemas.auth import RegisterRequest
+from backend.app.auth.schema import RegisterRequest
 from app.models.base import User, Session
 import secrets
 import uuid
 from datetime import datetime, timedelta, timezone
+from app.auth.exception import UserAlreadyExistsError
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-# Custom domain error
-class UserAlreadyExistsError(Exception):
-    def __init__(self, email: str):
-        self.email = email
-        self.message = f"User with email {email} already exists."
-        super().__init__(self.message)
 
 # Function for user creation
 def create_user(user_data: RegisterRequest, db_session):
