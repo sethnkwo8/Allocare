@@ -1,7 +1,8 @@
 from sqlmodel import SQLModel
 
 # Import all models for Alembic use
-from app.models.allocation import Allocation
+from app.models.budget_bucket import BudgetBucket
+from app.models.budget_category import BudgetCategory
 from app.models.expense import Expense
 from app.models.goal import Goal
 from app.models.income import Income
