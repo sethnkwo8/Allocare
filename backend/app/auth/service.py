@@ -1,13 +1,11 @@
-from passlib.context import CryptContext
 from sqlmodel import select
 from . import schema
 from app.models.base import User, Session
 import secrets, uuid
 from datetime import datetime, timedelta, timezone
-from app.auth.exception import UserAlreadyExistsError, InvalidCredentialsError, UnauthorizedError
-from fastapi import Cookie
+from . import exception
+from ..utils import password_hashing
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 now = datetime.now(timezone.utc)
 
 # Function for user creation
@@ -18,10 +16,10 @@ def create_user(user_data: schema.RegisterRequest, db_session):
 
     # Raise domain error if user already exists
     if existing_user:
-        raise UserAlreadyExistsError(user_data.email)
+        raise exception.UserAlreadyExistsError(user_data.email)
     
     # Hash password
-    hashed_password = pwd_context.hash(user_data.password.get_secret_value())
+    hashed_password = password_hashing.pwd_context.hash(user_data.password.get_secret_value())
 
     # Create user
     user = User(email=user_data.email, hashed_password=hashed_password, onboarding=False)
@@ -38,11 +36,11 @@ def authenticate_user(user_data: schema.LoginRequest, db_session):
 
     # Check if user exists
     if not user:
-        raise InvalidCredentialsError()
+        raise exception.InvalidCredentialsError()
     
     # Verify password
-    if not pwd_context.verify(user_data.password.get_secret_value(), user.hashed_password):
-        raise InvalidCredentialsError()
+    if not password_hashing.pwd_context.verify(user_data.password.get_secret_value(), user.hashed_password):
+        raise exception.InvalidCredentialsError()
     
     return user
 
@@ -86,14 +84,14 @@ def logout_user(session_token: str, db_session):
 def get_current_user(db_session, session_token):
     # Get session token from cookies
     if not session_token:
-        raise UnauthorizedError()
+        raise exception.UnauthorizedError()
     
     # Query for session where token matches session_token in cookies
     result = db_session.exec(select(Session).where(Session.token == session_token))
     session_record = result.first()
 
     if not session_record:
-        raise UnauthorizedError()
+        raise exception.UnauthorizedError()
     
     # Get session expiry date
     expires_at = session_record.expires_at
@@ -101,13 +99,13 @@ def get_current_user(db_session, session_token):
     if expires_at < now:
         db_session.delete(session_record)
         db_session.commit()
-        raise UnauthorizedError()
+        raise exception.UnauthorizedError()
     
     # Get the session's user
     user = session_record.user
 
     if not user:
-        raise UnauthorizedError()
+        raise exception.UnauthorizedError()
 
     # Return user
     return user
