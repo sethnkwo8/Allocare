@@ -42,3 +42,10 @@ class LoginResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+# Schema for what is returned as a response for getting current user
+class UserResponse(BaseModel):
+    id: uuid.UUID
+    email: EmailStr
+    currency: str
+    onboarding: bool

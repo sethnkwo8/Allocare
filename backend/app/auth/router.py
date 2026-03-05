@@ -1,11 +1,11 @@
 from . import schema
 from . import service
 from fastapi import APIRouter, Depends, Response, Cookie
-from typing import Annotated
+from typing import Annotated, Optional
 from app.database import get_session
 from sqlmodel import Session
 
-router = APIRouter()
+router = APIRouter(prefix="/auth")
 
 # POST route for registering
 @router.post('/register', response_model=schema.RegisterResponse, status_code=201)
@@ -70,3 +70,15 @@ def logout(
     response.delete_cookie(key="session_token")
 
     return {"detail": "Successfully logged out"}
+
+# GET route for current user
+@router.get('/me', response_model=schema.UserResponse, status_code=200)
+def get_user(
+    session_token: Annotated[Optional[str], Cookie()] = None,
+    db_session: Session = Depends(get_session)
+):
+    # Use get current user function
+    user = service.get_current_user(db_session, session_token)
+
+    return schema.UserResponse(id=user.id, email=user.email, currency=user.currency, onboarding=user.onboarding)
+
