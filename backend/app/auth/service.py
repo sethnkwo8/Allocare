@@ -4,10 +4,11 @@ from . import schema
 from app.models.base import User, Session
 import secrets, uuid
 from datetime import datetime, timedelta, timezone
-from app.auth.exception import UserAlreadyExistsError, InvalidCredentialsError
-from pydantic import EmailStr
+from app.auth.exception import UserAlreadyExistsError, InvalidCredentialsError, UnauthorizedError
+from fastapi import Cookie
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+now = datetime.now(timezone.utc)
 
 # Function for user creation
 def create_user(user_data: schema.RegisterRequest, db_session):
@@ -49,7 +50,7 @@ def authenticate_user(user_data: schema.LoginRequest, db_session):
 def create_session(user_id: uuid.UUID, db_session):
     # Random token creation
     session_token = secrets.token_urlsafe(32)
-    expiry = datetime.now(timezone.utc) + timedelta(days=7)
+    expiry = now + timedelta(days=7)
 
     # Check if session for user exists already
     result = db_session.exec(select(Session).where(Session.user_id == user_id))
@@ -81,4 +82,33 @@ def logout_user(session_token: str, db_session):
     db_session.commit()
     return None
 
+# Function to get current user
+def get_current_user(db_session, session_token):
+    # Get session token from cookies
+    if not session_token:
+        raise UnauthorizedError()
+    
+    # Query for session where token matches session_token in cookies
+    result = db_session.exec(select(Session).where(Session.token == session_token))
+    session_record = result.first()
+
+    if not session_record:
+        raise UnauthorizedError()
+    
+    # Get session expiry date
+    expires_at = session_record.expires_at
+
+    if expires_at < now:
+        db_session.delete(session_record)
+        db_session.commit()
+        raise UnauthorizedError()
+    
+    # Get the session's user
+    user = session_record.user
+
+    if not user:
+        raise UnauthorizedError()
+
+    # Return user
+    return user
 

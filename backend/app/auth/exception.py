@@ -22,3 +22,11 @@ class InvalidCredentialsError(AuthError):
             code="INVALID_CREDENTIALS"
         )
 
+class UnauthorizedError(AuthError):
+    def __init__(self):
+        super().__init__(
+            message="Could not validate credentials",
+            status_code=401,
+            code="UNAUTHORIZED"
+        )
+
