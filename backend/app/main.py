@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
-from auth.exception import AuthError
+from backend.app.auth.exceptions import AuthError
 
 app = FastAPI()
 
