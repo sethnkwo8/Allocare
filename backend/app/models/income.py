@@ -7,9 +7,9 @@ from datetime import datetime, timezone
 if TYPE_CHECKING:
     from models.user import User
 
-class Frequency_Status(str, Enum): 
-    DAILY = "daily"
+class FrequencyStatus(str, Enum): 
     WEEKLY = "weekly"
+    BIWEEKLY = "biweekly"
     MONTHLY = "monthly"
     YEARLY = "yearly"
 
@@ -17,8 +17,7 @@ class Frequency_Status(str, Enum):
 class Income(SQLModel, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True, index=True)
     amount: float
-    frequency: Frequency_Status = Field(default=Frequency_Status.MONTHLY)
-    currency: str = Field(default="NGN")
+    frequency: FrequencyStatus = Field(default=FrequencyStatus.MONTHLY)
     created_at: datetime = Field(
         default_factory=lambda: datetime.now(timezone.utc)
     )
