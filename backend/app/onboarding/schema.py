@@ -6,7 +6,7 @@ from enum import Enum
 
 # Schema for getting currency
 class CurrencyRequest(BaseModel):
-    currency: str 
+    currency: str = Field(min_length=3, max_length=3)
 
 # Schema for getting income
 class FrequencyStatus(str, Enum): 
@@ -25,8 +25,13 @@ class CategoryCreate(BaseModel):
     monthly_limit: Optional[Decimal] = Field(ge=0)
 
 # Schema for budget bucket
+class AllocationName(str, Enum):
+    NEEDS = 'needs'
+    WANTS = 'wants'
+    SAVINGS = 'savings'
+
 class BucketCreate(BaseModel):
-    name: str
+    name: AllocationName
     percentage_allocation: int = Field(ge=0, le=100)
     categories: List[CategoryCreate] = []
 

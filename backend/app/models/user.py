@@ -15,7 +15,7 @@ class User(SQLModel, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True, index=True)
     email: str = Field(unique=True,index=True)
     hashed_password: str 
-    currency: str = Field(default="NGN")
+    currency: str = Field(default="NGN", min_length=3, max_length=3)
     onboarding: bool = Field(default=False)
     sessions: List["Session"] = Relationship(back_populates="user")
     incomes: List["Income"] = Relationship(back_populates="user")
