@@ -7,6 +7,7 @@ from sqlmodel import Session
 
 router = APIRouter(prefix="/onboarding")
 
+# POST route for setting currency in onboarding flow
 @router.post('/currency', response_model=schema.OnboardingResponse, status_code=201)
 def set_currency(
     payload: schema.CurrencyRequest,
@@ -14,3 +15,12 @@ def set_currency(
     db_session: Session = Depends(get_session)
 ):
     return service.set_user_currency(payload, db_session, session_token)
+
+# POST route for creating income amount and frequency in onboarding flow
+@router.post('/income', response_model=schema.OnboardingResponse, status_code=201)
+def create_income(
+    payload: schema.IncomeRequest,
+    session_token: Annotated[Optional[str], Cookie()] = None,
+    db_session: Session = Depends(get_session)
+):
+    return service.create_user_income(payload, db_session, session_token)
