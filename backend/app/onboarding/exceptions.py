@@ -21,3 +21,19 @@ class BucketAccessDenied(OnboardingError):
             status_code=403,
             code="UNAUTHORIZED_USER"
         )
+
+class IncorrectBucketCount(OnboardingError):
+    def __init__(self):
+        super().__init__(
+            message=f"There has to be 3 buckets",
+            status_code=403,
+            code="INCORRECT_BUCKET_COUNT"
+        )
+
+class OnboardingAlreadyComplete(OnboardingError):
+    def __init__(self):
+        super().__init__(
+            message=f"Onboarding process already completed",
+            status_code=403,
+            code="ONBOARDING_ALREADY_COMPLETED"
+        )

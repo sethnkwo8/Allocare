@@ -24,3 +24,14 @@ def create_income(
     db_session: Session = Depends(get_session)
 ):
     return service.create_user_income(payload, db_session, session_token)
+
+# POST route to complete onboarding
+@router.post('/complete', response_model=schema.OnboardingResponse, status_code=201)
+def complete_onboarding(
+    payload: schema.OnboardingRequest,
+    session_token: Annotated[Optional[str], Cookie()] = None,
+    db_session: Session = Depends(get_session)
+):
+    service.complete_onboarding(session_token, db_session, payload)
+
+    return {"message": "Onboarding complete"}

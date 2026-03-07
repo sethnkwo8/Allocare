@@ -9,10 +9,13 @@ DEFAULT_CATEGORIES = {
     "wants": [
         "Dining Out",
         "Entertainment",
-        "Shopping"
+        "Shopping",
+        "Travel",
+        "Fitness"
     ],
     "savings": [
         "Emergency Fund",
-        "Investments"
+        "Investments",
+        "Financial Goals"
     ]
 }
