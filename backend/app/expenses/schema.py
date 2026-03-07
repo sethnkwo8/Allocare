@@ -18,3 +18,10 @@ class ExpenseResponse(BaseModel):
     category_id: uuid.UUID
     description: Optional[str]
     date: datetime
+
+# Schema for expense update
+class ExpenseUpdate(BaseModel):
+    amount: Optional[Decimal]
+    description: Optional[str]
+    category_id: Optional[uuid.UUID]
+    date: Optional[datetime]

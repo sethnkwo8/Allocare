@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Cookie, Depends
-from .schema import ExpenseCreate, ExpenseResponse
+from .schema import ExpenseCreate, ExpenseResponse, ExpenseUpdate, ExpenseDelete
 from typing import Annotated, Optional
 from sqlmodel import Session
 from app.database import get_session
@@ -41,4 +41,24 @@ def get_expense(
     expense = service.get_expense(expense_id=expense_id, db_session=db_session, session_token=session_token )
 
     return ExpenseResponse(id=expense.id, amount=expense.amount, category_id=expense.category_id, description=expense.description, date=expense.date)
-    
+
+# PATCH route to edit expense details
+@router.patch("/{expense_id}", response_model=ExpenseResponse, status_code=200)
+def edit_expense(
+    payload: ExpenseUpdate,
+    expense_id: uuid.UUID,
+    session_token: Annotated[Optional[str], Cookie()] = None,
+    db_session: Session = Depends(get_session)
+):
+    expense = service.edit_expense(update_data=payload, expense_id=expense_id, db_session=db_session, session_token=session_token)
+
+    return ExpenseResponse(id=expense.id, amount=expense.amount, category_id=expense.category_id, description=expense.description, date=expense.date)
+
+# DELETE route for deleting expense
+@router.delete("/{expense_id}", response_model= ExpenseDelete, status_code=204)
+def delete_expense(
+    expense_id: uuid.UUID,
+    session_token: Annotated[Optional[str], Cookie()] = None,
+    db_session: Session = Depends(get_session)
+):
+    service.delete_expense(expense_id, db_session, session_token)
