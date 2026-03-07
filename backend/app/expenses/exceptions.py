@@ -29,3 +29,11 @@ class AmountError(ExpenseError):
             status_code=400,
             code="AMOUNT_ERROR"
         )
+
+class ExpenseNotFound(ExpenseError):
+    def __init__(self):
+        super().__init__(
+            message=f"Expense not found",
+            status_code=400,
+            code="EXPENSE_USER_MISMATCH"
+        )

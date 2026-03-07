@@ -4,6 +4,7 @@ from typing import Annotated, Optional
 from sqlmodel import Session
 from app.database import get_session
 from . import service
+import uuid
 
 router = APIRouter(prefix='/expenses')
 
@@ -15,3 +16,29 @@ def create_expense(payload: ExpenseCreate,
 ):
     expense = service.create_expense(payload, db_session, session_token)
     return ExpenseResponse(id=expense.id, amount=expense.amount, category_id=expense.category_id, description=expense.description, date=expense.date)
+
+# GET route to get all expenses
+@router.get("/", response_model=list[ExpenseResponse], status_code=200)
+def get_expenses(
+    session_token: Annotated[Optional[str], Cookie()] = None,
+    db_session: Session = Depends(get_session)
+):
+    expenses = service.get_expenses(db_session, session_token)
+
+    return [
+        ExpenseResponse(
+            id=e.id, amount=e.amount, category_id=e.category_id, description=e.description, date=e.date
+        ) for e in expenses
+    ]
+
+# GET route to get specific expense
+@router.get("/{expense_id}", response_model=ExpenseResponse, status_code=200)
+def get_expense(
+    expense_id: uuid.UUID,
+    session_token: Annotated[Optional[str], Cookie()] = None,
+    db_session: Session = Depends(get_session)
+):
+    expense = service.get_expense(expense_id=expense_id, db_session=db_session, session_token=session_token )
+
+    return ExpenseResponse(id=expense.id, amount=expense.amount, category_id=expense.category_id, description=expense.description, date=expense.date)
+    
