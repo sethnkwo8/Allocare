@@ -1,6 +1,6 @@
 import uuid
 from sqlmodel import SQLModel, Field, Relationship, UniqueConstraint
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING, List, Optional
 from decimal import Decimal
 
 if TYPE_CHECKING:
@@ -20,4 +20,4 @@ class BudgetCategory(SQLModel, table=True):
     bucket_id: uuid.UUID = Field(foreign_key="budget_buckets.id")
     bucket: "BudgetBucket" = Relationship(back_populates="categories")
     expenses: List["Expense"] = Relationship(back_populates="category")
-    monthly_limit: Decimal
+    monthly_limit: Optional[Decimal] = Field(ge=0)
