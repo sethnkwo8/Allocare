@@ -79,14 +79,21 @@ def complete_onboarding(session_token, db_session, buckets: OnboardingRequest ):
     if total_percentage != 100:
         raise BucketAllocationError()
     
-    # Create default categories and categories for each bucket
-    for bucket_data in buckets.buckets:
-        bucket = create_bucket(bucket_data, db_session, user)
-        create_default_categories(bucket, db_session)
-        if bucket_data.categories:
-            for category_data in bucket_data.categories:
-                create_category(category_data, db_session, bucket)
-    
-    # Set onboarding to true for complete
-    user.onboarding = True
-    db_session.commit()
+    try:
+        # Create default categories and categories for each bucket
+        for bucket_data in buckets.buckets:
+            bucket = create_bucket(bucket_data, db_session, user)
+            create_default_categories(bucket, db_session)
+            if bucket_data.categories:
+                for category_data in bucket_data.categories:
+                    create_category(category_data, db_session, bucket)
+        
+        # Set onboarding to true for completion
+        user.onboarding = True
+        db_session.commit()
+        db_session.refresh(user)
+    # Undo everything if anything fails 
+    except Exception as e:
+        db_session.rollback()
+        raise e
+        
