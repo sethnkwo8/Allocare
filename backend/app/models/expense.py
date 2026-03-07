@@ -1,5 +1,5 @@
 import uuid     # For primary keys
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 from sqlmodel import Field, SQLModel, Relationship
 from datetime import datetime, timezone
 from decimal import Decimal
@@ -12,11 +12,11 @@ if TYPE_CHECKING:
 class Expense(SQLModel, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True, index=True)
     amount: Decimal
-    category_id: uuid.UUID = Field(foreign_key="budget_categories.id")
+    category_id: uuid.UUID = Field(foreign_key="budget_categories.id", index=True)
     category: "BudgetCategory" = Relationship(back_populates="expenses")
-    description: str
-    spent_at: datetime = Field(
-        default_factory=lambda: datetime.now(timezone.utc)
+    description: Optional[str]
+    date: datetime = Field(
+        default_factory=lambda: datetime.now(timezone.utc), index=True
     )
-    user_id: uuid.UUID = Field(foreign_key="user.id")
+    user_id: uuid.UUID = Field(foreign_key="user.id", index=True)
     user: "User" = Relationship(back_populates="expenses")
