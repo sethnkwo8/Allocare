@@ -8,3 +8,10 @@ class ExpenseCalculationResponse(BaseModel):
     total_spent: Decimal
     budget_limit: Decimal
     remaining_budget: Decimal
+
+class BucketCalculationResponse(BaseModel):
+    bucket_id: uuid.UUID
+    bucket_name: str
+    total_spent: Decimal
+    budget_limit: Decimal
+    remaining_budget: Decimal
