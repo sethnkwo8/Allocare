@@ -1,7 +1,7 @@
 from app.auth.service import get_current_user
 from app.models.base import Goal
 from .schema import GoalCreateRequest, DepositRequest
-from .exceptions import GoalAlreadyCompleted, GoalDoesNotExist, InvalidDepositAmount
+from .exceptions import GoalAlreadyCompleted, GoalDoesNotExist
 from app.utils.milestone_check import check_milestones
 from app.utils.calculate_goal_metrics import calculate_goal_metrics
 from app.auth.exceptions import UnauthorizedError
@@ -77,3 +77,17 @@ def deposit_for_goal(goal_id: uuid.UUID, deposit_data: DepositRequest, db_sessio
     milestone_hit = check_milestones(old_current=old_amount, new_current=goal.current_amount, target=goal.target_amount)
 
     return goal, progress, remaining_amount, milestone_hit
+
+# Function to get all user goals
+def get_goals(db_session, session_token):
+    # Get current user
+    user = get_current_user(db_session, session_token)
+
+    if not user:
+        raise UnauthorizedError()
+
+    # Get goals for user
+    statement = select(Goal).where(Goal.user_id == user.id)
+    goals = db_session.exec(statement).all()
+
+    return goals

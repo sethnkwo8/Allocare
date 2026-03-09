@@ -1,9 +1,10 @@
 from fastapi import APIRouter, Depends, Cookie
 from sqlmodel import Session
-from typing import Annotated, Optional
-from .service import create_goal, deposit_for_goal
-from .schema import GoalCreateResponse, GoalCreateRequest, DepositRequest, DepositResponse
+from typing import Annotated, Optional, List
+from .service import create_goal, deposit_for_goal, get_goals
+from .schema import GoalCreateResponse, GoalCreateRequest, DepositRequest, DepositResponse, GoalResponse
 from app.database import get_session
+from app.utils.serialize_goal import serialize_goal
 import uuid
 
 router = APIRouter(prefix='/goals')
@@ -44,3 +45,13 @@ def goal_deposit(
         is_completed=goal.is_completed,
         milestone_hit=milestone_hit
     )
+
+# GET route for getting all user goals
+@router.get('/', response_model=List[GoalResponse], status_code=200)
+def get_all_goals(
+    db_session: Session = Depends(get_session),
+    session_token: Annotated[Optional[str], Cookie()] = None
+):
+    goals = get_goals(db_session, session_token)
+
+    return [serialize_goal(goal) for goal in goals]

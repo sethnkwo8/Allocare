@@ -41,3 +41,15 @@ class DepositResponse(BaseModel):
     is_completed: bool
     milestone_hit: Optional[int]
 
+# Schema for getting goal
+class GoalResponse(BaseModel):
+    id: uuid.UUID
+    name: str
+    description: str
+    target_amount: Decimal
+    current_amount: Decimal
+    progress_percentage: Decimal
+    remaining_amount: Decimal
+    target_date: datetime
+    is_completed: bool
+
