@@ -4,11 +4,15 @@ from app.models.base import Income, BudgetBucket, BudgetCategory
 from sqlmodel import select
 from .exceptions import BucketAccessDenied, BucketAllocationError, OnboardingAlreadyComplete, IncorrectBucketCount
 from .default_categories import DEFAULT_CATEGORIES
+from app.auth.exceptions import UnauthorizedError
 
 # Function to set user currency
 def set_user_currency(currency_data: CurrencyRequest, db_session, session_token):
     # Get current user
     user = get_current_user(db_session, session_token)
+
+    if not user:
+        raise UnauthorizedError()
 
     # Update currency
     user.currency = currency_data.currency
@@ -22,6 +26,9 @@ def set_user_currency(currency_data: CurrencyRequest, db_session, session_token)
 def create_user_income(income_data: IncomeRequest, db_session, session_token):
     # Get current user
     user = get_current_user(db_session, session_token)
+
+    if not user:
+        raise UnauthorizedError()
 
     # Create income
     income = Income(amount=income_data.amount, frequency=income_data.frequency, user=user)
@@ -65,6 +72,9 @@ def create_default_categories(bucket: BudgetBucket, db_session):
 def complete_onboarding(session_token, db_session, buckets: OnboardingRequest ):
     # Get current user
     user = get_current_user(db_session, session_token)
+
+    if not user:
+        raise UnauthorizedError()
 
     # Raise error if onboarding already complete
     if user.onboarding:
