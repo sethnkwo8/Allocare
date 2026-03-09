@@ -1,5 +1,5 @@
 from .schema import ExpenseCreate, ExpenseUpdate
-from app.models.base import Expense, BudgetCategory, BudgetBucket, User
+from app.models.base import Expense, BudgetCategory, BudgetBucket
 from app.auth.service import get_current_user
 from app.auth.exceptions import UnauthorizedError
 from .exceptions import CategoryDoesntExist, AmountError, ExpenseNotFound
