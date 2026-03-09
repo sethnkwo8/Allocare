@@ -2,6 +2,8 @@ from app.auth.service import get_current_user
 from app.models.base import Goal
 from .schema import GoalCreateRequest, DepositRequest
 from .exceptions import GoalAlreadyCompleted, GoalDoesNotExist, InvalidDepositAmount
+from app.utils.milestone_check import check_milestones
+from app.utils.calculate_goal_metrics import calculate_goal_metrics
 from app.auth.exceptions import UnauthorizedError
 from sqlmodel import select
 import uuid
@@ -32,22 +34,13 @@ def create_goal(goal_data:GoalCreateRequest, db_session, session_token):
     db_session.commit()
     db_session.refresh(goal)
 
-    # Calculate goal progress
-    if goal_data.target_amount > 0:
-        raw_progress = (goal.current_amount / goal.target_amount) * 100
-        progress = min(raw_progress, 100)
-    else:
-        progress = 0
-
-    remaining_amount = max(goal.target_amount - goal.current_amount, 0)
+    # Get progress and remaining amount
+    progress, remaining_amount = calculate_goal_metrics(goal.target_amount, goal.current_amount)
 
     return goal, progress, remaining_amount
 
 # Function to deposit amount for goal
 def deposit_for_goal(goal_id: uuid.UUID, deposit_data: DepositRequest, db_session, session_token):
-    if deposit_data.amount <= 0:
-        raise InvalidDepositAmount()
-    
     # Get current user
     user = get_current_user(db_session, session_token)
 
@@ -65,20 +58,22 @@ def deposit_for_goal(goal_id: uuid.UUID, deposit_data: DepositRequest, db_sessio
     if goal.is_completed:
         raise GoalAlreadyCompleted()
     
+    # Amount before deposit
+    old_amount = goal.current_amount
+
+    # Adding deposit amount
     goal.current_amount += deposit_data.amount
+
+    # Automatic completion check
     goal.is_completed = goal.current_amount >= goal.target_amount
 
-    # Recalculate progress
-    if goal.target_amount > 0:
-        raw_progress = (goal.current_amount / goal.target_amount) * 100
-        progress = min(raw_progress, 100)
-    else:
-        progress = 0
-
-    # Recalculate remaining amount
-    remaining_amount = max(goal.target_amount - goal.current_amount, 0)
+    # Get progress and remaining amount
+    progress, remaining_amount = calculate_goal_metrics(goal.target_amount, goal.current_amount)
 
     db_session.commit()
     db_session.refresh(goal)
 
-    return goal, progress, remaining_amount
+    # Milestone check
+    milestone_hit = check_milestones(old_current=old_amount, new_current=goal.current_amount, target=goal.target_amount)
+
+    return goal, progress, remaining_amount, milestone_hit

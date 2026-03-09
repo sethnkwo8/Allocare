@@ -34,12 +34,13 @@ def goal_deposit(
     db_session: Session = Depends(get_session),
     session_token: Annotated[Optional[str], Cookie()] = None
 ):
-    goal, progress, remaining_amount = deposit_for_goal(goal_id, payload, db_session, session_token)
+    goal, progress, remaining_amount, milestone_hit = deposit_for_goal(goal_id, payload, db_session, session_token)
 
     return DepositResponse(
         id=goal.id,
         current_amount=goal.current_amount,
         progress_percentage=round(progress, 1),
         remaining_amount=remaining_amount,
-        is_completed=goal.is_completed
+        is_completed=goal.is_completed,
+        milestone_hit=milestone_hit
     )

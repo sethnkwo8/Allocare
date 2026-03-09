@@ -32,9 +32,12 @@ class GoalCreateResponse(BaseModel):
 class DepositRequest(BaseModel):
     amount: Decimal = Field(gt=0)
 
+# Schema for deposit response
 class DepositResponse(BaseModel):
     id: uuid.UUID
     current_amount: Decimal
     progress_percentage: Decimal
     remaining_amount: Decimal
     is_completed: bool
+    milestone_hit: Optional[int]
+
