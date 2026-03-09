@@ -3,6 +3,7 @@ from app.auth.service import get_current_user
 from app.auth.exceptions import UnauthorizedError
 from app.utils.date_utils import get_current_month_range
 from sqlmodel import select, func, and_
+from .schema import OverBudgetCategory
 
 # Function to calculate how much user spent per category
 def get_category_spending(db_session, session_token):
@@ -66,3 +67,40 @@ def get_total_buckets_spending(db_session, session_token):
 
     return results
 
+# Function to get summary for dashboard
+def get_dashboard_summary(db_session, session_token):
+    # Get current user
+    user = get_current_user(db_session, session_token)
+
+    if not user:
+        raise UnauthorizedError()
+    
+    # Initialize total_spent and total_limit
+    total_spent = 0
+    total_budget= 0
+
+    # Get categories spendings
+    category_results = get_category_spending(db_session, session_token)
+
+    # Initialize list for over budget categories
+    over_budget_details = []
+
+    # Get total_spent and total_limits
+    for category, spent in category_results:
+        # Ensure we are working with Decimals for financial precision
+        c_spent = spent
+        c_limit = category.monthly_limit or 0
+        
+        total_spent += c_spent
+        total_budget += c_limit
+
+        # If spent exceeds limit, create the OverBudgetCategory object
+        if c_spent > c_limit and c_limit > 0:
+            overage_amount = c_spent - c_limit
+            over_budget_details.append(
+                OverBudgetCategory(name=category.name, overage=overage_amount)
+            )
+
+    remaining_budget = total_budget - total_spent
+
+    return total_spent, total_budget, remaining_budget, over_budget_details
