@@ -15,7 +15,7 @@ class GoalCreateRequest(BaseModel):
     # Validate target_date 
     @field_validator('target_date')
     def date_must_be_future(cls, v):
-        if v is not None < datetime.now(timezone.utc):
+        if v is not None and v <= datetime.now(timezone.utc):
             raise ValueError('Target date must be in the future')
         return v
 
@@ -27,3 +27,14 @@ class GoalCreateResponse(BaseModel):
     current_amount: Decimal
     progress_percentage: Decimal
     remaining_amount: Decimal
+
+# Schema for deposit request
+class DepositRequest(BaseModel):
+    amount: Decimal = Field(gt=0)
+
+class DepositResponse(BaseModel):
+    id: uuid.UUID
+    current_amount: Decimal
+    progress_percentage: Decimal
+    remaining_amount: Decimal
+    is_completed: bool

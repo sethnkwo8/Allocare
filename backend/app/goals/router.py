@@ -1,9 +1,10 @@
 from fastapi import APIRouter, Depends, Cookie
 from sqlmodel import Session
 from typing import Annotated, Optional
-from .service import create_goal
-from .schema import GoalCreateResponse, GoalCreateRequest
+from .service import create_goal, deposit_for_goal
+from .schema import GoalCreateResponse, GoalCreateRequest, DepositRequest, DepositResponse
 from app.database import get_session
+import uuid
 
 router = APIRouter(prefix='/goals')
 
@@ -23,4 +24,22 @@ def goal_creation(
         current_amount=goal.current_amount,
         progress_percentage=round(progress_percentage, 1),
         remaining_amount=remaining_amount
+    )
+
+# POST route gor depositing to goal
+@router.post('/{goal_id}/deposit', response_model=DepositResponse, status_code=201)
+def goal_deposit(
+    goal_id: uuid.UUID,
+    payload: DepositRequest,
+    db_session: Session = Depends(get_session),
+    session_token: Annotated[Optional[str], Cookie()] = None
+):
+    goal, progress, remaining_amount = deposit_for_goal(goal_id, payload, db_session, session_token)
+
+    return DepositResponse(
+        id=goal.id,
+        current_amount=goal.current_amount,
+        progress_percentage=round(progress, 1),
+        remaining_amount=remaining_amount,
+        is_completed=goal.is_completed
     )

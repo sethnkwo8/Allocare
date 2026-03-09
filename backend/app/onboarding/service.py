@@ -15,10 +15,10 @@ def set_user_currency(currency_data: CurrencyRequest, db_session, session_token)
         raise UnauthorizedError()
 
     # Update currency
-    user.currency = currency_data.currency
+    if user.currency != currency_data.currency:
+        user.currency = currency_data.currency
 
-    db_session.add(user)
-    db_session.commit()
+        db_session.commit()
 
     return {"message": "Currency updated"}
 
