@@ -8,6 +8,7 @@ from app.models.goal import Goal
 from app.models.income import Income
 from app.models.session import Session
 from app.models.user import User
+from app.models.notification import Notification
 
 # Export metadata
 target_metadata = SQLModel.metadata
