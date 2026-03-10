@@ -1,9 +1,11 @@
 from app.auth.service import get_current_user
 from app.models.base import Goal
+from app.models.notification import NotificationType
 from .schema import GoalCreateRequest, DepositRequest
 from .exceptions import GoalAlreadyCompleted, GoalDoesNotExist
-from app.utils.milestone_check import check_milestones
+from app.utils.milestone_check import check_goal_milestone
 from app.utils.calculate_goal_metrics import calculate_goal_metrics
+from app.utils.create_notification import create_notification
 from app.auth.exceptions import UnauthorizedError
 from sqlmodel import select
 import uuid
@@ -70,13 +72,21 @@ def deposit_for_goal(goal_id: uuid.UUID, deposit_data: DepositRequest, db_sessio
     # Get progress and remaining amount
     progress, remaining_amount = calculate_goal_metrics(goal.target_amount, goal.current_amount)
 
+    # Milestone check
+    milestone = check_goal_milestone(old_current=old_amount, new_current=goal.current_amount, target=goal.target_amount)
+
+    if milestone:
+        # Create notification for milestone 
+        message=f"You reached {milestone}% of your {goal.name} goal!"
+        notification = create_notification(notification_type=NotificationType.GOAL_MILESTONE,
+                                           message=message,
+                                           user_id=user.id,
+                                           db_session=db_session)
+
     db_session.commit()
     db_session.refresh(goal)
 
-    # Milestone check
-    milestone_hit = check_milestones(old_current=old_amount, new_current=goal.current_amount, target=goal.target_amount)
-
-    return goal, progress, remaining_amount, milestone_hit
+    return goal, progress, remaining_amount, milestone
 
 # Function to get all user goals
 def get_goals(db_session, session_token):
