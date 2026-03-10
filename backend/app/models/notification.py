@@ -21,9 +21,9 @@ class Notification(SQLModel, table=True):
     type: NotificationType
     message: str
     created_at: datetime = Field(
-        default_factory=lambda: datetime.now(timezone.utc)
+        default_factory=lambda: datetime.now(timezone.utc), index=True
     )
-    is_read: bool = Field(default=False)
+    is_read: bool = Field(default=False, index=True)
     reference_id: Optional[uuid.UUID]
     user_id: uuid.UUID = Field(foreign_key="user.id", index=True)
     user: "User" = Relationship(back_populates='notifications')
