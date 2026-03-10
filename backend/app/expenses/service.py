@@ -10,9 +10,6 @@ def create_expense(expense_data: ExpenseCreate, db_session, session_token):
     # Get current user
     user = get_current_user(db_session, session_token)
 
-    if not user:
-        raise UnauthorizedError()
-    
     # Get category and check if it belongs to user by
     result = db_session.exec(select(BudgetCategory).join(BudgetBucket).where(BudgetCategory.id == expense_data.category_id, BudgetBucket.user_id == user.id))
     category = result.first()
@@ -41,9 +38,6 @@ def create_expense(expense_data: ExpenseCreate, db_session, session_token):
 def get_expenses(db_session, session_token):
     # Get current user
     user = get_current_user(db_session, session_token)
-
-    if not user:
-        raise UnauthorizedError()
     
     # Get all expenses for user
     result = db_session.exec(select(Expense).where(Expense.user_id == user.id))
@@ -54,9 +48,6 @@ def get_expenses(db_session, session_token):
 def get_expense(expense_id, db_session, session_token):
     # Get current user
     user = get_current_user(db_session, session_token)
-
-    if not user:
-        raise UnauthorizedError()
     
     # Get specific expense
     result = db_session.exec(select(Expense).where(Expense.id == expense_id, Expense.user_id == user.id))
@@ -72,9 +63,6 @@ def get_expense(expense_id, db_session, session_token):
 def edit_expense(update_data: ExpenseUpdate, expense_id, db_session, session_token):
     # Get current user
     user = get_current_user(db_session, session_token)
-
-    if not user:
-        raise UnauthorizedError()
     
     # Get specific expense
     expense_result = db_session.exec(select(Expense).where(Expense.id == expense_id, Expense.user_id == user.id))
@@ -115,9 +103,6 @@ def edit_expense(update_data: ExpenseUpdate, expense_id, db_session, session_tok
 def delete_expense(expense_id, db_session, session_token):
     # Get current user
     user = get_current_user(db_session, session_token)
-
-    if not user:
-        raise UnauthorizedError()
     
     # Get specific expense
     expense_result = db_session.exec(select(Expense).where(Expense.id == expense_id, Expense.user_id == user.id))

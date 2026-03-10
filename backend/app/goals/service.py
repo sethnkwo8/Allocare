@@ -15,9 +15,6 @@ def create_goal(goal_data:GoalCreateRequest, db_session, session_token):
     # Get current_user
     user = get_current_user(db_session, session_token)
 
-    if not user:
-        raise UnauthorizedError()
-    
     # Automatic completion check
     is_done = goal_data.current_amount >= goal_data.target_amount
     
@@ -46,9 +43,6 @@ def deposit_for_goal(goal_id: uuid.UUID, deposit_data: DepositRequest, db_sessio
     # Get current user
     user = get_current_user(db_session, session_token)
 
-    if not user:
-        raise UnauthorizedError()
-    
     # Get specific goal that belongs to user
     statement = select(Goal).where(Goal.id == goal_id, Goal.user_id == user.id)
     goal = db_session.exec(statement).first()
@@ -93,9 +87,6 @@ def get_goals(db_session, session_token):
     # Get current user
     user = get_current_user(db_session, session_token)
 
-    if not user:
-        raise UnauthorizedError()
-
     # Get goals for user
     statement = select(Goal).where(Goal.user_id == user.id)
     goals = db_session.exec(statement).all()
@@ -107,9 +98,6 @@ def get_specific_goal(goal_id: uuid.UUID, db_session, session_token):
     # Get current user
     user = get_current_user(db_session, session_token)
 
-    if not user:
-        raise UnauthorizedError()
-    
     # Get goal
     statement = select(Goal).where(Goal.id == goal_id, Goal.user_id == user.id)
     goal = db_session.exec(statement).first()

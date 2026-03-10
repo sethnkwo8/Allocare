@@ -11,9 +11,6 @@ def set_user_currency(currency_data: CurrencyRequest, db_session, session_token)
     # Get current user
     user = get_current_user(db_session, session_token)
 
-    if not user:
-        raise UnauthorizedError()
-
     # Update currency
     if user.currency != currency_data.currency:
         user.currency = currency_data.currency
@@ -26,9 +23,6 @@ def set_user_currency(currency_data: CurrencyRequest, db_session, session_token)
 def create_user_income(income_data: IncomeRequest, db_session, session_token):
     # Get current user
     user = get_current_user(db_session, session_token)
-
-    if not user:
-        raise UnauthorizedError()
 
     # Create income
     income = Income(amount=income_data.amount, frequency=income_data.frequency, user=user)
@@ -72,9 +66,6 @@ def create_default_categories(bucket: BudgetBucket, db_session):
 def complete_onboarding(session_token, db_session, buckets: OnboardingRequest ):
     # Get current user
     user = get_current_user(db_session, session_token)
-
-    if not user:
-        raise UnauthorizedError()
 
     # Raise error if onboarding already complete
     if user.onboarding:

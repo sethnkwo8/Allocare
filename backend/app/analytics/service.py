@@ -10,9 +10,6 @@ def get_category_spending(db_session, session_token):
     # Get current user
     user = get_current_user(db_session, session_token)
 
-    if not user:
-        raise UnauthorizedError()
-    
     # Get expenses by category
 
     # Get start of month and start of next month
@@ -33,9 +30,6 @@ def get_category_spending(db_session, session_token):
 def get_total_buckets_spending(db_session, session_token):
     # Get current user
     user = get_current_user(db_session, session_token)
-
-    if not user:
-        raise UnauthorizedError()
     
     # Get expenses by buckets
 
@@ -71,9 +65,6 @@ def get_total_buckets_spending(db_session, session_token):
 def get_dashboard_summary(db_session, session_token):
     # Get current user
     user = get_current_user(db_session, session_token)
-
-    if not user:
-        raise UnauthorizedError()
     
     # Initialize total_spent and total_limit
     total_spent = 0
