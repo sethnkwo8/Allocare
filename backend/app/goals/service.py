@@ -1,7 +1,7 @@
 from app.auth.service import get_current_user
 from app.models.base import Goal
 from app.models.notification import NotificationType
-from .schema import GoalCreateRequest, DepositRequest
+from .schema import GoalCreateRequest, DepositRequest, GoalUpdateRequest
 from .exceptions import GoalAlreadyCompleted, GoalDoesNotExist
 from app.utils.milestone_check import check_goal_milestone
 from app.utils.calculate_goal_metrics import calculate_goal_metrics
@@ -117,4 +117,28 @@ def get_specific_goal(goal_id: uuid.UUID, db_session, session_token):
     if not goal:
         raise GoalDoesNotExist()
     
+    return goal
+
+# Function to update a goal
+def update_specific_goal(update_data: GoalUpdateRequest, goal_id: uuid.UUID, db_session, session_token):
+    # Get goal
+    goal = get_specific_goal(goal_id, db_session, session_token)
+
+    # Convert update data to a dict
+    update_dict = update_data.model_dump(exclude_unset=True)
+
+    # Update goal attributes
+    for key, value in update_dict.items():
+        setattr(goal, key, value)
+
+    # Check if we need to re-evaluate the completion status
+    if "target_amount" in update_dict in update_dict:
+        # Ensure target_amount isn't zero
+        if goal.target_amount > 0:
+            goal.is_completed = goal.current_amount >= goal.target_amount
+
+    # Commit updated goal
+    db_session.commit()
+    db_session.refresh(goal)
+
     return goal

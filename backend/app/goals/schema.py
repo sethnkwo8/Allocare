@@ -53,3 +53,16 @@ class GoalResponse(BaseModel):
     target_date: datetime
     is_completed: bool
 
+# Schema for updating goal
+class GoalUpdateRequest(BaseModel):
+    name: Optional[str]
+    target_amount: Optional[Decimal]
+    target_date: Optional[datetime]
+    description: Optional[str]
+
+    # Validate target_date 
+    @field_validator('target_date')
+    def date_must_be_future(cls, v):
+        if v is not None and v <= datetime.now(timezone.utc):
+            raise ValueError('Target date must be in the future')
+        return v
