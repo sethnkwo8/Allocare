@@ -30,6 +30,20 @@ def create_goal(goal_data:GoalCreateRequest, db_session, session_token):
     )
 
     db_session.add(goal)
+    db_session.flush() # gives goal.id without commiting
+
+    # Create notification
+    title = "🚀 Goal Created"
+    message = f"Your {goal.name} goal has been created."
+    create_notification(
+        title=title,
+        notification_type=NotificationType.GOAL_CREATED,
+        message=message,
+        user_id=user.id,
+        reference_id=goal.id,
+        db_session=db_session
+    )
+
     db_session.commit()
     db_session.refresh(goal)
 
@@ -40,15 +54,11 @@ def create_goal(goal_data:GoalCreateRequest, db_session, session_token):
 
 # Function to deposit amount for goal
 def deposit_for_goal(goal_id: uuid.UUID, deposit_data: DepositRequest, db_session, session_token):
-    # Get current user
-    user = get_current_user(db_session, session_token)
-
-    # Get specific goal that belongs to user
-    statement = select(Goal).where(Goal.id == goal_id, Goal.user_id == user.id)
-    goal = db_session.exec(statement).first()
-
-    if not goal:
-        raise GoalDoesNotExist()
+    # Get specific goal
+    goal = get_specific_goal(goal_id, db_session, session_token)
+    
+    # Check previous completion state
+    was_completed = goal.is_completed
 
     # Validate goal
     if goal.is_completed:
@@ -69,13 +79,31 @@ def deposit_for_goal(goal_id: uuid.UUID, deposit_data: DepositRequest, db_sessio
     # Milestone check
     milestone = check_goal_milestone(old_current=old_amount, new_current=goal.current_amount, target=goal.target_amount)
 
-    if milestone:
+    if milestone and not goal.is_completed:
         # Create notification for milestone 
-        message=f"You reached {milestone}% of your {goal.name} goal!"
-        create_notification(notification_type=NotificationType.GOAL_MILESTONE,
-                                           message=message,
-                                           user_id=user.id,
-                                           db_session=db_session)
+        title = "📈 Goal Milestone"
+        message=f"You reached {milestone}% of your {goal.name} goal! 🎉"
+        create_notification(
+            title=title,
+            notification_type=NotificationType.GOAL_MILESTONE,
+            message=message,
+            user_id=goal.user_id,
+            reference_id=goal.id,
+            db_session=db_session
+        )
+
+    if not was_completed and goal.is_completed:
+        # Create notification
+        title = "🎉 Goal Completed"
+        message = f"You completed your {goal.name} goal!"
+        create_notification(
+            title=title,
+            notification_type=NotificationType.GOAL_COMPLETED,
+            message=message,
+            user_id=goal.user_id,
+            db_session=db_session,
+            reference_id=goal.id
+        )
 
     db_session.commit()
     db_session.refresh(goal)

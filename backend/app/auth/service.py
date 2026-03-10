@@ -5,6 +5,9 @@ import secrets, uuid
 from datetime import datetime, timedelta, timezone
 from . import exceptions
 from ..utils import security
+from app.utils.create_notification import create_notification
+from app.models.notification import NotificationType
+
 
 now = datetime.now(timezone.utc)
 
@@ -23,9 +26,23 @@ def create_user(user_data: schema.RegisterRequest, db_session):
 
     # Create user
     user = User(email=user_data.email, hashed_password=hashed_password, onboarding=False)
+
     db_session.add(user)
     db_session.commit()
     db_session.refresh(user)
+
+    # Create notification
+    title = "🎉 Welcome"
+    message = "Welcome to Allocare! Start by creating your first budget"
+    create_notification(
+        title=title,
+        notification_type=NotificationType.WELCOME,
+        message=message,
+        user_id=user.id,
+        db_session=db_session
+    )
+    db_session.commit()
+
     return user
 
 # Authenticate user
