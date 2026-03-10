@@ -1,5 +1,7 @@
+from decimal import Decimal
+
 # Helper function to check if milestone is reached
-def check_milestones(old_current, new_current, target):
+def check_goal_milestone(old_current: Decimal, new_current: Decimal, target: Decimal):
     if target <= 0:
         return None
     
