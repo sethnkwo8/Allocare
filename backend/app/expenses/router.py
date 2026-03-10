@@ -55,7 +55,7 @@ def edit_expense(
     return ExpenseResponse(id=expense.id, amount=expense.amount, category_id=expense.category_id, description=expense.description, date=expense.date)
 
 # DELETE route for deleting expense
-@router.delete("/{expense_id}", response_model= ExpenseDelete, status_code=204)
+@router.delete("/{expense_id}", status_code=204)
 def delete_expense(
     expense_id: uuid.UUID,
     session_token: Annotated[Optional[str], Cookie()] = None,

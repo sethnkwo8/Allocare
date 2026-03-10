@@ -78,3 +78,12 @@ def update_goal(
     goal = service.update_specific_goal(payload, goal_id, db_session, session_token)
 
     return serialize_goal(goal)
+
+# DELETE route to delete goal
+@router.delete('/{goal_id}', status_code=204)
+def delete_goal(
+    goal_id: uuid.UUID,
+    db_session: Session = Depends(get_session),
+    session_token: Annotated[Optional[str], Cookie()] = None
+):
+    service.delete_goal(goal_id, db_session, session_token)

@@ -78,7 +78,7 @@ def deposit_for_goal(goal_id: uuid.UUID, deposit_data: DepositRequest, db_sessio
     if milestone:
         # Create notification for milestone 
         message=f"You reached {milestone}% of your {goal.name} goal!"
-        notification = create_notification(notification_type=NotificationType.GOAL_MILESTONE,
+        create_notification(notification_type=NotificationType.GOAL_MILESTONE,
                                            message=message,
                                            user_id=user.id,
                                            db_session=db_session)
@@ -142,3 +142,14 @@ def update_specific_goal(update_data: GoalUpdateRequest, goal_id: uuid.UUID, db_
     db_session.refresh(goal)
 
     return goal
+
+# Function to delete goal
+def delete_goal(goal_id: uuid.UUID, db_session, session_token):
+    # Get goal
+    goal = get_specific_goal(goal_id, db_session, session_token)
+
+    # Delete goal
+    db_session.delete(goal)
+    db_session.commit()
+
+    return None
