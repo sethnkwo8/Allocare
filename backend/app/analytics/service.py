@@ -63,9 +63,6 @@ def get_total_buckets_spending(db_session, session_token):
 
 # Function to get summary for dashboard
 def get_dashboard_summary(db_session, session_token):
-    # Get current user
-    user = get_current_user(db_session, session_token)
-    
     # Initialize total_spent and total_limit
     total_spent = 0
     total_budget= 0
