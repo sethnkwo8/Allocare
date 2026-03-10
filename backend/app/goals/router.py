@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, Cookie
 from sqlmodel import Session
 from typing import Annotated, Optional, List
-from .service import create_goal, deposit_for_goal, get_goals
+from .service import create_goal, deposit_for_goal, get_goals, get_specific_goal
 from .schema import GoalCreateResponse, GoalCreateRequest, DepositRequest, DepositResponse, GoalResponse
 from app.database import get_session
 from app.utils.serialize_goal import serialize_goal
@@ -55,3 +55,14 @@ def get_all_goals(
     goals = get_goals(db_session, session_token)
 
     return [serialize_goal(goal) for goal in goals]
+
+# GET route for getting a goal from user
+@router.get('/{goal_id}', response_model=GoalResponse, status_code=200)
+def get_goal(
+    goal_id: uuid.UUID,
+    db_session: Session = Depends(get_session),
+    session_token: Annotated[Optional[str], Cookie()] = None
+): 
+    goal = get_specific_goal(goal_id, db_session, session_token)
+
+    return serialize_goal(goal)

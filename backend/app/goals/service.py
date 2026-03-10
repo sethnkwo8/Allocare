@@ -101,3 +101,20 @@ def get_goals(db_session, session_token):
     goals = db_session.exec(statement).all()
 
     return goals
+
+# Function to get specific user goal
+def get_specific_goal(goal_id: uuid.UUID, db_session, session_token): 
+    # Get current user
+    user = get_current_user(db_session, session_token)
+
+    if not user:
+        raise UnauthorizedError()
+    
+    # Get goal
+    statement = select(Goal).where(Goal.id == goal_id, Goal.user_id == user.id)
+    goal = db_session.exec(statement).first()
+
+    if not goal:
+        raise GoalDoesNotExist()
+    
+    return goal
