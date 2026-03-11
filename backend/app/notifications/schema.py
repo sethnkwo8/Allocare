@@ -17,11 +17,12 @@ class NotificationResponse(BaseModel):
 # Schema for all nofication response paginated
 class NotificationPaginationResponse(BaseModel):
     items: List[NotificationResponse]
+    unread_count: int
     total_count: int
     page: int
     size: int
     total_pages: int
 
-# Schema for unread count response
-class UnreadCount(BaseModel):
-    unread_count: int
+# Schema for mark all response
+class MarkAllResponse(BaseModel):
+    message: str

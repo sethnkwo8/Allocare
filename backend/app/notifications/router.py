@@ -16,7 +16,10 @@ def get_notifications(
     db_session: Session = Depends(get_session),
     session_token: Annotated[Optional[str], Cookie()] = None
 ):
-    notifications, total_count, total_pages = service.get_paginated_notifications(db_session, session_token, page, size)
+    notifications, total_count, total_pages, unread_count = service.get_paginated_notifications(db_session,
+                                                                                                session_token,
+                                                                                                page,
+                                                                                                size)
 
     return schema.NotificationPaginationResponse(
         items=[
@@ -30,22 +33,11 @@ def get_notifications(
                 created_at=n.created_at
             ) for n in notifications
         ],
+        unread_count=unread_count,
         total_count=total_count,
         page=page,
         size=size,
         total_pages=total_pages
-    )
-
-# GET route for getting count of unread notifications
-@router.get('/unread-count', response_model=schema.UnreadCount, status_code=200)
-def get_unread_count(
-    db_session: Session = Depends(get_session),
-    session_token: Annotated[Optional[str], Cookie()] = None
-):
-    unread_count = service.get_unread_count(session_token, db_session)
-
-    return schema.UnreadCount(
-        unread_count=unread_count
     )
 
 # PATCH route to mark notification as read
@@ -65,4 +57,16 @@ def notification_mark(
         is_read=notification.is_read,
         reference_id=notification.reference_id,
         created_at=notification.created_at
+    )
+
+# PATCH route to mark all notifications as read
+@router.patch('/read-all', response_model=schema.MarkAllResponse, status_code=200)
+def mark_all_as_read(
+    db_session: Session = Depends(get_session),
+    session_token: Annotated[Optional[str], Cookie()] = None
+):
+    message = service.mark_all_notifications(db_session, session_token)
+
+    return schema.MarkAllResponse(
+        message=message["message"]
     )

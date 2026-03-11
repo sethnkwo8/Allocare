@@ -1,20 +1,30 @@
 from app.auth.service import get_current_user
 from app.models.notification import Notification
-from sqlmodel import select, func, desc
+from sqlmodel import select, func, desc, update
 import math
 from . import exceptions
 
-# Function to get all user notifications
-def get_paginated_notifications(db_session, session_token, page: int, size: int):
+# Function to get count of all unread notifications
+def get_user_and_unread_count(session_token, db_session):
     # Get current user
     user = get_current_user(db_session, session_token)
 
-    # Validate page and size
-    if page < 1:
-        page = 1
+    # Get total unread count
+    statement = select(func.count()).select_from(Notification).where(
+        Notification.user_id == user.id, Notification.is_read.is_(False))
+    unread_count = db_session.exec(statement).one()
 
-    if size > 50:
-        size = 50
+    return user, unread_count
+
+# Function to get all user notifications
+def get_paginated_notifications(db_session, session_token, page: int, size: int):
+    # Get current user and user
+    user, unread_count = get_user_and_unread_count(session_token, db_session)
+
+    # Validate page and size
+    page = max(1, page)
+
+    size = max(1, min(50, size))
 
     # Get total_count
     count_statement = select(func.count()).select_from(Notification).where(Notification.user_id == user.id)
@@ -31,19 +41,7 @@ def get_paginated_notifications(db_session, session_token, page: int, size: int)
 
     notifications = db_session.exec(statement).all()
 
-    return notifications, total_count, total_pages
-
-# Function to get count of all unread notifications
-def get_unread_count(session_token, db_session):
-    # Get current user
-    user = get_current_user(db_session, session_token)
-
-    # Get total unread count
-    statement = select(func.count()).select_from(Notification).where(
-        Notification.user_id == user.id, Notification.is_read.is_(False))
-    unread_count = db_session.exec(statement).one()
-
-    return unread_count
+    return notifications, total_count, total_pages, unread_count
 
 # Function to mark notification as read
 def mark_notification_as_read(notification_id, db_session, session_token):
@@ -69,5 +67,19 @@ def mark_notification_as_read(notification_id, db_session, session_token):
     return notification
 
 # Function to mark all notifications as read
+def mark_all_notifications_as_read(db_session, session_token):
+    # Get current user
+    user = get_current_user(db_session, session_token)
 
-# Fuction to delete notification
+    # Update notifications
+    statement = (
+        update(Notification)
+        .where(Notification.user_id == user.id)
+        .where(Notification.is_read == False)
+        .values(is_read=True)
+    )
+
+    db_session.exec(statement)
+    db_session.commit()
+
+    return {"message": "All notifications marked as read"}
