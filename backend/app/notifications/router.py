@@ -79,3 +79,11 @@ def delete_notification(
     session_token: Annotated[Optional[str], Cookie()] = None
 ):
     service.delete_specific_notification(notification_id, db_session, session_token)
+
+# DELETE route to delete all user notifications
+@router.delete('/', status_code=204)
+def delete_user_notifications(
+    db_session: Session = Depends(get_session),
+    session_token: Annotated[Optional[str], Cookie()] = None
+):
+    service.delete_all_notifications(db_session, session_token)

@@ -102,3 +102,13 @@ def delete_specific_notification(notification_id, db_session, session_token):
 
     db_session.delete(notification)
     db_session.commit()
+
+# Function to delete all user notifications
+def delete_all_notifications(db_session, session_token):
+    # Get current user
+    user = get_current_user(db_session, session_token)
+
+    statement = delete(Notification).where(Notification.user_id == user.id)
+
+    db_session.exec(statement)
+    db_session.commit()
