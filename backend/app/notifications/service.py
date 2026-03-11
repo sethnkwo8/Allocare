@@ -1,6 +1,6 @@
 from app.auth.service import get_current_user
 from app.models.notification import Notification
-from sqlmodel import select, func, desc, update
+from sqlmodel import select, func, desc, update, delete
 import math
 from . import exceptions
 
@@ -83,3 +83,22 @@ def mark_all_notifications_as_read(db_session, session_token):
     db_session.commit()
 
     return {"message": "All notifications marked as read"}
+
+# Fuction to delete specific notification
+def delete_specific_notification(notification_id, db_session, session_token):
+    # Get current user
+    user = get_current_user(db_session, session_token)
+
+    # Get specific notification
+    statement = select(Notification).where(
+        Notification.id == notification_id,
+        Notification.user_id == user.id
+    )
+
+    notification = db_session.exec(statement).first()
+
+    if not notification:
+        raise exceptions.NotificationDoesntExist()
+
+    db_session.delete(notification)
+    db_session.commit()

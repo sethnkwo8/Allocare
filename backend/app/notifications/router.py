@@ -70,3 +70,12 @@ def mark_all_as_read(
     return schema.MarkAllResponse(
         message=message["message"]
     )
+
+# DELETE route to delete notification
+@router.delete('/{notification_id}', status_code=204)
+def delete_notification(
+    notification_id: uuid.UUID,
+    db_session: Session = Depends(get_session),
+    session_token: Annotated[Optional[str], Cookie()] = None
+):
+    service.delete_specific_notification(notification_id, db_session, session_token)
