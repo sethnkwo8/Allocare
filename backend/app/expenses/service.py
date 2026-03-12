@@ -21,9 +21,10 @@ def create_expense(expense_data: ExpenseCreate, db_session, session_token):
     if not expense_data.amount > 0:
         raise AmountError()
     
-    expense = Expense(amount=expense_data.amount,
+    expense = Expense(title=expense_data.title,
+                      amount=expense_data.amount,
                       category_id=expense_data.category_id,
-                      description=expense_data.description,
+                      notes=expense_data.notes,
                       user_id=user.id,
                       date=expense_data.date
                       )

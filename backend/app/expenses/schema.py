@@ -6,22 +6,25 @@ from decimal import Decimal
 
 # Schema for creating expense
 class ExpenseCreate(BaseModel):
+    title: str
     amount: Decimal
-    description: Optional[str]
+    notes: Optional[str]
     category_id: uuid.UUID
     date: Optional[datetime]
 
 # Schema for expense response
 class ExpenseResponse(BaseModel):
     id: uuid.UUID
+    title: str
     amount: Decimal
     category_id: uuid.UUID
-    description: Optional[str]
+    notes: Optional[str]
     date: datetime
 
 # Schema for expense update
 class ExpenseUpdate(BaseModel):
+    title: Optional[str]
     amount: Optional[Decimal]
-    description: Optional[str]
+    notes: Optional[str]
     category_id: Optional[uuid.UUID]
     date: Optional[datetime]

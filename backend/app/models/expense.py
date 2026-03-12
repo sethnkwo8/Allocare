@@ -11,10 +11,11 @@ if TYPE_CHECKING:
 # Expense model
 class Expense(SQLModel, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True, index=True)
+    title: str
     amount: Decimal
     category_id: uuid.UUID = Field(foreign_key="budget_categories.id", index=True)
     category: "BudgetCategory" = Relationship(back_populates="expenses")
-    description: Optional[str]
+    notes: Optional[str]
     date: datetime = Field(
         default_factory=lambda: datetime.now(timezone.utc), index=True
     )
