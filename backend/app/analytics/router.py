@@ -4,6 +4,7 @@ from typing import Annotated, Optional, List
 from .schema import ExpenseCalculationResponse, BucketCalculationResponse, DashboardSummaryResponse
 from .service import get_category_spending, get_total_buckets_spending, get_dashboard_summary
 from app.database import get_session
+from app.auth.service import get_current_user
 
 router = APIRouter()
 
@@ -13,7 +14,10 @@ def get_categories_spending(
     db_session: Session = Depends(get_session),
     session_token: Annotated[Optional[str], Cookie()] = None
 ):
-    results = get_category_spending(db_session, session_token)
+    # Get current user
+    user = get_current_user(db_session, session_token)
+
+    results = get_category_spending(db_session, user)
 
     return [
         ExpenseCalculationResponse(
@@ -31,7 +35,10 @@ def get_buckets_spending(
     db_session: Session = Depends(get_session),
     session_token: Annotated[Optional[str], Cookie()] = None
 ):
-    results = get_total_buckets_spending(db_session, session_token)
+    # Get current user
+    user = get_current_user(db_session, session_token)
+
+    results = get_total_buckets_spending(db_session, user)
 
     return [
         BucketCalculationResponse(

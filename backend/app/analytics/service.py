@@ -1,15 +1,11 @@
 from app.models.base import Expense, BudgetCategory, BudgetBucket
 from app.auth.service import get_current_user
-from app.auth.exceptions import UnauthorizedError
 from app.utils.date_utils import get_current_month_range
 from sqlmodel import select, func, and_
 from .schema import OverBudgetCategory
 
 # Function to calculate how much user spent per category
-def get_category_spending(db_session, session_token):
-    # Get current user
-    user = get_current_user(db_session, session_token)
-
+def get_category_spending(db_session, user):
     # Get expenses by category
 
     # Get start of month and start of next month
@@ -27,10 +23,7 @@ def get_category_spending(db_session, session_token):
     return results
 
 # Function to get buckets spendings
-def get_total_buckets_spending(db_session, session_token):
-    # Get current user
-    user = get_current_user(db_session, session_token)
-    
+def get_total_buckets_spending(db_session, user):
     # Get expenses by buckets
 
     # Get start of month and start of next month
