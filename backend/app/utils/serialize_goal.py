@@ -2,6 +2,7 @@ from app.models.base import Goal
 from app.goals.schema import GoalResponse
 from app.utils.calculate_goal_metrics import calculate_goal_metrics
 
+# Seriliaze goal data for response
 def serialize_goal(goal: Goal):
     progress, remaining = calculate_goal_metrics(
         goal.target_amount,
