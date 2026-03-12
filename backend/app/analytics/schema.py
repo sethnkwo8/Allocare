@@ -16,6 +16,7 @@ class BucketCalculationResponse(BaseModel):
     total_spent: Decimal
     budget_limit: Decimal
     remaining_budget: Decimal
+    spending_percentage: int
 
 class OverBudgetCategory(BaseModel):
     name: str

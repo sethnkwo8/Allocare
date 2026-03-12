@@ -5,6 +5,7 @@ from .schema import ExpenseCalculationResponse, BucketCalculationResponse, Dashb
 from .service import get_category_spending, get_total_buckets_spending, get_dashboard_summary
 from app.database import get_session
 from app.auth.service import get_current_user
+from app.utils.calculate_spending_percentage import calculate_percentage
 
 router = APIRouter()
 
@@ -46,7 +47,8 @@ def get_buckets_spending(
             bucket_name=bucket.name,
             total_spent=total_spent,
             budget_limit=total_limit,
-            remaining_budget=(total_limit - total_spent)
+            remaining_budget=(total_limit - total_spent),
+            spending_percentage=calculate_percentage(total_spent, total_limit)
         ) for bucket, total_spent, total_limit in results
     ]
 
