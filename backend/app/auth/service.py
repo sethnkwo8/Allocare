@@ -25,7 +25,7 @@ def create_user(user_data: schema.RegisterRequest, db_session):
     hashed_password = security.pwd_context.hash(user_data.password.get_secret_value())
 
     # Create user
-    user = User(email=user_data.email, hashed_password=hashed_password, onboarding=False)
+    user = User(name=user_data.name, email=user_data.email, hashed_password=hashed_password, onboarding=False)
 
     db_session.add(user)
     db_session.commit()
@@ -33,7 +33,7 @@ def create_user(user_data: schema.RegisterRequest, db_session):
 
     # Create notification
     title = "🎉 Welcome"
-    message = "Welcome to Allocare! Start by creating your first budget"
+    message = f"Welcome to Allocare, {user.name}! Start by creating your first budget bucket"
     create_notification(
         title=title,
         notification_type=NotificationType.WELCOME,

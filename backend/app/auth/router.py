@@ -29,7 +29,7 @@ def register(
                         max_age=604800 # 7 days
                         )
     
-    return schema.RegisterResponse(email=user.email, id=user.id, onboarding=user.onboarding, created_at=user.created_at)
+    return schema.RegisterResponse(name=user.name, email=user.email, id=user.id, onboarding=user.onboarding, created_at=user.created_at)
 
 # POST route for login
 @router.post('/login', response_model=schema.LoginResponse, status_code=201)
@@ -80,5 +80,5 @@ def get_user(
     # Use get current user function
     user = service.get_current_user(db_session, session_token)
 
-    return schema.UserResponse(id=user.id, email=user.email, currency=user.currency, onboarding=user.onboarding)
+    return schema.UserResponse(id=user.id, name=user.name, email=user.email, currency=user.currency, onboarding=user.onboarding)
 

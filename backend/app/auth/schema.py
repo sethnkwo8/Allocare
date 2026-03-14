@@ -5,6 +5,7 @@ from datetime import datetime
 
 # Schema for incoming registration payload
 class RegisterRequest(BaseModel):
+    name: str = Field(max_length=255)
     email: EmailStr = Field(max_length=255)
     password: SecretStr = Field(min_length=8, max_length=64, pattern=r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$")
 
@@ -16,6 +17,7 @@ class RegisterRequest(BaseModel):
 # Schema for what is returned as a response for register
 class RegisterResponse(BaseModel):
     id: uuid.UUID
+    name: str
     email: EmailStr
     onboarding: bool
     created_at: datetime
@@ -46,6 +48,7 @@ class LoginResponse(BaseModel):
 # Schema for what is returned as a response for getting current user
 class UserResponse(BaseModel):
     id: uuid.UUID
+    name: str
     email: EmailStr
     currency: str
     onboarding: bool
