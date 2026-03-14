@@ -3,7 +3,7 @@ import { FeaturesCard } from "./FeaturesCard"
 
 export function FeaturesSection() {
     return (
-        <section id="features" className="px-6">
+        <section id="features" className="pb-12 px-6">
             <div className="max-w-6xl mx-auto">
                 <div className="max-w-xl mb-16">
                     <div className="text-xs uppercase tracking-wider mb-3" style={{ fontWeight: 600, color: "#2E6B6B" }}>Features</div>

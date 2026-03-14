@@ -2,6 +2,7 @@ import { Inter } from 'next/font/google';
 import { Navbar } from '@/components/landing-page/Navbar';
 import { HeroSection } from '@/components/landing-page/HeroSection';
 import { FeaturesSection } from '@/components/landing-page/Features';
+import { Footer } from '@/components/landing-page/Footer';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -14,6 +15,7 @@ export default function LandingPage() {
       <Navbar />
       <HeroSection />
       <FeaturesSection />
+      <Footer />
     </div>
   )
 }
