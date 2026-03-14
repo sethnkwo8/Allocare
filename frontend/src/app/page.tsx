@@ -6,6 +6,7 @@ import { FeaturesSection } from '@/components/landing-page/Features';
 import { Footer } from '@/components/landing-page/Footer';
 import { HowItWorks } from '@/components/landing-page/HowItWorks';
 import { FAQSection } from '@/components/landing-page/FAQ';
+import { CTABanner } from '@/components/landing-page/CTABanner';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -20,6 +21,7 @@ export default function LandingPage() {
       <FeaturesSection />
       <HowItWorks />
       <FAQSection />
+      <CTABanner />
       <Footer />
     </div>
   )
