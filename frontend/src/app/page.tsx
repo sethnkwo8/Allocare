@@ -3,6 +3,7 @@ import { Navbar } from '@/components/landing-page/Navbar';
 import { HeroSection } from '@/components/landing-page/HeroSection';
 import { FeaturesSection } from '@/components/landing-page/Features';
 import { Footer } from '@/components/landing-page/Footer';
+import { HowItWorks } from '@/components/landing-page/HowItWorks';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -15,6 +16,7 @@ export default function LandingPage() {
       <Navbar />
       <HeroSection />
       <FeaturesSection />
+      <HowItWorks />
       <Footer />
     </div>
   )
