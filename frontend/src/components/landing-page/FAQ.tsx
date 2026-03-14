@@ -1,3 +1,5 @@
+// FAQ section
+
 import { faqs } from "@/lib/landing-page/faq"
 import { Accordion } from "../ui/accordion"
 import { AccordionBasic } from "./AccordionBasic"

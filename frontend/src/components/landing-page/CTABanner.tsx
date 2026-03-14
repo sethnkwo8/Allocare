@@ -1,3 +1,4 @@
+// CTA Banner
 export function CTABanner() {
     return (
         <section className="py-24 px-6" style={{ backgroundColor: "#2E6B6B" }}>
