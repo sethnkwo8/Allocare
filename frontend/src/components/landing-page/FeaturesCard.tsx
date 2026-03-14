@@ -1,4 +1,4 @@
-import { FeaturesCardProps } from "@/lib/types";
+import { FeaturesCardProps } from "@/types/landing-page";
 
 export function FeaturesCard({ icon, title, desc }: FeaturesCardProps) {
     return (

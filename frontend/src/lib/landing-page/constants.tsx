@@ -1,4 +1,4 @@
-import { FeaturesData } from "./types"
+import { FeaturesData } from "../../types/landing-page"
 
 export const Features: FeaturesData = [
     {

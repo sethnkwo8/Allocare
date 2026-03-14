@@ -1,4 +1,4 @@
-import { Features } from "@/lib/features"
+import { Features } from "@/lib/landing-page/constants"
 import { FeaturesCard } from "./FeaturesCard"
 
 export function FeaturesSection() {
