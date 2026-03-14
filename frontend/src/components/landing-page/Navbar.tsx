@@ -1,6 +1,7 @@
 // Navbar
 import Link from "next/link";
 import Image from "next/image";
+import { ScrollLink } from "./ScrollLink";
 
 export function Navbar() {
     return (
@@ -19,9 +20,9 @@ export function Navbar() {
                     </Link>
                 </div>
                 <nav className="hidden md:flex items-center gap-8 text-sm text-gray-500">
-                    <Link className="hover:text-gray-900 transition-colors" href='#features'>Features</Link>
-                    <Link className="hover:text-gray-900 transition-colors" href='#how-it-works'>How it works</Link>
-                    <Link className="hover:text-gray-900 transition-colors" href='/'>FAQ</Link>
+                    <ScrollLink href="#features" className="hover:text-gray-900 transition-colors">Features</ScrollLink>
+                    <ScrollLink href="#how-it-works" className="hover:text-gray-900 transition-colors">How it works</ScrollLink>
+                    <ScrollLink href="#" className="hover:text-gray-900 transition-colors">FAQ</ScrollLink>
                 </nav>
                 <div className="flex items-center gap-3">
                     <button className="hidden sm:block text-sm text-gray-500 hover:text-gray-900 transition-colors px-3 py-2">Log in</button>

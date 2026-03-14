@@ -27,3 +27,10 @@ export interface Steps {
 
 // Type for Steps Data
 export type StepsData = Steps[]
+
+// Interface for ScrollLink
+export interface ScrollLinkProps {
+    href: string;
+    children: React.ReactNode;
+    className?: string;
+}
