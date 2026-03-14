@@ -1,3 +1,4 @@
+// Features Section
 import { Features } from "@/lib/landing-page/constants"
 import { FeaturesCard } from "./FeaturesCard"
 

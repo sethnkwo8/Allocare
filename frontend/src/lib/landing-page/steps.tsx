@@ -1,3 +1,5 @@
+// Steps Data
+
 import { StepsData } from "@/types/landing-page";
 
 export const steps: StepsData = [

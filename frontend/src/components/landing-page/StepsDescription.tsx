@@ -1,3 +1,4 @@
+// Steps Descriptions
 import { StepsDescriptionProps } from "@/types/landing-page";
 
 export function StepsDescription({ title, desc }: StepsDescriptionProps) {

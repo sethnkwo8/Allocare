@@ -1,3 +1,4 @@
+// Steps Numbers Card
 import { StepsNumberCardProps } from "@/types/landing-page";
 
 export function StepsNumberCard({ num }: StepsNumberCardProps) {

@@ -1,4 +1,5 @@
 'use client'
+// Hero Section
 
 export function HeroSection() {
     return (

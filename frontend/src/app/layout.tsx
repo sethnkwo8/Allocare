@@ -4,6 +4,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Allocare",
   description: "Allocare Budgeting App",
+  // Favicon
   icons: {
     icon: [
       { url: '/favicon.png' },

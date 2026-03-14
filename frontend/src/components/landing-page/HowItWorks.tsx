@@ -1,3 +1,4 @@
+// How It Works Section
 import { StepsDescription } from "./StepsDescription"
 import { StepsNumberCard } from "./StepsNumbersCard"
 import { steps } from "@/lib/landing-page/steps"
@@ -25,11 +26,10 @@ export function HowItWorks() {
                 </div>
                 <div className="rounded-2xl overflow-hidden shadow-xl border border-gray-200/60">
                     <Image
-                        src="https://images.unsplash.com/photo-1766503634881-6a01d341b1dd?..." // shortened for brevity
+                        src="https://images.unsplash.com/photo-1766503634881-6a01d341b1dd?..."
                         alt="Budgeting on laptop"
                         width={1080}
                         height={420}
-                        // Using arbitrary values in Tailwind keeps the style in the className
                         className="w-full max-h-105 object-cover object-center rounded-2xl shadow-lg"
                     />
                 </div>

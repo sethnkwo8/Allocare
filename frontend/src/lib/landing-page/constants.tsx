@@ -1,3 +1,5 @@
+// Features Data
+
 import { FeaturesData } from "../../types/landing-page"
 
 export const Features: FeaturesData = [
