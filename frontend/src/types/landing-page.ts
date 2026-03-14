@@ -34,3 +34,13 @@ export interface ScrollLinkProps {
     children: React.ReactNode;
     className?: string;
 }
+
+// Interface for FAQ question
+export interface FAQ {
+    value: string
+    q: string
+    a: string
+}
+
+// Type for FAQ Data
+export type FAQData = FAQ[]
