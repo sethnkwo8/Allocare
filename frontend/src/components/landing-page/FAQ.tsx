@@ -1,8 +1,12 @@
 // FAQ section
-
 import { faqs } from "@/lib/landing-page/faq"
 import { Accordion } from "../ui/accordion"
-import { AccordionBasic } from "./AccordionBasic"
+import {
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+} from "@/components/ui/accordion"
+import { FAQ } from "@/types/landing-page"
 
 export function FAQSection() {
     return (
@@ -27,5 +31,15 @@ export function FAQSection() {
                 </Accordion>
             </div>
         </section>
+    )
+}
+
+// Accordion Item
+export function AccordionBasic({ value, q, a }: FAQ) {
+    return (
+        <AccordionItem key={value} value={value}>
+            <AccordionTrigger>{q}</AccordionTrigger>
+            <AccordionContent>{a}</AccordionContent>
+        </AccordionItem>
     )
 }

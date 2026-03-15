@@ -1,8 +1,8 @@
 // How It Works Section
-import { StepsDescription } from "./StepsDescription"
-import { StepsNumberCard } from "./StepsNumbersCard"
 import { steps } from "@/lib/landing-page/steps"
 import Image from "next/image"
+import { StepsDescriptionProps } from "@/types/landing-page";
+import { StepsNumberCardProps } from "@/types/landing-page";
 
 export function HowItWorks() {
     return (
@@ -35,5 +35,22 @@ export function HowItWorks() {
                 </div>
             </div>
         </section>
+    )
+}
+
+// Steps Descriptions
+export function StepsDescription({ title, desc }: StepsDescriptionProps) {
+    return (
+        <>
+            <div className="text-gray-900 mb-1" style={{ fontWeight: 600 }}>{title}</div>
+            <p className="text-sm text-gray-500" style={{ lineHeight: 1.65 }}>{desc}</p>
+        </>
+    )
+}
+
+// Steps Numbers Card
+export function StepsNumberCard({ num }: StepsNumberCardProps) {
+    return (
+        <div className="shrink-0 w-10 h-10 rounded-xl text-white flex items-center justify-center text-xs" style={{ fontWeight: 700, backgroundColor: "#2E6B6B" }}>{num}</div>
     )
 }
