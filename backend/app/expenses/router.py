@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Cookie, Depends
-from .schema import ExpenseCreate, ExpenseResponse, ExpenseUpdate, ExpenseDelete
+from .schema import ExpenseCreate, ExpenseResponse, ExpenseUpdate
 from typing import Annotated, Optional
 from sqlmodel import Session
 from app.database import get_session

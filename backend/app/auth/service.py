@@ -32,7 +32,7 @@ def create_user(user_data: schema.RegisterRequest, db_session):
     db_session.refresh(user)
 
     # Create notification
-    title = "🎉 Welcome"
+    title = "🎉 Welcome to Allocare"
     message = f"Welcome to Allocare, {user.name}! Start by creating your first budget bucket"
     create_notification(
         title=title,

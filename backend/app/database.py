@@ -15,7 +15,6 @@ is_dev = os.getenv("ENV", "development") == "development" # development is defau
 engine = create_engine(postgres_url, echo=is_dev, connect_args={"options": "-c timezone=utc"}) # echo logs all generated SQL to terminal
 
 # Ensure sessions are safe in async
-@contextmanager
 def get_session():
     with Session(engine) as session:
         yield session
