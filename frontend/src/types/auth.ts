@@ -1,0 +1,7 @@
+// Interface for register page form
+export interface RegisterForm {
+    name: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+}
