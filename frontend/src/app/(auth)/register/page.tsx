@@ -78,6 +78,7 @@ export default function RegisterPage() {
         try {
             await registerUser(cleanedData)
             console.log("User registered successfully!")
+            // Redirect to login
             router.push('/login')
         }
         catch (error: any) {
