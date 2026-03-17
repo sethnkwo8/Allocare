@@ -9,8 +9,16 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { RegisterForm } from "@/types/auth";
 import { registerUser } from "@/lib/api/auth";
+import { cn } from "@/lib/utils";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function RegisterPage() {
+    // State for password show
+    const [showPassword, setShowPassword] = useState<boolean>(false)
+
+    // State for confirm password show
+    const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false)
+
     // Router for redirect
     const router = useRouter()
 
@@ -81,12 +89,22 @@ export default function RegisterPage() {
         }
     }
 
+    // Password requirements
+    const requirements = [
+        { label: "At least 8 characters", test: (pw: string) => pw.length >= 8 },
+        { label: "At least one number", test: (pw: string) => /\d/.test(pw) },
+        { label: "At least one symbol (@, $, !, etc.)", test: (pw: string) => /[^A-Za-z0-9]/.test(pw) },
+    ];
+
+    // Check if password is valid
+    const isPasswordValid = requirements.every(req => req.test(formData.password));
+
     // Check if form is valid
     const isFormValid =
         formData.name.trim() !== "" &&
         formData.email.includes("@") &&
-        formData.password.length >= 8 &&
-        formData.confirmPassword !== "";
+        isPasswordValid &&
+        formData.confirmPassword === formData.password;
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-[#2E6B6B]/10 to-background p-4">
@@ -124,45 +142,82 @@ export default function RegisterPage() {
                                 <Input
                                     id="email"
                                     type="email"
-                                    className={!formData.email.includes("@") ? "border-red-500 outline-0" : ""}
+                                    className={cn(
+                                        "transition-colors",
+                                        formData.email.length > 0 && !formData.email.includes("@") && "border-red-500 focus-visible:ring-red-500"
+                                    )}
                                     placeholder="you@example.com"
                                     name="email"
                                     value={formData.email}
                                     onChange={handleChange}
                                     required
                                 />
-                                {!formData.email.includes("@") && (
+                                {formData.email.length > 0 && !formData.email.includes("@") && (
                                     <p className="text-xs text-red-500">Enter a valid email address</p>
                                 )}
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="password">Password</Label>
-                                <Input
-                                    id="password"
-                                    type="password"
-                                    className={formData.password.length > 0 && formData.password.length < 8 ? "border-red-500 outline-0" : ""}
-                                    placeholder="••••••••"
-                                    name="password"
-                                    value={formData.password}
-                                    onChange={handleChange}
-                                    required
-                                />
-                                {formData.password.length > 0 && formData.password.length < 8 && (
-                                    <p className="text-xs text-red-500">Password must be at least 8 characters.</p>
-                                )}
+                                <div className="relative">
+                                    <Input
+                                        id="password"
+                                        type={showPassword ? "text" : "password"}
+                                        className={cn(
+                                            "pr-10",
+                                            formData.password && !isPasswordValid && "border-red-500 focus-visible:ring-red-500"
+                                        )}
+                                        placeholder="••••••••"
+                                        name="password"
+                                        value={formData.password}
+                                        onChange={handleChange}
+                                        required
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                                    >
+                                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                    </button>
+                                </div>
+                                {/* Password Checklist */}
+                                <div className="pt-2 space-y-1">
+                                    {requirements.map((req, index) => {
+                                        const isMet = req.test(formData.password);
+                                        return (
+                                            <p key={index} className={`text-xs flex items-center gap-2 ${isMet ? "text-green-600" : "text-muted-foreground"}`}>
+                                                {isMet ? "✓" : "○"} {req.label}
+                                            </p>
+                                        );
+                                    })}
+                                </div>
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="confirmPassword">Confirm Password</Label>
-                                <Input
-                                    id="confirmPassword"
-                                    type="password"
-                                    className={formData.confirmPassword && formData.confirmPassword !== formData.password ? "border-red-500 outline-0" : ""}
-                                    placeholder="••••••••"
-                                    name="confirmPassword"
-                                    value={formData.confirmPassword}
-                                    onChange={handleChange}
-                                    required
-                                />
+                                <div className="relative">
+                                    <Input
+                                        id="confirmPassword"
+                                        type={showConfirmPassword ? "text" : "password"}
+                                        className={cn(
+                                            "pr-10",
+                                            formData.confirmPassword && formData.confirmPassword !== formData.password && "border-red-500 outline-0 focus-visible:ring-red-500")}
+                                        placeholder="••••••••"
+                                        name="confirmPassword"
+                                        value={formData.confirmPassword}
+                                        onChange={handleChange}
+                                        required
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                                    >
+                                        {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                    </button>
+                                </div>
+                                {formData.confirmPassword && formData.confirmPassword !== formData.password && (
+                                    <p className="text-xs text-red-500">Password don't match.</p>
+                                )}
                             </div>
                             {errorMessage && <p className="text-red-500 text-base">{errorMessage}</p>}
                             <Button disabled={isLoading || !isFormValid} type="submit" className="w-full">
