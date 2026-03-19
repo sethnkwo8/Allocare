@@ -13,7 +13,9 @@ export default function ProtectedLayout({ children }: { children: React.ReactNod
     useEffect(() => {
         async function checkUser() {
             try {
-                const res = await fetch(`${apiURL}/auth/me`);
+                const res = await fetch(`${apiURL}/auth/me`, {
+                    credentials: "include"
+                });
 
                 // If not authorized redirect to login
                 if (!res.ok) {
