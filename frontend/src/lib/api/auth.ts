@@ -1,8 +1,8 @@
-import { RegisterForm, LoginForm } from "@/types/auth";
+import { RegisterFormType, LoginFormType } from "@/types/auth";
 // API for auth routes
 
 // Register user function
-export async function registerUser(formData: RegisterForm) {
+export async function registerUser(formData: RegisterFormType) {
     const { confirmPassword, ...apiData } = formData
     const apiURL = process.env.NEXT_PUBLIC_API_URL
 
@@ -23,7 +23,7 @@ export async function registerUser(formData: RegisterForm) {
 }
 
 // Login user function
-export async function loginUser(formData: LoginForm) {
+export async function loginUser(formData: LoginFormType) {
     const apiURL = process.env.NEXT_PUBLIC_API_URL
 
     const res = await fetch(`${apiURL}/auth/login`, {
