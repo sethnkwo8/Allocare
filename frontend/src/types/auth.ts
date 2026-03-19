@@ -1,5 +1,5 @@
 // Interface for register page form
-export interface RegisterForm {
+export interface RegisterFormType {
     name: string;
     email: string;
     password: string;
@@ -7,7 +7,7 @@ export interface RegisterForm {
 }
 
 // Interface for login page form
-export interface LoginForm {
+export interface LoginFormType {
     email: string;
     password: string;
 }
