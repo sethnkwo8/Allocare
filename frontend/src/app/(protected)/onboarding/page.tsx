@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { CurrencyStep } from "@/components/onboarding/CurrencyStep"
 import { OnboardingData } from "@/types/onboarding"
+import { SetCurrency } from "@/lib/api/onboarding"
 
 import { useState } from "react"
 
@@ -13,8 +14,15 @@ export default function OnboardingPage() {
     // State for current step
     const [currentStep, setCurrentStep] = useState<number>(1)
 
+    // Loading state
+    const [isLoading, setIsLoading] = useState<boolean>(false)
+
     // State for is onboarding complete
     const [isComplete, setIsComplete] = useState<boolean>(false)
+
+    // Error data
+    const [errorMessage, setErrorMessage] = useState<string>("")
+
 
     // Form Data state
     const [data, setData] = useState<OnboardingData>({
@@ -57,6 +65,16 @@ export default function OnboardingPage() {
     // Calculate progress
     const progress = (currentStep / totalSteps) * 100
 
+    // Switch function to check if user can proceed
+    function canProceed() {
+        switch (currentStep) {
+            case 1:
+                return data.currency !== "";
+            default:
+                return false;
+        }
+    };
+
     // Handle back button function
     function handleBack(e: React.MouseEvent<HTMLButtonElement>) {
         if (currentStep > 1) {
@@ -65,11 +83,29 @@ export default function OnboardingPage() {
     };
 
     // Handle next button function
-    function handleNext(e: React.MouseEvent<HTMLButtonElement>) {
-        if (currentStep < totalSteps) {
-            setCurrentStep(currentStep + 1);
-        } else {
-            setIsComplete(true);
+    async function handleNext(e: React.MouseEvent<HTMLButtonElement>) {
+        // Clear old error messages
+        setErrorMessage("")
+
+        // Switch statement for steps
+        switch (currentStep) {
+            case 1:
+                // Set Currency
+                setIsLoading(true)
+                try {
+                    await SetCurrency(data.currency)
+                    setCurrentStep(2) // advance if api call succeds
+                } catch (error: any) {
+                    setErrorMessage(error.message || "Failed to save currency.")
+                } finally {
+                    setIsLoading(false)
+                }
+                break;
+            default:
+                if (currentStep < totalSteps) {
+                    setCurrentStep(currentStep + 1);
+                }
+                break;
         }
     };
 
@@ -93,10 +129,17 @@ export default function OnboardingPage() {
                         {currentStep === 1 && (
                             <CurrencyStep
                                 value={data.currency}
-                                onChange={(value) => setData({ ...data, currency: value })}
+                                onChange={(value) => setData(
+                                    { ...data, currency: value })}
                             />
                         )}
                     </div>
+                    {/* Error Message */}
+                    {errorMessage && (
+                        <p className="text-sm text-red-500 bg-red-50 p-3 rounded-md border border-red-200">
+                            {errorMessage}
+                        </p>
+                    )}
                     {/* Navigation Buttons */}
                     <div className="flex gap-3">
                         <Button
@@ -109,10 +152,10 @@ export default function OnboardingPage() {
                         </Button>
                         <Button
                             onClick={handleNext}
-                            // disabled={!canProceed()}
+                            disabled={isLoading || !canProceed()}
                             className="flex-1"
                         >
-                            {currentStep === totalSteps ? "Complete" : "Continue"}
+                            {isLoading ? "Saving..." : "Continue"}
                         </Button>
                     </div>
                 </div>
