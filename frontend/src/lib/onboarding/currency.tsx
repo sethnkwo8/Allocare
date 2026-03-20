@@ -1,3 +1,4 @@
+// Currency symbols
 export const currencySymbols: Record<string, string> = {
     NGN: "₦",
     USD: "$",
@@ -21,6 +22,7 @@ export const currencySymbols: Record<string, string> = {
     KRW: "₩",
 };
 
+// Currency data
 export const currencies = [
     { code: "NGN", name: "Nigerian Naira", symbol: "₦" },
     { code: "USD", name: "US Dollar", symbol: "$" },
