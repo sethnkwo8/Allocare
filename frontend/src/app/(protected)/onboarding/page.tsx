@@ -7,6 +7,8 @@ import { Progress } from "@/components/ui/progress"
 import { CurrencyStep } from "@/components/onboarding/CurrencyStep"
 import { OnboardingData } from "@/types/onboarding"
 import { SetCurrency } from "@/lib/api/onboarding"
+import { IncomeFrequencyStep } from "@/components/onboarding/IncomeFrequencyStep"
+import { currencySymbols } from "@/lib/onboarding/currency"
 
 import { useState } from "react"
 
@@ -22,7 +24,6 @@ export default function OnboardingPage() {
 
     // Error data
     const [errorMessage, setErrorMessage] = useState<string>("")
-
 
     // Form Data state
     const [data, setData] = useState<OnboardingData>({
@@ -64,6 +65,9 @@ export default function OnboardingPage() {
 
     // Calculate progress
     const progress = (currentStep / totalSteps) * 100
+
+    // Get currency symbol
+    const currencySymbol = currencySymbols[data.currency] || "$";
 
     // Switch function to check if user can proceed
     function canProceed() {
@@ -131,6 +135,15 @@ export default function OnboardingPage() {
                                 value={data.currency}
                                 onChange={(value) => setData(
                                     { ...data, currency: value })}
+                            />
+                        )}
+                        {currentStep === 2 && (
+                            <IncomeFrequencyStep
+                                income={data.income}
+                                frequency={data.frequency}
+                                onIncomeChange={(value) => setData({ ...data, income: value })}
+                                onFrequencyChange={(value) => setData({ ...data, frequency: value })}
+                                currencySymbol={currencySymbol}
                             />
                         )}
                     </div>
