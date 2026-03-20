@@ -18,3 +18,12 @@ export interface CurrencyStepProps {
     value: string;
     onChange(value: string): void;
 }
+
+// Frequency steps props interface
+export interface IncomeFrequencyStepProps {
+    income: string;
+    frequency: string;
+    onIncomeChange: (value: string) => void;
+    onFrequencyChange: (value: string) => void;
+    currencySymbol: string;
+}
