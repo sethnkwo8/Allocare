@@ -18,3 +18,10 @@ export async function SetCurrency(currency: string) {
 
     return await res.json()
 }
+
+// Set income amount and frequency api function
+// export async function SetIncomeFrequency(income, frequency) {
+//     const apiURL = process.env.NEXT_PUBLIC_API_URL
+
+//     const res = await 
+// }
