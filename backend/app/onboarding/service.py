@@ -11,11 +11,17 @@ def set_user_currency(currency_data: CurrencyRequest, db_session, session_token)
     # Get current user
     user = get_current_user(db_session, session_token)
 
-    # Update currency
-    if user.currency != currency_data.currency:
-        user.currency = currency_data.currency
-
-        db_session.commit()
+    # Update the value
+    user.currency = currency_data.currency
+    
+    # Explicitly add to session'
+    db_session.add(user) 
+    
+    # Commit the transaction
+    db_session.commit()
+    
+    # Refresh
+    db_session.refresh(user)
 
     return {"message": "Currency updated"}
 
