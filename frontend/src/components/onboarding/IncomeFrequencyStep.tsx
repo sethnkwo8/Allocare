@@ -11,6 +11,9 @@ export function IncomeFrequencyStep({
     onFrequencyChange,
     currencySymbol,
 }: IncomeFrequencyStepProps) {
+    // Calculate padding based on currency symbol
+    const paddingLeft = currencySymbol.length > 1 ? "pl-16" : "pl-10";
+
     return (
         <div className="space-y-8 w-full max-w-md mx-auto">
             <div className="space-y-2 text-center">
@@ -33,7 +36,7 @@ export function IncomeFrequencyStep({
                         value={income}
                         onChange={(e) => onIncomeChange(e.target.value)}
                         placeholder="0.00"
-                        className="h-12 pl-10 text-lg"
+                        className={`h-12 ${paddingLeft} text-lg`}
                         min="0"
                         step="0.01"
                     />
@@ -50,8 +53,8 @@ export function IncomeFrequencyStep({
                             <label
                                 key={freq.value}
                                 className={`flex items-center gap-4 p-4 rounded-lg border-2 cursor-pointer transition-all hover:bg-accent ${frequency === freq.value
-                                        ? "border-primary bg-accent"
-                                        : "border-border"
+                                    ? "border-primary bg-accent"
+                                    : "border-border"
                                     }`}
                             >
                                 <RadioGroupItem value={freq.value} id={freq.value} />

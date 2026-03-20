@@ -30,14 +30,25 @@ def create_user_income(income_data: IncomeRequest, db_session, session_token):
     # Get current user
     user = get_current_user(db_session, session_token)
 
-    # Create income
-    income = Income(amount=income_data.amount, frequency=income_data.frequency, user=user)
+    # Check if user already has income set
+    statement = select(Income).where(Income.user_id == user.id)
+    existing_income = db_session.exec(statement).first()
 
-    db_session.add(income)
+    # Update income if already existing
+    if existing_income:
+        existing_income.amount = income_data.amount
+        existing_income.frequency = income_data.frequency
+        db_session.add(existing_income)
+        message = "Income updated"
+    else:
+        # Create income if not existing
+        income = Income(amount=income_data.amount, frequency=income_data.frequency, user=user)
+        db_session.add(income)
+        message = "Income Created"
+
     db_session.commit()
-    db_session.refresh(income)
 
-    return {"message": "Income created"}
+    return {"message": message}
 
 # Function for creating budget bucket
 def create_bucket(bucket_data: BucketCreate, db_session, user):

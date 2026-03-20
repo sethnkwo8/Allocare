@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress"
 import { CurrencyStep } from "@/components/onboarding/CurrencyStep"
 import { OnboardingData } from "@/types/onboarding"
 import { SetCurrency } from "@/lib/api/onboarding"
+import { SetIncomeFrequency } from "@/lib/api/onboarding"
 import { IncomeFrequencyStep } from "@/components/onboarding/IncomeFrequencyStep"
 import { currencySymbols } from "@/lib/onboarding/currency"
 
@@ -107,6 +108,18 @@ export default function OnboardingSteps() {
                     setIsLoading(false)
                 }
                 break;
+            case 2:
+                // Set income and frequency
+                setIsLoading(true)
+                try {
+                    await SetIncomeFrequency(data.income, data.frequency)
+                    setCurrentStep(3) // advance if api call succeds
+                } catch (error: any) {
+                    setErrorMessage(error.message || "Failed to save income and frequency.")
+                } finally {
+                    setIsLoading(false)
+                }
+                break;
             default:
                 if (currentStep < totalSteps) {
                     setCurrentStep(currentStep + 1);
@@ -170,7 +183,7 @@ export default function OnboardingSteps() {
                             disabled={isLoading || !canProceed()}
                             className="flex-1"
                         >
-                            {isLoading ? "Saving..." : "Continue"}
+                            {isLoading ? "Saving..." : (currentStep === totalSteps ? "Complete" : "Continue")}
                         </Button>
                     </div>
                 </div>
