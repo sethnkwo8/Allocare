@@ -1,8 +1,8 @@
-export const Currency: Record<string, string> = {
+export const currencySymbols: Record<string, string> = {
+    NGN: "₦",
     USD: "$",
     EUR: "€",
     GBP: "£",
-    NGN: "₦",
     JPY: "¥",
     CAD: "CA$",
     AUD: "A$",
@@ -20,3 +20,26 @@ export const Currency: Record<string, string> = {
     TRY: "₺",
     KRW: "₩",
 };
+
+export const currencies = [
+    { code: "NGN", name: "Nigerian Naira", symbol: "₦" },
+    { code: "USD", name: "US Dollar", symbol: "$" },
+    { code: "EUR", name: "Euro", symbol: "€" },
+    { code: "GBP", name: "British Pound", symbol: "£" },
+    { code: "JPY", name: "Japanese Yen", symbol: "¥" },
+    { code: "CAD", name: "Canadian Dollar", symbol: "CA$" },
+    { code: "AUD", name: "Australian Dollar", symbol: "A$" },
+    { code: "CHF", name: "Swiss Franc", symbol: "CHF" },
+    { code: "CNY", name: "Chinese Yuan", symbol: "¥" },
+    { code: "INR", name: "Indian Rupee", symbol: "₹" },
+    { code: "MXN", name: "Mexican Peso", symbol: "MX$" },
+    { code: "ZAR", name: "South African Rand", symbol: "R" },
+    { code: "SGD", name: "Singapore Dollar", symbol: "S$" },
+    { code: "HKD", name: "Hong Kong Dollar", symbol: "HK$" },
+    { code: "SEK", name: "Swedish Krona", symbol: "kr" },
+    { code: "NOK", name: "Norwegian Krone", symbol: "kr" },
+    { code: "DKK", name: "Danish Krone", symbol: "kr" },
+    { code: "RUB", name: "Russian Ruble", symbol: "₽" },
+    { code: "TRY", name: "Turkish lira", symbol: "₺" },
+    { code: "KRW", name: "South Korean won", symbol: "₩" },
+];

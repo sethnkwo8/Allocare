@@ -1,3 +1,4 @@
+// Onboarding data interface
 export interface OnboardingData {
     currency: string
     income: string
@@ -10,4 +11,10 @@ export interface OnboardingData {
     needsBreakdown: Record<string, number>;
     wantsBreakdown: Record<string, number>;
     savingsBreakdown: Record<string, number>;
+}
+
+// Currency steps props interface
+export interface CurrencyStepProps {
+    value: string;
+    onChange(value: string): void;
 }
