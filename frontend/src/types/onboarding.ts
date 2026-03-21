@@ -1,3 +1,5 @@
+import { LucideIcon } from "lucide-react"
+
 // Onboarding data interface
 export interface OnboardingData {
     currency: string
@@ -38,4 +40,23 @@ export interface MainAllocationProps {
     onChange(allocations: { needs: number; wants: number; savings: number }): void;
     currencySymbol: string;
     income: string;
+}
+
+// Interface for categories
+export interface Category {
+    id: string
+    label: string
+    icon: LucideIcon
+    description: string
+}
+
+// Props for needs allocation breakdown
+export interface CategoryBreakdownStepProps {
+    title: string
+    categories: Category[]
+    breakdown: Record<string, number>;
+    onChange(breakdown: Record<string, number>): void;
+    currencySymbol: string;
+    categoryAmount: number;
+    colorClass?: string;
 }
