@@ -4,7 +4,8 @@ DEFAULT_CATEGORIES = {
         "Groceries",
         "Utilities",
         "Transport",
-        "Healthcare"
+        "Healthcare",
+        "Tithe"
     ],
     "wants": [
         "Dining Out",
