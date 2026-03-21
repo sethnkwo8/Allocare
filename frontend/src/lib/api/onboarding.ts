@@ -1,3 +1,6 @@
+import { OnboardingData } from "@/types/onboarding";
+import { needsCategories, wantsCategories, savingsCategories } from "../onboarding/default_categories";
+
 // Set currency api function
 export async function SetCurrency(currency: string) {
     const apiURL = process.env.NEXT_PUBLIC_API_URL
@@ -38,6 +41,59 @@ export async function SetIncomeFrequency(income: string, frequency: string) {
     if (!res.ok) {
         const errorData = await res.json();
         throw new Error(errorData.detail[0].msg || "Income & Frequency Setup Failed")
+    }
+
+    return await res.json()
+}
+
+// Complete onboarding api function
+export async function CompleteOnboarding(data: OnboardingData) {
+    const apiURL = process.env.NEXT_PUBLIC_API_URL
+
+    // Function to format categories for backend
+    function formatCategories(breakdown: Record<string, number>, categoriesList: any[]) {
+        return Object.entries(breakdown).map(([id, percentage]) => {
+            const categoryInfo = categoriesList.find(c => c.id === id);
+            return {
+                name: categoryInfo?.label || id,
+                monthly_limit: percentage
+            };
+        });
+    };
+
+    // Payload to be sent to backend
+    const payload = {
+        buckets: [
+            {
+                name: "needs",
+                percentage_allocation: data.mainAllocation.needs,
+                categories: formatCategories(data.needsBreakdown, needsCategories)
+            },
+            {
+                name: "wants",
+                percentage_allocation: data.mainAllocation.wants,
+                categories: formatCategories(data.wantsBreakdown, wantsCategories)
+            },
+            {
+                name: "savings",
+                percentage_allocation: data.mainAllocation.savings,
+                categories: formatCategories(data.savingsBreakdown, savingsCategories)
+            }
+        ]
+    };
+
+    const res = await fetch(`${apiURL}/onboarding/complete`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(payload)
+    })
+
+    if (!res.ok) {
+        const errorData = await res.json()
+        throw new Error(errorData.detail[0].msg || "Failed to finalize onboarding")
     }
 
     return await res.json()
