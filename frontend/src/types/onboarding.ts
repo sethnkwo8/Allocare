@@ -27,3 +27,15 @@ export interface IncomeFrequencyStepProps {
     onFrequencyChange: (value: string) => void;
     currencySymbol: string;
 }
+
+// Props for main allocation buckets
+export interface MainAllocationProps {
+    allocations: {
+        needs: number;
+        wants: number;
+        savings: number
+    }
+    onChange(allocations: { needs: number; wants: number; savings: number }): void;
+    currencySymbol: string;
+    income: string;
+}

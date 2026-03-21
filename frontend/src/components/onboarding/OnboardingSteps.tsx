@@ -10,6 +10,7 @@ import { SetCurrency } from "@/lib/api/onboarding"
 import { SetIncomeFrequency } from "@/lib/api/onboarding"
 import { IncomeFrequencyStep } from "@/components/onboarding/IncomeFrequencyStep"
 import { currencySymbols } from "@/lib/onboarding/currency"
+import { MainAllocationStep } from "./MainAllocationStep"
 
 import { useState } from "react"
 
@@ -77,6 +78,9 @@ export default function OnboardingSteps() {
                 return data.currency !== "";
             case 2:
                 return data.income !== "" && parseFloat(data.income) > 0 && data.frequency !== "";
+            case 3:
+                const mainTotal = data.mainAllocation.needs + data.mainAllocation.wants + data.mainAllocation.savings;
+                return mainTotal == 100;
             default:
                 return false;
         }
@@ -120,6 +124,9 @@ export default function OnboardingSteps() {
                     setIsLoading(false)
                 }
                 break;
+            case 3:
+                setCurrentStep(4);
+                break;
             default:
                 if (currentStep < totalSteps) {
                     setCurrentStep(currentStep + 1);
@@ -159,6 +166,14 @@ export default function OnboardingSteps() {
                                 onIncomeChange={(value) => setData({ ...data, income: value })}
                                 onFrequencyChange={(value) => setData({ ...data, frequency: value })}
                                 currencySymbol={currencySymbol}
+                            />
+                        )}
+                        {currentStep === 3 && (
+                            <MainAllocationStep
+                                allocations={data.mainAllocation}
+                                onChange={(allocations) => setData({ ...data, mainAllocation: allocations })}
+                                currencySymbol={currencySymbol}
+                                income={data.income}
                             />
                         )}
                     </div>
