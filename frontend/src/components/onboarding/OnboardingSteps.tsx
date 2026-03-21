@@ -11,6 +11,8 @@ import { SetIncomeFrequency } from "@/lib/api/onboarding"
 import { IncomeFrequencyStep } from "@/components/onboarding/IncomeFrequencyStep"
 import { currencySymbols } from "@/lib/onboarding/currency"
 import { MainAllocationStep } from "./MainAllocationStep"
+import { CategoryBreakdownStep } from "./CategoryBreakdownStep"
+import { needsCategories } from "@/lib/onboarding/default_categories"
 
 import { useState } from "react"
 
@@ -39,11 +41,12 @@ export default function OnboardingSteps() {
         },
         needsBreakdown: {
             housing: 40,
-            groceries: 25,
+            groceries: 20,
             utilities: 15,
             transportation: 10,
             healthcare: 5,
-            otherNeeds: 5,
+            tithe: 10,
+            otherNeeds: 0,
         },
         wantsBreakdown: {
             entertainment: 20,
@@ -71,6 +74,12 @@ export default function OnboardingSteps() {
     // Get currency symbol
     const currencySymbol = currencySymbols[data.currency] || "$";
 
+    // Convert income value to float
+    const incomeValue = parseFloat(data.income) || 0;
+
+    // Calculate needs amount
+    const needsAmount = (incomeValue * data.mainAllocation.needs) / 100;
+
     // Switch function to check if user can proceed
     function canProceed() {
         switch (currentStep) {
@@ -80,7 +89,10 @@ export default function OnboardingSteps() {
                 return data.income !== "" && parseFloat(data.income) > 0 && data.frequency !== "";
             case 3:
                 const mainTotal = data.mainAllocation.needs + data.mainAllocation.wants + data.mainAllocation.savings;
-                return mainTotal == 100;
+                return mainTotal === 100;
+            case 4:
+                const needsTotal = Object.values(data.needsBreakdown).reduce((sum, val) => sum + val, 0);
+                return needsTotal === 100;
             default:
                 return false;
         }
@@ -126,6 +138,9 @@ export default function OnboardingSteps() {
                 break;
             case 3:
                 setCurrentStep(4);
+                break;
+            case 4:
+                setCurrentStep(5)
                 break;
             default:
                 if (currentStep < totalSteps) {
@@ -174,6 +189,17 @@ export default function OnboardingSteps() {
                                 onChange={(allocations) => setData({ ...data, mainAllocation: allocations })}
                                 currencySymbol={currencySymbol}
                                 income={data.income}
+                            />
+                        )}
+                        {currentStep === 4 && (
+                            <CategoryBreakdownStep
+                                title="Break down your needs"
+                                categories={needsCategories}
+                                breakdown={data.needsBreakdown}
+                                onChange={(breakdown) => setData({ ...data, needsBreakdown: breakdown })}
+                                currencySymbol={currencySymbol}
+                                categoryAmount={needsAmount}
+                                colorClass="text-purple-600"
                             />
                         )}
                     </div>
