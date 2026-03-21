@@ -6,17 +6,21 @@ import { Card } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { CurrencyStep } from "@/components/onboarding/CurrencyStep"
 import { OnboardingData } from "@/types/onboarding"
-import { SetCurrency } from "@/lib/api/onboarding"
+import { CompleteOnboarding, SetCurrency } from "@/lib/api/onboarding"
 import { SetIncomeFrequency } from "@/lib/api/onboarding"
 import { IncomeFrequencyStep } from "@/components/onboarding/IncomeFrequencyStep"
 import { currencySymbols } from "@/lib/onboarding/currency"
 import { MainAllocationStep } from "./MainAllocationStep"
 import { CategoryBreakdownStep } from "./CategoryBreakdownStep"
-import { needsCategories } from "@/lib/onboarding/default_categories"
+import { needsCategories, wantsCategories, savingsCategories } from "@/lib/onboarding/default_categories"
+import { CheckCircle2 } from "lucide-react";
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 
 export default function OnboardingSteps() {
+    const router = useRouter()
+
     // State for current step
     const [currentStep, setCurrentStep] = useState<number>(1)
 
@@ -80,6 +84,12 @@ export default function OnboardingSteps() {
     // Calculate needs amount
     const needsAmount = (incomeValue * data.mainAllocation.needs) / 100;
 
+    // Calculate wants amount
+    const wantsAmount = (incomeValue * data.mainAllocation.wants) / 100;
+
+    // Calculate savings amount
+    const savingsAmount = (incomeValue * data.mainAllocation.savings) / 100;
+
     // Switch function to check if user can proceed
     function canProceed() {
         switch (currentStep) {
@@ -93,6 +103,12 @@ export default function OnboardingSteps() {
             case 4:
                 const needsTotal = Object.values(data.needsBreakdown).reduce((sum, val) => sum + val, 0);
                 return needsTotal === 100;
+            case 5:
+                const wantsTotal = Object.values(data.wantsBreakdown).reduce((sum, val) => sum + val, 0);
+                return wantsTotal <= 100;
+            case 6:
+                const savingsTotal = Object.values(data.savingsBreakdown).reduce((sum, val) => sum + val, 0);
+                return savingsTotal <= 100;
             default:
                 return false;
         }
@@ -142,6 +158,22 @@ export default function OnboardingSteps() {
             case 4:
                 setCurrentStep(5)
                 break;
+            case 5:
+                setCurrentStep(6);
+                break;
+            case 6:
+                // Finalize onboarding
+                if (isLoading) return;
+                setIsLoading(true)
+                try {
+                    await CompleteOnboarding(data)
+                    setIsComplete(true)
+                } catch (error: any) {
+                    setErrorMessage(error.message || "Failed to complete onboarding")
+                } finally {
+                    setIsLoading(false)
+                }
+                break;
             default:
                 if (currentStep < totalSteps) {
                     setCurrentStep(currentStep + 1);
@@ -149,6 +181,68 @@ export default function OnboardingSteps() {
                 break;
         }
     };
+
+    if (isComplete) {
+        return (
+            <div className="min-h-screen flex items-center justify-center p-4 bg-linear-to-br from-[#d4f1f1] to-[#e6f5f5]">
+                <Card className="max-w-2xl w-full p-8 text-center space-y-6">
+                    <div className="flex justify-center">
+                        <div className="h-16 w-16 bg-primary/10 rounded-full flex items-center justify-center">
+                            <CheckCircle2 className="h-10 w-10 text-primary" />
+                        </div>
+                    </div>
+                    <div className="space-y-2">
+                        <h2 className="text-3xl">All Set!</h2>
+                        <p className="text-muted-foreground">
+                            Your financial profile has been created successfully
+                        </p>
+                    </div>
+
+                    <div className="space-y-4 text-left">
+                        <div className="bg-accent p-4 rounded-lg space-y-3">
+                            <h3 className="font-medium">Basic Information</h3>
+                            <div className="grid grid-cols-3 gap-3 text-sm">
+                                <div>
+                                    <span className="text-muted-foreground block">Currency</span>
+                                    <span className="font-medium">{data.currency}</span>
+                                </div>
+                                <div>
+                                    <span className="text-muted-foreground block">Income</span>
+                                    <span className="font-medium">{currencySymbol}{data.income}</span>
+                                </div>
+                                <div>
+                                    <span className="text-muted-foreground block">Frequency</span>
+                                    <span className="font-medium capitalize">{data.frequency}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-3 gap-3">
+                            <div className="bg-blue-50 p-4 rounded-lg">
+                                <div className="text-sm text-muted-foreground">Needs</div>
+                                <div className="text-2xl font-medium text-blue-600">{data.mainAllocation.needs}%</div>
+                                <div className="text-sm text-muted-foreground">{currencySymbol}{needsAmount.toFixed(2)}</div>
+                            </div>
+                            <div className="bg-purple-50 p-4 rounded-lg">
+                                <div className="text-sm text-muted-foreground">Wants</div>
+                                <div className="text-2xl font-medium text-purple-600">{data.mainAllocation.wants}%</div>
+                                <div className="text-sm text-muted-foreground">{currencySymbol}{wantsAmount.toFixed(2)}</div>
+                            </div>
+                            <div className="bg-green-50 p-4 rounded-lg">
+                                <div className="text-sm text-muted-foreground">Savings</div>
+                                <div className="text-2xl font-medium text-green-600">{data.mainAllocation.savings}%</div>
+                                <div className="text-sm text-muted-foreground">{currencySymbol}{savingsAmount.toFixed(2)}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <Button onClick={() => router.push('/dashboard')} className="w-full">
+                        Go to Dashboard
+                    </Button>
+                </Card>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen flex items-center justify-center p-4 bg-linear-to-br from-[#d4f1f1] to-[#e6f5f5]">
@@ -199,7 +293,29 @@ export default function OnboardingSteps() {
                                 onChange={(breakdown) => setData({ ...data, needsBreakdown: breakdown })}
                                 currencySymbol={currencySymbol}
                                 categoryAmount={needsAmount}
+                                colorClass="text-blue-600"
+                            />
+                        )}
+                        {currentStep === 5 && (
+                            <CategoryBreakdownStep
+                                title="Break down your wants"
+                                categories={wantsCategories}
+                                breakdown={data.wantsBreakdown}
+                                onChange={(breakdown) => setData({ ...data, wantsBreakdown: breakdown })}
+                                currencySymbol={currencySymbol}
+                                categoryAmount={wantsAmount}
                                 colorClass="text-purple-600"
+                            />
+                        )}
+                        {currentStep === 6 && (
+                            <CategoryBreakdownStep
+                                title="Break down your savings"
+                                categories={savingsCategories}
+                                breakdown={data.savingsBreakdown}
+                                onChange={(breakdown) => setData({ ...data, savingsBreakdown: breakdown })}
+                                currencySymbol={currencySymbol}
+                                categoryAmount={savingsAmount}
+                                colorClass="text-green-600"
                             />
                         )}
                     </div>
