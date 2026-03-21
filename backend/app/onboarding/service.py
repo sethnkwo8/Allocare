@@ -104,11 +104,11 @@ def complete_onboarding(session_token, db_session, buckets: OnboardingRequest ):
             if bucket_data.categories:
                 for category_data in bucket_data.categories:
                     # Convert percentage to currency amount
-                    perentage = category_data.monthly_limit
+                    percentage = float(category_data.monthly_limit)
                     bucket_share = (monthly_income * bucket_data.percentage_allocation) / 100
-                    actual_limit = (bucket_share * perentage) / 100
+                    actual_limit = (bucket_share * percentage) / 100
 
-                    category_data.monthly_limit = actual_limit
+                    category_data.monthly_limit = round(actual_limit, 2)
                     create_category(category_data, db_session, bucket)
         
         # Set onboarding to true for completion
