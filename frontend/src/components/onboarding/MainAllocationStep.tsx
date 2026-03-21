@@ -39,7 +39,7 @@ export function MainAllocationStep({
             <div className="max-w-2xl mx-auto space-y-6">
                 <div className="flex items-center justify-between p-4 bg-primary/10 rounded-lg border-2 border-primary/20">
                     <span className="font-medium">Total Allocated</span>
-                    <span className={`font-medium ${totalPercentage > 100 ? "text-destructive" : "text-primary"}`}>
+                    <span className={`font-medium ${totalPercentage !== 100 ? "text-destructive" : "text-primary"}`}>
                         {totalPercentage}%
                     </span>
                 </div>
