@@ -37,3 +37,11 @@ class OnboardingAlreadyComplete(OnboardingError):
             status_code=403,
             code="ONBOARDING_ALREADY_COMPLETED"
         )
+
+class IncomeNotSet(OnboardingError):
+    def __init__(self):
+        super().__init__(
+            message=f"User's income hasn't been set",
+            status_code=403,
+            code="INCOME_NOT_SET"
+        )
