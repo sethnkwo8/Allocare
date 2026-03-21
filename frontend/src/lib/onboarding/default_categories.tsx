@@ -1,6 +1,7 @@
 import {
     Home, Church, ShoppingCart, Zap, Car, Heart, MoreHorizontal,
-    Tv, Coffee, ShoppingBag, Plane, Dumbbell
+    Tv, Coffee, ShoppingBag, Plane, Dumbbell,
+    Shield, TrendingUp, Landmark, Target
 } from "lucide-react";
 
 // Default categories for needs
@@ -25,3 +26,10 @@ export const wantsCategories = [
 ];
 
 // Default categories for savings
+export const savingsCategories = [
+    { id: "emergency", label: "Emergency Fund", icon: Shield, description: "3-6 months expenses" },
+    { id: "retirement", label: "Retirement", icon: TrendingUp, description: "401k, IRA, pension" },
+    { id: "investments", label: "Investments", icon: Landmark, description: "Stocks, bonds, crypto" },
+    { id: "goals", label: "Financial Goals", icon: Target, description: "House, car, education" },
+    { id: "otherSavings", label: "Other Savings", icon: MoreHorizontal, description: "Other saving goals" },
+];
