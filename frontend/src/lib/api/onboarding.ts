@@ -93,6 +93,11 @@ export async function CompleteOnboarding(data: OnboardingData) {
 
     if (!res.ok) {
         const errorData = await res.json()
+
+        if (errorData.detail === "Onboarding process already completed") {
+            return { message: "Onboarding complete" };
+        }
+
         throw new Error(errorData.detail[0].msg || "Failed to finalize onboarding")
     }
 
