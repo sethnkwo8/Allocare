@@ -1,0 +1,64 @@
+// Financial overview
+export interface FinancialOverview {
+    total_income: number
+    total_spent: number
+    remaining_balance: number
+}
+
+// Budget Allocation
+export interface BudgetAllocation {
+    budget_name: string
+    percentage_allocation: number
+}
+
+// Recent Expense
+export interface RecentExpense {
+    id: string
+    title: string
+    amount: number
+    created_at: string
+}
+
+// Savings Goal
+export interface SavingsGoal {
+    name: string
+    target_amount: number
+    current_amount: number
+    progress_percentage: number
+    remaining_amount: number
+}
+
+// Expense Calculation Response
+export interface ExpenseCalculationResponse {
+    category_id: string
+    category_name: string
+    total_spent: number
+    budget_limit: number
+    remaining_budget: number
+}
+
+// Bucket Calculation Respomse
+export interface BucketCalculationResponse {
+    bucket_id: string
+    bucket_name: string
+    total_spent: number
+    budget_limit: number
+    remaining_budget: number
+    spending_percentage: number
+}
+
+// Unread Count response
+export interface UnreadCount {
+    unread_count: number
+}
+
+// Dashboard response interface
+export interface DashboardResponse {
+    financial_overview: FinancialOverview
+    budget_percentage_allocation: BudgetAllocation[]
+    recent_expenses: RecentExpense[]
+    goal_savings: SavingsGoal[]
+    category_spendings: ExpenseCalculationResponse[]
+    bucket_spendings: BucketCalculationResponse[]
+    unread_count: UnreadCount
+}
