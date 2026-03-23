@@ -8,8 +8,6 @@ export function OverviewCards({ data }: { data: DashboardResponse }) {
     const { bucket_spendings } = data
     const currencySymbol = getCurrencySymbol(currency_code)
 
-
-
     const savingsData = bucket_spendings.find((b) => b.bucket_name.toLowerCase() === "savings")
     const savingsSpent = Number(savingsData?.total_spent)
     const savingsPercentage = Number(savingsData?.spending_percentage)

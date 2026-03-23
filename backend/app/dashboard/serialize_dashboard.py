@@ -3,7 +3,7 @@ from app.utils.calculate_spending_percentage import calculate_percentage
 
 # Serialize dashboard data for response
 def serialiaze_dashboard(db_session, session_token):
-    total_income, total_spent, remaining_balance, recent_expenses, unread_count, goals, bucket_results, category_results, currency_code = service.get_dashboard_data(db_session, session_token)
+    total_income, total_spent, remaining_balance, recent_expenses, unread_count, goals, bucket_results, category_results, currency_code, user_name = service.get_dashboard_data(db_session, session_token)
 
     return schema.DashboardResponse(
         # Financial overview
@@ -11,7 +11,8 @@ def serialiaze_dashboard(db_session, session_token):
             total_income=float(total_income),
             total_spent=float(total_spent),
             remaining_balance=remaining_balance,
-            currency_code=currency_code
+            currency_code=currency_code,
+            name=user_name
         ),
         # Budget percentage allocation
         budget_percentage_allocation=[

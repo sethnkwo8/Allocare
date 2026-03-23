@@ -1,11 +1,14 @@
+import { DashboardResponse } from "@/types/dashboard"
 import { Button } from "../ui/button"
 import { Bell, Plus, Settings } from "lucide-react"
 
-export function Header() {
+export function Header({ data }: { data: DashboardResponse }) {
+    const { name } = data.financial_overview
+
     return (
         <div className="flex items-center justify-between">
             <div>
-                <h1 className="text-3xl">Welcome back!</h1>
+                <h1 className="text-3xl">Welcome back, {name}!</h1>
                 <p className="text-muted-foreground">Here's your monthly financial overview</p>
             </div>
             <div className="flex gap-2">

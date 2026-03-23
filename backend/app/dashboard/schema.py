@@ -11,6 +11,7 @@ class FinancialOverview(BaseModel):
     total_spent: float
     remaining_balance: float
     currency_code: str
+    name: str
 
 class RecentExpense(BaseModel):
     id: uuid.UUID

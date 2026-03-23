@@ -4,6 +4,7 @@ export interface FinancialOverview {
     total_spent: number
     remaining_balance: number
     currency_code: string
+    name: string
 }
 
 // Budget Allocation
