@@ -12,9 +12,6 @@ export function Dashboard() {
     if (errorData) return <div>Error: {errorData}</div>
     if (!data) return null
 
-    const incomeValue = data.financial_overview.total_income
-    const totalSpent = data.financial_overview.total_spent
-
     return (
         <div className="min-h-screen bg-linear-to-br from-[#d4f1f1] to-[#e6f5f5] p-4 md:p-8">
             <div className="max-w-7xl mx-auto space-y-6">
