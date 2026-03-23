@@ -12,11 +12,25 @@ def get_category_spending(db_session, user):
     start_of_month, start_of_next_month = get_current_month_range()
 
     # Select category and sum of expenses amount per category as total for user
-    statement = select(BudgetCategory, func.coalesce(func.sum(Expense.amount), 0.0).label('total')).join(
-        Expense, and_(Expense.category_id == BudgetCategory.id,
-                      Expense.user_id == user.id,
-                      Expense.date >= start_of_month,
-                      Expense.date < start_of_next_month), isouter=True).group_by(BudgetCategory.id) # Grouped by category 
+    statement = (
+        select(
+            BudgetCategory, 
+            func.coalesce(func.sum(Expense.amount), 0.0).label('total')
+        )
+        .select_from(BudgetCategory)
+        .join(BudgetBucket, BudgetCategory.bucket_id == BudgetBucket.id) # Ensure we only get user's categories
+        .join(
+            Expense, 
+            and_(
+                Expense.category_id == BudgetCategory.id,
+                Expense.date >= start_of_month,
+                Expense.date < start_of_next_month
+            ), 
+            isouter=True
+        )
+        .where(BudgetBucket.user_id == user.id)
+        .group_by(BudgetCategory.id)    # Grouped by category 
+    )
     
     results = db_session.exec(statement).all()
 
@@ -30,7 +44,10 @@ def get_total_buckets_spending(db_session, user):
     start_of_month, start_of_next_month = get_current_month_range()
 
     # Create a subquery to sum expenses per category for this month
-    expense_subquery = select(Expense.category_id, func.sum(Expense.amount).label('category_spent')).where(
+    expense_subquery = select(
+        Expense.category_id, 
+        func.sum(Expense.amount).label('category_spent')
+    ).where(
         Expense.user_id == user.id,
         Expense.date >= start_of_month,
         Expense.date < start_of_next_month
@@ -41,9 +58,11 @@ def get_total_buckets_spending(db_session, user):
         select(
             BudgetBucket,
             func.coalesce(func.sum(expense_subquery.c.category_spent), 0.0).label("total_spent"),
+            # Sum of monthly limit for all categories
             func.coalesce(func.sum(BudgetCategory.monthly_limit), 0.0).label("total_limit")
         )
-        .join(BudgetCategory, isouter=True)
+        .select_from(BudgetBucket)
+        .join(BudgetCategory, BudgetCategory.bucket_id == BudgetBucket.id, isouter=True)
         # Join our summed expenses subquery on category_id
         .join(expense_subquery, BudgetCategory.id == expense_subquery.c.category_id, isouter=True)
         .where(BudgetBucket.user_id == user.id)

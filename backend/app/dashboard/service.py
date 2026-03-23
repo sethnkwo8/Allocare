@@ -8,6 +8,9 @@ def get_dashboard_data(db_session, session_token):
     # Get user and unread notification count
     user, unread_count = get_user_and_unread_count(session_token, db_session)
 
+    # Get users currency code
+    currency_code = user.currency
+
     # total income
     income_stmt = select(func.sum(Income.amount)).where(Income.user_id == user.id)
     total_income = db_session.exec(income_stmt).one() or 0
@@ -38,4 +41,4 @@ def get_dashboard_data(db_session, session_token):
     goal_stmt = select(Goal).where(Goal.user_id == user.id, Goal.is_completed.is_(False)).limit(3)
     goals = db_session.exec(goal_stmt).all()
 
-    return total_income, total_spent, remaining_balance, recent_expenses, unread_count, goals, bucket_results, category_results
+    return total_income, total_spent, remaining_balance, recent_expenses, unread_count, goals, bucket_results, category_results, currency_code
