@@ -4,6 +4,7 @@
 import { useDashboard } from "@/hooks/useDashboard"
 import { OverviewCards } from "./OverviewCards"
 import { Header } from "./Header"
+import { ChartsSection } from "./ChartsSection"
 
 export function Dashboard() {
     const { data, isLoading, errorData, refresh } = useDashboard()
@@ -17,9 +18,11 @@ export function Dashboard() {
             <div className="max-w-7xl mx-auto space-y-6">
                 {/* Header */}
                 <Header />
-
                 {/* Overview Cards */}
                 <OverviewCards data={data} />
+                {/* Charts Section */}
+                <ChartsSection data={data} />
+
             </div>
         </div>
     )
