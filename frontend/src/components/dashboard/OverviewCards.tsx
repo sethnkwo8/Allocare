@@ -1,7 +1,7 @@
 import { DashboardResponse } from "@/types/dashboard"
 import { Card } from "../ui/card"
 import { Wallet, ArrowDownRight, ArrowUpRight, PiggyBank, TrendingUp } from "lucide-react"
-import { getCurrencySymbol } from "@/lib/dashboard/utils"
+import { getCurrencySymbol, formatWithCommas } from "@/lib/dashboard/utils"
 
 export function OverviewCards({ data }: { data: DashboardResponse }) {
     const { currency_code, total_income, total_spent } = data.financial_overview
@@ -18,7 +18,7 @@ export function OverviewCards({ data }: { data: DashboardResponse }) {
                 <div className="flex items-center justify-between">
                     <div>
                         <p className="text-sm text-muted-foreground">Total Income</p>
-                        <h3 className="text-2xl mt-1">{currencySymbol}{total_income.toFixed(2)}</h3>
+                        <h3 className="text-2xl mt-1">{currencySymbol}{formatWithCommas(total_income.toFixed(2))}</h3>
                         <p className="text-xs text-muted-foreground mt-1 capitalize">Monthly</p>
                     </div>
                     <div className="h-12 w-12 bg-primary/10 rounded-full flex items-center justify-center">
@@ -31,7 +31,7 @@ export function OverviewCards({ data }: { data: DashboardResponse }) {
                 <div className="flex items-center justify-between">
                     <div>
                         <p className="text-sm text-muted-foreground">Total Spent</p>
-                        <h3 className="text-2xl mt-1">{currencySymbol}{total_spent.toFixed(2)}</h3>
+                        <h3 className="text-2xl mt-1">{currencySymbol}{formatWithCommas(total_spent.toFixed(2))}</h3>
                         <p className="text-xs text-green-600 mt-1 flex items-center gap-1">
                             <ArrowDownRight className="h-3 w-3" />
                             {((total_spent / total_income) * 100).toFixed(1)}% of income
@@ -47,7 +47,7 @@ export function OverviewCards({ data }: { data: DashboardResponse }) {
                 <div className="flex items-center justify-between">
                     <div>
                         <p className="text-sm text-muted-foreground">Remaining</p>
-                        <h3 className="text-2xl mt-1">{currencySymbol}{(total_income - total_spent).toFixed(2)}</h3>
+                        <h3 className="text-2xl mt-1">{currencySymbol}{formatWithCommas((total_income - total_spent).toFixed(2))}</h3>
                         <p className="text-xs text-muted-foreground mt-1">
                             {(((total_income - total_spent) / total_income) * 100).toFixed(1)}% unallocated
                         </p>
@@ -62,7 +62,7 @@ export function OverviewCards({ data }: { data: DashboardResponse }) {
                 <div className="flex items-center justify-between">
                     <div>
                         <p className="text-sm text-muted-foreground">Savings Goal</p>
-                        <h3 className="text-2xl mt-1">{currencySymbol}{(savingsSpent ?? 0).toFixed(2)}</h3>
+                        <h3 className="text-2xl mt-1">{currencySymbol}{formatWithCommas((savingsSpent ?? 0).toFixed(2))}</h3>
                         <p className="text-xs text-green-600 mt-1 flex items-center gap-1">
                             <ArrowUpRight className="h-3 w-3" />
                             {savingsPercentage > 0

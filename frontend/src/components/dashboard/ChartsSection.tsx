@@ -3,7 +3,7 @@ import { DashboardResponse } from "@/types/dashboard";
 import { Card } from "../ui/card"
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from "recharts";
 import { categoryColors } from "@/lib/dashboard/categoryColors";
-import { getCurrencySymbol } from "@/lib/dashboard/utils";
+import { formatWithCommas, getCurrencySymbol } from "@/lib/dashboard/utils";
 
 
 export function ChartsSection({ data }: { data: DashboardResponse }) {
@@ -105,7 +105,7 @@ export function ChartsSection({ data }: { data: DashboardResponse }) {
                         />
                         <Tooltip
                             cursor={{ fill: 'transparent' }} // Removes the gray hover box
-                            formatter={(value: any) => [`${currencySymbol}${Number(value).toFixed(2)}`, '']}
+                            formatter={(value: any) => [`${currencySymbol}${formatWithCommas((Number(value).toFixed(2)))}`, '']}
                             contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                         />
                         <Legend verticalAlign="top" align="right" iconType="circle" />

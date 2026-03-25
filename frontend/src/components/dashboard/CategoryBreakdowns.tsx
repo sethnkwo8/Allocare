@@ -1,10 +1,9 @@
 // Category Breakdown section
-import { getCurrencySymbol } from "@/lib/dashboard/utils";
+import { getCurrencySymbol, formatWithCommas } from "@/lib/dashboard/utils";
 import { DashboardResponse } from "@/types/dashboard";
 import { Card } from "../ui/card";
 import { Progress } from "../ui/progress";
 import { needsCategories, wantsCategories, savingsCategories } from "@/lib/onboarding/default_categories";
-import { formatWithCommas } from "@/lib/dashboard/utils";
 
 export function CategoryBreakdown({ data }: { data: DashboardResponse }) {
     // Get category details
