@@ -5,6 +5,7 @@ import { useDashboard } from "@/hooks/useDashboard"
 import { OverviewCards } from "./OverviewCards"
 import { Header } from "./Header"
 import { ChartsSection } from "./ChartsSection"
+import { CategoryBreakdown } from "./CategoryBreakdowns"
 
 export function Dashboard() {
     const { data, isLoading, errorData, refresh } = useDashboard()
@@ -22,6 +23,8 @@ export function Dashboard() {
                 <OverviewCards data={data} />
                 {/* Charts Section */}
                 <ChartsSection data={data} />
+                {/* Category Breakdowns */}
+                <CategoryBreakdown data={data} />
 
             </div>
         </div>
