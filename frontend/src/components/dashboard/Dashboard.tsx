@@ -6,6 +6,7 @@ import { OverviewCards } from "./OverviewCards"
 import { Header } from "./Header"
 import { ChartsSection } from "./ChartsSection"
 import { CategoryBreakdown } from "./CategoryBreakdowns"
+import { RecentExpenses } from "./RecentExpenses"
 
 export function Dashboard() {
     const { data, isLoading, errorData, refresh } = useDashboard()
@@ -25,6 +26,8 @@ export function Dashboard() {
                 <ChartsSection data={data} />
                 {/* Category Breakdowns */}
                 <CategoryBreakdown data={data} />
+                {/* Recent Expenses */}
+                <RecentExpenses data={data} />
 
             </div>
         </div>
