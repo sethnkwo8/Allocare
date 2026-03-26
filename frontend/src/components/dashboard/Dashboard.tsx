@@ -12,7 +12,14 @@ import { GoalsSection } from "./GoalsSection"
 export function Dashboard() {
     const { data, isLoading, errorData, refresh } = useDashboard()
 
-    if (isLoading) return <div>Loading your financial overview...</div>
+    if (isLoading) return (
+        <div className="min-h-screen flex flex-col items-center justify-center bg-background">
+            <h1 className="text-2xl font-bold text-[#2E6B6B] animate-pulse mb-4">
+                Allocare
+            </h1>
+            <div className="w-8 h-8 border-4 border-[#2E6B6B] border-t-transparent rounded-full animate-spin"></div>
+        </div>
+    )
     if (errorData) return <div>Error: {errorData}</div>
     if (!data) return null
 
