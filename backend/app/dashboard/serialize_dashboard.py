@@ -33,11 +33,13 @@ def serialiaze_dashboard(db_session, session_token):
         ],
         goal_savings=[
             schema.SavingsGoal(
+                id=goal.id,
                 name=goal.name,
                 target_amount=goal.target_amount,
                 current_amount=goal.current_amount,
                 progress_percentage=calculate_percentage(goal.current_amount, goal.target_amount),
-                remaining_amount=goal.target_amount - goal.current_amount
+                remaining_amount=goal.target_amount - goal.current_amount,
+                target_date=goal.target_date
             ) for goal in goals
         ],
         category_spendings=[

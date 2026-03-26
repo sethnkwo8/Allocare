@@ -29,11 +29,13 @@ class BudgetAllocation(BaseModel):
     percentage_allocation: int
 
 class SavingsGoal(BaseModel):
+    id: uuid.UUID
     name: str
     target_amount: Decimal
     current_amount: Decimal
     progress_percentage: int
     remaining_amount: Decimal
+    target_date: datetime
 
 class DashboardResponse(BaseModel):
     financial_overview: FinancialOverview

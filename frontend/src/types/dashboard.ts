@@ -30,11 +30,13 @@ export interface RecentExpense {
 
 // Savings Goal
 export interface SavingsGoal {
+    id: string
     name: string
     target_amount: number
     current_amount: number
     progress_percentage: number
     remaining_amount: number
+    target_date: string
 }
 
 // Expense Calculation Response

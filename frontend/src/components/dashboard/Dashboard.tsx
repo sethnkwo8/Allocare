@@ -7,6 +7,7 @@ import { Header } from "./Header"
 import { ChartsSection } from "./ChartsSection"
 import { CategoryBreakdown } from "./CategoryBreakdowns"
 import { RecentExpenses } from "./RecentExpenses"
+import { GoalsSection } from "./GoalsSection"
 
 export function Dashboard() {
     const { data, isLoading, errorData, refresh } = useDashboard()
@@ -27,6 +28,7 @@ export function Dashboard() {
                 {/* Category Breakdowns */}
                 <CategoryBreakdown data={data} />
                 {/* Goals Section */}
+                <GoalsSection data={data} />
                 {/* Recent Expenses */}
                 <RecentExpenses data={data} />
 
