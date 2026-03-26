@@ -1,3 +1,9 @@
+// Props for Header
+export interface HeaderProps {
+    data: DashboardResponse
+    onRefresh(): void
+}
+
 // Financial overview
 export interface FinancialOverview {
     total_income: number
@@ -19,6 +25,7 @@ export interface RecentExpense {
     title: string
     amount: number
     created_at: string
+    category_id: string
 }
 
 // Savings Goal

@@ -19,13 +19,14 @@ export function Dashboard() {
         <div className="min-h-screen bg-linear-to-br from-[#d4f1f1] to-[#e6f5f5] p-4 md:p-8">
             <div className="max-w-7xl mx-auto space-y-6">
                 {/* Header */}
-                <Header data={data} />
+                <Header data={data} onRefresh={refresh} />
                 {/* Overview Cards */}
                 <OverviewCards data={data} />
                 {/* Charts Section */}
                 <ChartsSection data={data} />
                 {/* Category Breakdowns */}
                 <CategoryBreakdown data={data} />
+                {/* Goals Section */}
                 {/* Recent Expenses */}
                 <RecentExpenses data={data} />
 

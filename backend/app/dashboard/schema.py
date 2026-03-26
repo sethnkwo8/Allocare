@@ -5,6 +5,7 @@ from app.models.budget_bucket import AllocationName
 from typing import List
 from decimal import Decimal
 from app.analytics.schema import ExpenseCalculationResponse, BucketCalculationResponse
+import uuid
 
 class FinancialOverview(BaseModel):
     total_income: float
@@ -18,6 +19,7 @@ class RecentExpense(BaseModel):
     title: str
     amount: float
     created_at: datetime
+    category_id: uuid.UUID
 
 class UnreadCount(BaseModel):
     unread_count: int

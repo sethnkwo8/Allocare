@@ -27,7 +27,8 @@ def serialiaze_dashboard(db_session, session_token):
                 id=expense.id,
                 title = expense.title,
                 amount=expense.amount,
-                created_at=expense.date
+                created_at=expense.date,
+                category_id=expense.category_id
             ) for expense in recent_expenses
         ],
         goal_savings=[
