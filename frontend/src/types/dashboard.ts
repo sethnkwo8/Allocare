@@ -4,6 +4,27 @@ export interface HeaderProps {
     onRefresh(): void
 }
 
+// Expense Form interface
+export interface ExpenseForm {
+    amount: string
+    category: string
+    description: string
+}
+
+// Expense dialog props
+export interface ExpenseDialogProps {
+    isDialogOpen: boolean
+    setIsDialogOpen(value: boolean): void
+    expenseForm: ExpenseForm
+    setExpenseForm(value: ExpenseForm): void
+}
+
+// Recent Expenses props
+export interface RecentExpensesProps {
+    data: DashboardResponse
+    setIsDialogOpen(value: boolean): void
+}
+
 // Financial overview
 export interface FinancialOverview {
     total_income: number

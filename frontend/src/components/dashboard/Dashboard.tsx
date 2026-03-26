@@ -8,10 +8,24 @@ import { ChartsSection } from "./ChartsSection"
 import { CategoryBreakdown } from "./CategoryBreakdowns"
 import { RecentExpenses } from "./RecentExpenses"
 import { GoalsSection } from "./GoalsSection"
+import { useState } from "react"
+import { AddExpenseDialog } from "./AddExpenseDialog"
 
 export function Dashboard() {
+    // Get data from custom hook
     const { data, isLoading, errorData, refresh } = useDashboard()
 
+    // Expense Dialog state
+    const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
+
+    // Expense Form state
+    const [expenseForm, setExpenseForm] = useState({
+        amount: "",
+        category: "",
+        description: "",
+    });
+
+    // Loading kkeleton
     if (isLoading) return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-background">
             <h1 className="text-2xl font-bold text-[#2E6B6B] animate-pulse mb-4">
@@ -37,7 +51,13 @@ export function Dashboard() {
                 {/* Goals Section */}
                 <GoalsSection data={data} />
                 {/* Recent Expenses */}
-                <RecentExpenses data={data} />
+                <RecentExpenses data={data} setIsDialogOpen={setIsDialogOpen} />
+                {/* Add Expense Dialog */}
+                <AddExpenseDialog isDialogOpen={isDialogOpen}
+                    setIsDialogOpen={setIsDialogOpen}
+                    expenseForm={expenseForm}
+                    setExpenseForm={setExpenseForm}
+                />
 
             </div>
         </div>
