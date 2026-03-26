@@ -1,9 +1,13 @@
-import { DashboardResponse, HeaderProps } from "@/types/dashboard"
+import { HeaderProps } from "@/types/dashboard"
 import { Button } from "../ui/button"
 import { Bell, RefreshCw, Settings } from "lucide-react"
 
 export function Header({ data, onRefresh }: HeaderProps) {
+    // Get user's name
     const { name } = data.financial_overview
+
+    // Get notification unread count
+    const { unread_count } = data
 
     return (
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -27,8 +31,13 @@ export function Header({ data, onRefresh }: HeaderProps) {
                     Edit Income
                 </Button>
 
-                <Button variant="outline" size="icon">
+                <Button variant="outline" size="icon" className="relative">
                     <Bell className="h-5 w-5" />
+                    {unread_count.unread_count > 0 && (
+                        <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#2E6B6B] text-[10px] font-bold text-white ring-2 ring-white">
+                            {unread_count.unread_count > 9 ? '9+' : unread_count.unread_count}
+                        </span>
+                    )}
                 </Button>
 
                 <Button variant="outline" size="icon">
