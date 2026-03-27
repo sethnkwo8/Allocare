@@ -2,6 +2,7 @@ from app.models.base import Income,Expense, Goal
 from app.notifications.service import get_user_and_unread_count
 from sqlmodel import select, func, desc
 from app.analytics.service import get_category_spending, get_total_buckets_spending
+from decimal import Decimal
 
 # Function to get dashboard data
 def get_dashboard_data(db_session, session_token):
@@ -16,11 +17,13 @@ def get_dashboard_data(db_session, session_token):
 
     # total income
     income_stmt = select(func.sum(Income.amount)).where(Income.user_id == user.id)
-    total_income = db_session.exec(income_stmt).one() or 0
+    raw_income = db_session.exec(income_stmt).one()
+    total_income = Decimal(str(raw_income or 0))
 
     # total spent
     expense_stmt = select(func.sum(Expense.amount)).where(Expense.user_id == user.id)
-    total_spent = db_session.exec(expense_stmt).one() or 0
+    raw_spent = db_session.exec(expense_stmt).one()
+    total_spent = Decimal(str(raw_spent or 0))
 
     remaining_balance = total_income - total_spent
 
