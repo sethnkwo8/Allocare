@@ -22,10 +22,34 @@ export interface ExpenseDialogProps {
     onRefresh(): void
 }
 
+// Goal Form interface
+export interface GoalForm {
+    name: string
+    target_amount: string
+    target_date: string
+    description?: string
+}
+
+// Goal dialog props
+export interface GoalDialogProps {
+    data: DashboardResponse
+    isGoalDialogOpen: boolean
+    setIsGoalDialogOpen(value: boolean): void
+    goalForm: GoalForm
+    setGoalForm(value: GoalForm): void
+    onRefresh(): void
+}
+
 // Recent Expenses props
 export interface RecentExpensesProps {
     data: DashboardResponse
-    setIsDialogOpen(value: boolean): void
+    setIsExpenseDialogOpen(value: boolean): void
+}
+
+// Goal Section props
+export interface GoalSectionProps {
+    data: DashboardResponse
+    setIsGoalDialogOpen(value: boolean): void
 }
 
 // Financial overview

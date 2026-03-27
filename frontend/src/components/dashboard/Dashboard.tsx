@@ -10,7 +10,8 @@ import { RecentExpenses } from "./RecentExpenses"
 import { GoalsSection } from "./GoalsSection"
 import { useState } from "react"
 import { AddExpenseDialog } from "./AddExpenseDialog"
-import { ExpenseForm } from "@/types/dashboard"
+import { ExpenseForm, GoalForm } from "@/types/dashboard"
+import { AddGoalDialog } from "./AddGoalDialog"
 
 export function Dashboard() {
     // Get data from custom hook
@@ -31,7 +32,15 @@ export function Dashboard() {
         description: "",
     });
 
-    // Loading kkeleton
+    // Goal Form state
+    const [goalForm, setGoalForm] = useState<GoalForm>({
+        name: "",
+        target_amount: "",
+        target_date: "",
+        description: "",
+    })
+
+    // Loading skeleton
     if (isLoading) return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-background">
             <h1 className="text-2xl font-bold text-[#2E6B6B] animate-pulse mb-4">
@@ -55,9 +64,18 @@ export function Dashboard() {
                 {/* Category Breakdowns */}
                 <CategoryBreakdown data={data} />
                 {/* Goals Section */}
-                <GoalsSection data={data} />
+                <GoalsSection data={data} setIsGoalDialogOpen={setIsGoalDialogOpen} />
                 {/* Recent Expenses */}
-                <RecentExpenses data={data} setIsDialogOpen={setIsExpenseDialogOpen} />
+                <RecentExpenses data={data} setIsExpenseDialogOpen={setIsExpenseDialogOpen} />
+                {/* Add Goal Dialog */}
+                <AddGoalDialog
+                    data={data}
+                    isGoalDialogOpen={isGoalDialogOpen}
+                    setIsGoalDialogOpen={setIsGoalDialogOpen}
+                    goalForm={goalForm}
+                    setGoalForm={setGoalForm}
+                    onRefresh={refresh}
+                />
                 {/* Add Expense Dialog */}
                 <AddExpenseDialog
                     data={data}
@@ -67,7 +85,6 @@ export function Dashboard() {
                     setExpenseForm={setExpenseForm}
                     onRefresh={refresh}
                 />
-
             </div>
         </div>
     )

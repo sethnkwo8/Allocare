@@ -6,7 +6,7 @@ import { Plus, ArrowUpRight } from "lucide-react"
 import { DashboardResponse, RecentExpensesProps } from "@/types/dashboard"
 import { getCurrencySymbol } from "@/lib/dashboard/utils"
 
-export function RecentExpenses({ data, setIsDialogOpen }: RecentExpensesProps) {
+export function RecentExpenses({ data, setIsExpenseDialogOpen }: RecentExpensesProps) {
     const { currency_code } = data.financial_overview
     const currencySymbol = getCurrencySymbol(currency_code)
     const { recent_expenses, category_spendings } = data
@@ -19,7 +19,7 @@ export function RecentExpenses({ data, setIsDialogOpen }: RecentExpensesProps) {
         <Card className="p-6 bg-white">
             <div className="flex items-center justify-between mb-6">
                 <h3 className="font-semibold text-lg text-[#2E6B6B]">Recent Expenses</h3>
-                <Button className="bg-[#2E6B6B] hover:bg-[#2E6B6B]/90 text-white size-sm md:size-default" onClick={() => setIsDialogOpen(true)}>
+                <Button className="bg-[#2E6B6B] hover:bg-[#2E6B6B]/90 text-white size-sm md:size-default" onClick={() => setIsExpenseDialogOpen(true)}>
                     <Plus className="h-4 w-4 mr-2" />
                     <span className="hidden md:inline">Add Expense</span>
                     <span className="inline md:hidden">Add</span>
