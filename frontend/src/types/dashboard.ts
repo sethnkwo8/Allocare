@@ -97,3 +97,8 @@ export interface DashboardResponse {
     bucket_spendings: BucketCalculationResponse[]
     unread_count: UnreadCount
 }
+
+// Settings dropdown props
+export interface SettingsDropdownProps {
+    onRefresh(): void
+}

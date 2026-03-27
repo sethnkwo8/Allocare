@@ -42,3 +42,23 @@ export async function loginUser(formData: LoginFormType) {
 
     return await res.json()
 }
+
+// Logout user function
+export async function logoutUser() {
+    const apiURL = process.env.NEXT_PUBLIC_API_URL
+
+    const res = await fetch(`${apiURL}/auth/logout`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        credentials: "include",
+    })
+
+    if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || "Logout Failed")
+    }
+
+    return await res.json()
+}

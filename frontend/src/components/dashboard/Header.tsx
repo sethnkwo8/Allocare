@@ -1,6 +1,7 @@
 import { HeaderProps } from "@/types/dashboard"
 import { Button } from "../ui/button"
-import { Bell, RefreshCw, Settings } from "lucide-react"
+import { Bell, RefreshCw } from "lucide-react"
+import { SettingsDropdown } from "./SettingsDropdown"
 
 export function Header({ data, onRefresh }: HeaderProps) {
     // Get user's name
@@ -40,9 +41,8 @@ export function Header({ data, onRefresh }: HeaderProps) {
                     )}
                 </Button>
 
-                <Button variant="outline" size="icon">
-                    <Settings className="h-5 w-5" />
-                </Button>
+                <SettingsDropdown />
+
             </div>
         </div>
     )
