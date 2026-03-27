@@ -15,8 +15,8 @@ export interface ExpenseForm {
 // Expense dialog props
 export interface ExpenseDialogProps {
     data: DashboardResponse
-    isDialogOpen: boolean
-    setIsDialogOpen(value: boolean): void
+    isExpenseDialogOpen: boolean
+    setIsExpenseDialogOpen(value: boolean): void
     expenseForm: ExpenseForm
     setExpenseForm(value: ExpenseForm): void
     onRefresh(): void

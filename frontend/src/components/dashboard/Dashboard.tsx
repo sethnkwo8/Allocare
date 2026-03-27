@@ -17,7 +17,11 @@ export function Dashboard() {
     const { data, isLoading, errorData, refresh } = useDashboard()
 
     // Expense Dialog state
-    const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
+    const [isExpenseDialogOpen, setIsExpenseDialogOpen] = useState<boolean>(false)
+
+    // Goal Dialog state
+    const [isGoalDialogOpen, setIsGoalDialogOpen] = useState<boolean>(false)
+
 
     // Expense Form state
     const [expenseForm, setExpenseForm] = useState<ExpenseForm>({
@@ -53,12 +57,12 @@ export function Dashboard() {
                 {/* Goals Section */}
                 <GoalsSection data={data} />
                 {/* Recent Expenses */}
-                <RecentExpenses data={data} setIsDialogOpen={setIsDialogOpen} />
+                <RecentExpenses data={data} setIsDialogOpen={setIsExpenseDialogOpen} />
                 {/* Add Expense Dialog */}
                 <AddExpenseDialog
                     data={data}
-                    isDialogOpen={isDialogOpen}
-                    setIsDialogOpen={setIsDialogOpen}
+                    isExpenseDialogOpen={isExpenseDialogOpen}
+                    setIsExpenseDialogOpen={setIsExpenseDialogOpen}
                     expenseForm={expenseForm}
                     setExpenseForm={setExpenseForm}
                     onRefresh={refresh}

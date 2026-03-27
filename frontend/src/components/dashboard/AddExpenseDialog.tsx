@@ -11,7 +11,7 @@ import { createExpense } from "@/lib/api/dashboard";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
 
-export function AddExpenseDialog({ data, isDialogOpen, setIsDialogOpen, expenseForm, setExpenseForm, onRefresh }: ExpenseDialogProps) {
+export function AddExpenseDialog({ data, isExpenseDialogOpen, setIsExpenseDialogOpen, expenseForm, setExpenseForm, onRefresh }: ExpenseDialogProps) {
     // Get categories
     const { category_spendings } = data
 
@@ -32,7 +32,7 @@ export function AddExpenseDialog({ data, isDialogOpen, setIsDialogOpen, expenseF
             // API call
             await createExpense(expenseForm)
             // Close dialog
-            setIsDialogOpen(false)
+            setIsExpenseDialogOpen(false)
             // Reset Expense Form
             setExpenseForm({ title: "", amount: "", category: "", description: "" });
             // Refresh
@@ -45,7 +45,7 @@ export function AddExpenseDialog({ data, isDialogOpen, setIsDialogOpen, expenseF
     }
 
     return (
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <Dialog open={isExpenseDialogOpen} onOpenChange={setIsExpenseDialogOpen}>
             <DialogContent className="sm:max-w-106.25">
                 <DialogHeader>
                     <DialogTitle>Add Expense</DialogTitle>
@@ -101,7 +101,7 @@ export function AddExpenseDialog({ data, isDialogOpen, setIsDialogOpen, expenseF
                     </div>
                 </div>
                 <div className="flex justify-end gap-3 mt-4">
-                    <Button variant="outline" disabled={isSubmitting} onClick={() => setIsDialogOpen(false)}>
+                    <Button variant="outline" disabled={isSubmitting} onClick={() => setIsExpenseDialogOpen(false)}>
                         Cancel
                     </Button>
                     <Button
