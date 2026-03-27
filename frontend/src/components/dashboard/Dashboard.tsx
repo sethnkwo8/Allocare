@@ -10,6 +10,7 @@ import { RecentExpenses } from "./RecentExpenses"
 import { GoalsSection } from "./GoalsSection"
 import { useState } from "react"
 import { AddExpenseDialog } from "./AddExpenseDialog"
+import { ExpenseForm } from "@/types/dashboard"
 
 export function Dashboard() {
     // Get data from custom hook
@@ -19,7 +20,8 @@ export function Dashboard() {
     const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
 
     // Expense Form state
-    const [expenseForm, setExpenseForm] = useState({
+    const [expenseForm, setExpenseForm] = useState<ExpenseForm>({
+        title: "",
         amount: "",
         category: "",
         description: "",
@@ -53,10 +55,13 @@ export function Dashboard() {
                 {/* Recent Expenses */}
                 <RecentExpenses data={data} setIsDialogOpen={setIsDialogOpen} />
                 {/* Add Expense Dialog */}
-                <AddExpenseDialog isDialogOpen={isDialogOpen}
+                <AddExpenseDialog
+                    data={data}
+                    isDialogOpen={isDialogOpen}
                     setIsDialogOpen={setIsDialogOpen}
                     expenseForm={expenseForm}
                     setExpenseForm={setExpenseForm}
+                    onRefresh={refresh}
                 />
 
             </div>

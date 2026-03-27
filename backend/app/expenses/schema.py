@@ -8,9 +8,8 @@ from decimal import Decimal
 class ExpenseCreate(BaseModel):
     title: str
     amount: Decimal
-    notes: Optional[str]
+    notes: Optional[str] = None
     category_id: uuid.UUID
-    date: Optional[datetime]
 
 # Schema for expense response
 class ExpenseResponse(BaseModel):

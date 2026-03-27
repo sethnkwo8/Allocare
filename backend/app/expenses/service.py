@@ -25,8 +25,7 @@ def create_expense(expense_data: ExpenseCreate, db_session, session_token):
                       amount=expense_data.amount,
                       category_id=expense_data.category_id,
                       notes=expense_data.notes,
-                      user_id=user.id,
-                      date=expense_data.date
+                      user_id=user.id
                       )
     
     db_session.add(expense)

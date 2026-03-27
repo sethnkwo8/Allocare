@@ -6,6 +6,7 @@ export interface HeaderProps {
 
 // Expense Form interface
 export interface ExpenseForm {
+    title: string
     amount: string
     category: string
     description: string
@@ -13,10 +14,12 @@ export interface ExpenseForm {
 
 // Expense dialog props
 export interface ExpenseDialogProps {
+    data: DashboardResponse
     isDialogOpen: boolean
     setIsDialogOpen(value: boolean): void
     expenseForm: ExpenseForm
     setExpenseForm(value: ExpenseForm): void
+    onRefresh(): void
 }
 
 // Recent Expenses props

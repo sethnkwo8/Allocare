@@ -1,14 +1,49 @@
 // Add expense dialog
 "use client"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
-import { ExpenseDialogProps } from "@/types/dashboard";
+import { ExpenseDialogProps, ExpenseForm } from "@/types/dashboard";
+import { createExpense } from "@/lib/api/dashboard";
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
 
-export function AddExpenseDialog({ isDialogOpen, setIsDialogOpen, expenseForm, setExpenseForm }: ExpenseDialogProps) {
+export function AddExpenseDialog({ data, isDialogOpen, setIsDialogOpen, expenseForm, setExpenseForm, onRefresh }: ExpenseDialogProps) {
+    // Get categories
+    const { category_spendings } = data
+
+    // Loading state for submission
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
+
+    // Handle Expense submit
+    async function handleExpenseSubmit(expenseForm: ExpenseForm) {
+        if (!expenseForm.amount || !expenseForm.title || !expenseForm.category) {
+            alert("Please fill in the required fields");
+            return;
+        }
+
+        // Start loading
+        setIsSubmitting(true);
+
+        try {
+            // API call
+            await createExpense(expenseForm)
+            // Close dialog
+            setIsDialogOpen(false)
+            // Reset Expense Form
+            setExpenseForm({ title: "", amount: "", category: "", description: "" });
+            // Refresh
+            onRefresh()
+        } catch (error: any) {
+            alert(error.message)
+        } finally {
+            setIsSubmitting(false)
+        }
+    }
+
     return (
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogContent className="sm:max-w-106.25">
@@ -19,6 +54,16 @@ export function AddExpenseDialog({ isDialogOpen, setIsDialogOpen, expenseForm, s
                     </DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4">
+                    <div className="space-y-2">
+                        <Label htmlFor="title">Title</Label>
+                        <Input
+                            id="title"
+                            type="text"
+                            placeholder="Enter title"
+                            value={expenseForm.title}
+                            onChange={(e) => setExpenseForm({ ...expenseForm, title: e.target.value })}
+                        />
+                    </div>
                     <div className="space-y-2">
                         <Label htmlFor="amount">Amount</Label>
                         <Input
@@ -39,20 +84,9 @@ export function AddExpenseDialog({ isDialogOpen, setIsDialogOpen, expenseForm, s
                                 <SelectValue placeholder="Select category" />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="housing">Housing</SelectItem>
-                                <SelectItem value="groceries">Groceries</SelectItem>
-                                <SelectItem value="utilities">Utilities</SelectItem>
-                                <SelectItem value="transportation">Transportation</SelectItem>
-                                <SelectItem value="healthcare">Healthcare</SelectItem>
-                                <SelectItem value="entertainment">Entertainment</SelectItem>
-                                <SelectItem value="diningOut">Dining Out</SelectItem>
-                                <SelectItem value="shopping">Shopping</SelectItem>
-                                <SelectItem value="travel">Travel</SelectItem>
-                                <SelectItem value="fitness">Fitness</SelectItem>
-                                <SelectItem value="emergency">Emergency</SelectItem>
-                                <SelectItem value="retirement">Retirement</SelectItem>
-                                <SelectItem value="investments">Investments</SelectItem>
-                                <SelectItem value="goals">Goals</SelectItem>
+                                {category_spendings.map((c) => (
+                                    <SelectItem key={c.category_id} value={c.category_id}>{c.category_name}</SelectItem>
+                                ))}
                             </SelectContent>
                         </Select>
                     </div>
@@ -67,19 +101,24 @@ export function AddExpenseDialog({ isDialogOpen, setIsDialogOpen, expenseForm, s
                     </div>
                 </div>
                 <div className="flex justify-end gap-3 mt-4">
-                    <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+                    <Button variant="outline" disabled={isSubmitting} onClick={() => setIsDialogOpen(false)}>
                         Cancel
                     </Button>
                     <Button
                         className="bg-[#2E6B6B] hover:bg-[#2E6B6B]/90 text-white"
+                        disabled={isSubmitting}
                         onClick={() => {
-                            // Handle form submission here
-                            console.log('Expense added:', expenseForm);
-                            setIsDialogOpen(false);
-                            setExpenseForm({ amount: "", category: "", description: "" });
+                            handleExpenseSubmit(expenseForm)
                         }}
                     >
-                        Add Expense
+                        {isSubmitting ? (
+                            <>
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                Adding...
+                            </>
+                        ) : (
+                            "Add Expense"
+                        )}
                     </Button>
                 </div>
             </DialogContent>
