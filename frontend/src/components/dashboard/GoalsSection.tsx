@@ -2,9 +2,10 @@
 import { Button } from "../ui/button";
 import { Card } from "../ui/card"
 import { Progress } from "../ui/progress"
-import { Target, Calendar, Plus } from "lucide-react";
+import { Target, Calendar, Plus, ChevronRight } from "lucide-react";
 import { getCurrencySymbol } from "@/lib/dashboard/utils";
 import { GoalSectionProps } from "@/types/dashboard";
+import Link from "next/link";
 
 export function GoalsSection({ data, setIsGoalDialogOpen }: GoalSectionProps) {
     const currencySymbol = getCurrencySymbol(data.financial_overview.currency_code)
@@ -15,6 +16,14 @@ export function GoalsSection({ data, setIsGoalDialogOpen }: GoalSectionProps) {
             <div className="space-y-4">
                 <div className="flex items-center justify-between">
                     <h3 className="text-lg font-semibold text-[#2E6B6B]">Financial Goals</h3>
+                    {goal_savings.length > 0 && (
+                        <Link
+                            href="/goals"
+                            className="text-xs font-medium text-muted-foreground hover:text-[#2E6B6B] flex items-center gap-0.5 ml-2 transition-colors"
+                        >
+                            See all <ChevronRight className="h-3 w-3" />
+                        </Link>
+                    )}
                     <Button className="bg-[#2E6B6B] hover:bg-[#2E6B6B]/90 text-white size-sm md:size-default" onClick={() => setIsGoalDialogOpen(true)}>
                         <Plus className="h-4 w-4 mr-2" />
                         <span className="hidden md:inline">Add Goal</span>

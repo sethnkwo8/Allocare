@@ -1,10 +1,10 @@
 // Recent Expenses Section
-
 import { Card } from "../ui/card"
 import { Button } from "../ui/button"
-import { Plus, ArrowUpRight } from "lucide-react"
-import { DashboardResponse, RecentExpensesProps } from "@/types/dashboard"
+import { Plus, ArrowUpRight, ChevronRight } from "lucide-react"
+import { RecentExpensesProps } from "@/types/dashboard"
 import { getCurrencySymbol } from "@/lib/dashboard/utils"
+import Link from "next/link"
 
 export function RecentExpenses({ data, setIsExpenseDialogOpen }: RecentExpensesProps) {
     const { currency_code } = data.financial_overview
@@ -19,6 +19,14 @@ export function RecentExpenses({ data, setIsExpenseDialogOpen }: RecentExpensesP
         <Card className="p-6 bg-white">
             <div className="flex items-center justify-between mb-6">
                 <h3 className="font-semibold text-lg text-[#2E6B6B]">Recent Expenses</h3>
+                {recent_expenses.length > 0 && (
+                    <Link
+                        href="/expenses"
+                        className="text-xs font-medium text-muted-foreground hover:text-[#2E6B6B] flex items-center gap-0.5 ml-2 transition-colors"
+                    >
+                        See all <ChevronRight className="h-3 w-3" />
+                    </Link>
+                )}
                 <Button className="bg-[#2E6B6B] hover:bg-[#2E6B6B]/90 text-white size-sm md:size-default" onClick={() => setIsExpenseDialogOpen(true)}>
                     <Plus className="h-4 w-4 mr-2" />
                     <span className="hidden md:inline">Add Expense</span>
