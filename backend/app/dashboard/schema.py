@@ -45,3 +45,8 @@ class DashboardResponse(BaseModel):
     category_spendings: List[ExpenseCalculationResponse]
     bucket_spendings: List[BucketCalculationResponse]
     unread_count: UnreadCount
+    needs_savings_init: bool
+
+# Schema for initialized data response
+class InitializedSavings(BaseModel):
+    message: str
