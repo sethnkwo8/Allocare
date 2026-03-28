@@ -34,7 +34,7 @@ def get_dashboard_data(db_session, session_token):
     total_spent = Decimal(str(raw_spent or 0))
 
     # Remaining balance for month
-    remaining_balance = total_income - total_spent
+    remaining_balance = Decimal(str(total_income)) - total_spent
 
     # Get bucket spendings
     bucket_results = get_total_buckets_spending(db_session, user)

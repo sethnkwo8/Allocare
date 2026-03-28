@@ -12,6 +12,7 @@ import { useState } from "react"
 import { AddExpenseDialog } from "./AddExpenseDialog"
 import { ExpenseForm, GoalForm } from "@/types/dashboard"
 import { AddGoalDialog } from "./AddGoalDialog"
+import { AllocationBanner } from "./AllocationBanner"
 
 export function Dashboard() {
     // Get data from custom hook
@@ -23,6 +24,9 @@ export function Dashboard() {
     // Goal Dialog state
     const [isGoalDialogOpen, setIsGoalDialogOpen] = useState<boolean>(false)
 
+    // Inside your Dashboard component
+    const savingsBucket = data?.bucket_spendings.find(b => b.bucket_name.toLowerCase() === "savings");
+    const plannedSavings = savingsBucket ? savingsBucket.budget_limit : 0;
 
     // Expense Form state
     const [expenseForm, setExpenseForm] = useState<ExpenseForm>({
@@ -57,6 +61,14 @@ export function Dashboard() {
             <div className="max-w-7xl mx-auto space-y-6">
                 {/* Header */}
                 <Header data={data} onRefresh={refresh} />
+                {/* Initialize Savings Banner */}
+                {data.needs_savings_init && (
+                    <AllocationBanner
+                        data={data}
+                        plannedSavings={plannedSavings}
+                        onRefresh={refresh}
+                    />
+                )}
                 {/* Overview Cards */}
                 <OverviewCards data={data} />
                 {/* Charts Section */}

@@ -120,9 +120,17 @@ export interface DashboardResponse {
     category_spendings: ExpenseCalculationResponse[]
     bucket_spendings: BucketCalculationResponse[]
     unread_count: UnreadCount
+    needs_savings_init: boolean
 }
 
 // Settings dropdown props
 export interface SettingsDropdownProps {
+    onRefresh(): void
+}
+
+// Allocate banner props
+export interface AllocationBannerProps {
+    data: DashboardResponse
+    plannedSavings: number
     onRefresh(): void
 }
