@@ -16,20 +16,25 @@ export function GoalsSection({ data, setIsGoalDialogOpen }: GoalSectionProps) {
     return (
         <Card className="p-6 bg-white shadow-sm border-none">
             <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-semibold text-[#2E6B6B]">Financial Goals</h3>
-                    {goal_savings.length > 0 && (
-                        <Link
-                            href="/goals"
-                            className="text-xs font-medium text-muted-foreground hover:text-[#2E6B6B] flex items-center gap-0.5 ml-2 transition-colors"
-                        >
-                            See all <ChevronRight className="h-3 w-3" />
-                        </Link>
-                    )}
-                    <Button className="bg-[#2E6B6B] hover:bg-[#2E6B6B]/90 text-white size-sm md:size-default" onClick={() => setIsGoalDialogOpen(true)}>
+                <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center gap-2">
+                        <h3 className="font-semibold text-lg text-[#2E6B6B]">Financial Goals</h3>
+                        {goal_savings.length > 0 && (
+                            <Link
+                                href="/goals"
+                                className="text-xs font-medium text-muted-foreground hover:text-[#2E6B6B] flex items-center gap-0.5 transition-colors"
+                            >
+                                See all <ChevronRight className="h-3 w-3" />
+                            </Link>
+                        )}
+                    </div>
+                    <Button
+                        className="bg-[#2E6B6B] hover:bg-[#2E6B6B]/90 text-white"
+                        size="sm"
+                        onClick={() => setIsGoalDialogOpen(true)}
+                    >
                         <Plus className="h-4 w-4 md:mr-2" />
                         <span className="hidden md:inline">Add Goal</span>
-
                     </Button>
                 </div>
 
