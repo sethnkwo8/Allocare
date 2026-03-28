@@ -8,7 +8,9 @@ import { GoalSectionProps } from "@/types/dashboard";
 import Link from "next/link";
 
 export function GoalsSection({ data, setIsGoalDialogOpen }: GoalSectionProps) {
+    // Get currency symbol
     const currencySymbol = getCurrencySymbol(data.financial_overview.currency_code)
+    // Get goal savings
     const { goal_savings } = data
 
     return (
@@ -25,9 +27,9 @@ export function GoalsSection({ data, setIsGoalDialogOpen }: GoalSectionProps) {
                         </Link>
                     )}
                     <Button className="bg-[#2E6B6B] hover:bg-[#2E6B6B]/90 text-white size-sm md:size-default" onClick={() => setIsGoalDialogOpen(true)}>
-                        <Plus className="h-4 w-4 mr-2" />
+                        <Plus className="h-4 w-4 md:mr-2" />
                         <span className="hidden md:inline">Add Goal</span>
-                        <span className="inline md:hidden">Add</span>
+
                     </Button>
                 </div>
 
