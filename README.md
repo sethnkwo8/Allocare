@@ -50,10 +50,102 @@ It provides a clean dashboard, smart budgeting tools, and AI-powered insights to
 | **Frontend** | Next.js (App Router), TypeScript, Tailwind CSS, Shadcn UI |
 | **Backend** | FastAPI (Python), SQLModel, Session-based authentication |
 | **Database** | PostgreSQL |
-| **Other Toolss** | Charting library (for analytics), Fetch API for client-server communication |
+| **Other Tools** | Charting library (for analytics), Fetch API for client-server communication |
 
 ---
 
+## ⚙️ Architecture Overview
+
+Allocare follows a separation of concerns approach:
+- routers/ -> API endpoints
+- services/ -> business logic
+- schemas/ -> request/response validation
+- models/ -> database structure
+
+Frontend communicates with backend via REST APIs and uses cookies for session management.
+
+---
+
+## 🔑 Key Highlights
+
+- Built with a real-world architecture (not a simple CRUD app)
+- Implements secure session handling
+- Designed with scalability in mind
+- Focus on clean UI/UX and usability
+- Structured to support AI-powered features
+
+---
+
+## 🛠 Installation & Setup
+
+**Step 1 – Clone the Repository**
+```bash
+git clone https://github.com/sethnkwo8/Allocare.git
+cd Allocare
+```
+
+---
+
+**Step 2 – Backend setup (FastAPI)**
+```bash
+cd backend
+pip install -r requirements.txt
+uvicorn main:app --reload
+```
+
+---
+
+**Step 3 – Frontend setup (Next.js)**
+```bash
+cd frontend
+npm install
+npm run dev       
+```
+
+---
+
+## 🌍 Environment variable
+
+Create a .env file in the frontend:
+```env
+NEXT_PUBLIC_API_URL=http://localhost:8000
+```
+
+---
+
+## 📌 Roadmap
+- Authentication system
+- Dashboard UI
+- Expense tracking
+- Goals system
+- Notifications 
+- AI financial assistant
+
+---
+
+## 📷 Screenshots
+
+
+---
+
+## 📖 Lessons Learned
+- Designing scalable backend architecture
+- Managing authentication with cookies and sessions
+- Structuring full-stack applications
+- Building real-world financial logic systems
+
+---
+
+## 📬 Contact
+Feel free to reach out or connect:
+- Portfolio: (coming soon...)
+- LinkedIn: https://www.linkedin.com/in/seth-nkwo/
+- GitHub: https://github.com/sethnkwo8
+
+---
+
+## ⭐️ Acknowledgements
+This project was built as part of a full-stack development jorney, focusing on real-world application design and problem-solving.
 
 
 
