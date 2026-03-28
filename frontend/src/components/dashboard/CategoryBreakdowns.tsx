@@ -64,7 +64,7 @@ export function CategoryBreakdown({ data }: { data: DashboardResponse }) {
                                         <span>{static_category.label}</span>
                                     </div>
                                     <span className="text-muted-foreground">
-                                        {currencySymbol}{category.total_spent.toFixed(0)} / {currencySymbol}{formatWithCommas(category.budget_limit.toFixed(0))}
+                                        {currencySymbol}{formatWithCommas(category.total_spent.toFixed(0))} / {currencySymbol}{formatWithCommas(category.budget_limit.toFixed(0))}
                                     </span>
                                 </div>
                                 <Progress value={category.percentSpent} className="h-2" />
@@ -93,7 +93,7 @@ export function CategoryBreakdown({ data }: { data: DashboardResponse }) {
                                         <span>{static_category.label}</span>
                                     </div>
                                     <span className="text-muted-foreground">
-                                        {currencySymbol}{category.total_spent.toFixed(0)} / {currencySymbol}{formatWithCommas(category.budget_limit.toFixed(0))}
+                                        {currencySymbol}{formatWithCommas(category.total_spent.toFixed(0))} / {currencySymbol}{formatWithCommas(category.budget_limit.toFixed(0))}
                                     </span>
                                 </div>
                                 <Progress value={category.percentSpent} className="h-2" />
@@ -121,7 +121,7 @@ export function CategoryBreakdown({ data }: { data: DashboardResponse }) {
                                         <span>{static_category.label}</span>
                                     </div>
                                     <span className="text-muted-foreground">
-                                        {currencySymbol}{category.total_spent.toFixed(0)} / {currencySymbol}{formatWithCommas(category.budget_limit.toFixed(0))}
+                                        {currencySymbol}{formatWithCommas(category.total_spent.toFixed(0))} / {currencySymbol}{formatWithCommas(category.budget_limit.toFixed(0))}
                                     </span>
                                 </div>
                                 <Progress value={category.percentSpent} className="h-2" />
