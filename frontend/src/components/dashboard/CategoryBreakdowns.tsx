@@ -27,25 +27,12 @@ export function CategoryBreakdown({ data }: { data: DashboardResponse }) {
         };
     }
 
-    // Get currency code
-    const { currency_code } = data.financial_overview
-
-    // Get currency symbol
-    const currencySymbol = getCurrencySymbol(currency_code)
-
-    // Get needs details
-    const needs_data = data.bucket_spendings.find((b) => b.bucket_name === "needs")
-    const needsAmount = Number(needs_data?.budget_limit ?? 0)
-
-    // Get wants details
-    const wants_data = data.bucket_spendings.find((b) => b.bucket_name === "wants")
-    const wantsAmount = Number(wants_data?.budget_limit ?? 0)
-
-    // Get needs details
-    const savings_data = data.bucket_spendings.find((b) => b.bucket_name === "savings")
-    const savingsAmount = Number(savings_data?.budget_limit ?? 0)
-
-
+    // Buckets data
+    const buckets = [
+        { name: "needs", label: "Needs", iconColor: "text-blue-600", categories: needsCategories },
+        { name: "wants", label: "Wants", iconColor: "text-purple-600", categories: wantsCategories },
+        { name: "savings", label: "Savings", iconColor: "text-green-600", categories: savingsCategories }
+    ];
 
     return (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
