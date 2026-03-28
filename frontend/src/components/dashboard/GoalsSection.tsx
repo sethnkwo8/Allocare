@@ -69,6 +69,14 @@ export function GoalsSection({ data, setIsGoalDialogOpen }: GoalSectionProps) {
                                             {currencySymbol}{target.toLocaleString()}
                                         </span>
                                     </div>
+                                    <Button
+                                        size="sm"
+                                        variant="outline"
+                                        className="h-8 border-[#2E6B6B] text-[#2E6B6B] hover:bg-[#2E6B6B] hover:text-white"
+                                    >
+                                        <Plus className="h-3 w-3 mr-1" />
+                                        Deposit
+                                    </Button>
                                 </Card>
                             )
                         })

@@ -27,7 +27,7 @@ def goal_creation(
         remaining_amount=remaining_amount
     )
 
-# POST route gor depositing to goal
+# POST route for depositing to goal
 @router.post('/{goal_id}/deposit', response_model=schema.DepositResponse, status_code=201)
 def goal_deposit(
     goal_id: uuid.UUID,

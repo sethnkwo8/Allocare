@@ -7,7 +7,8 @@ import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
-import { GoalDialogProps } from "@/types/dashboard";
+import { GoalDialogProps, GoalForm } from "@/types/dashboard";
+import { createGoal } from "@/lib/api/dashboard";
 
 export function AddGoalDialog({ data, isGoalDialogOpen, setIsGoalDialogOpen, goalForm, setGoalForm, onRefresh }: GoalDialogProps) {
     // Get goal savings
@@ -15,6 +16,31 @@ export function AddGoalDialog({ data, isGoalDialogOpen, setIsGoalDialogOpen, goa
 
     // Submit state
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
+
+    // Handle goal submit
+    async function handleGoalSubmit(goalForm: GoalForm) {
+        if (!goalForm.name || !goalForm.target_amount) {
+            alert("Please fill in required fields")
+            return
+        }
+
+        setIsSubmitting(true)
+
+        try {
+            // API call
+            await createGoal(goalForm)
+            // Close dialog
+            setIsGoalDialogOpen(false)
+            // Reset Goal Form
+            setGoalForm({ name: "", target_amount: "", target_date: "", description: "" });
+            // Refresh
+            onRefresh()
+        } catch (error: any) {
+            alert(error.message)
+        } finally {
+            setIsSubmitting(false)
+        }
+    }
 
     return (
         <Dialog open={isGoalDialogOpen} onOpenChange={setIsGoalDialogOpen}>
@@ -73,6 +99,7 @@ export function AddGoalDialog({ data, isGoalDialogOpen, setIsGoalDialogOpen, goa
                     <Button
                         className="bg-[#2E6B6B] hover:bg-[#2E6B6B]/90 text-white"
                         disabled={isSubmitting}
+                        onClick={() => handleGoalSubmit(goalForm)}
                     >
                         {isSubmitting ? (
                             <>
