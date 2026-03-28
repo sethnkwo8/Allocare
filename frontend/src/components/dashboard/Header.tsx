@@ -10,11 +10,16 @@ export function Header({ data, onRefresh }: HeaderProps) {
     // Get notification unread count
     const { unread_count } = data
 
+    // Get the current month
+    const currentMonth = new Intl.DateTimeFormat('en-US', { month: 'long' }).format(new Date());
+
     return (
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
                 <h1 className="text-3xl font-semibold text-[#2E6B6B]">Welcome back, {name}!</h1>
-                <p className="text-muted-foreground">Here's your monthly financial overview</p>
+                <p className="text-muted-foreground">
+                    Here's your financial overview for <span className="text-[#2E6B6B] font-medium">{currentMonth}</span>
+                </p>
             </div>
 
             <div className="flex items-center gap-2">
