@@ -2,12 +2,16 @@ from app.models.base import Income,Expense, Goal
 from app.notifications.service import get_user_and_unread_count
 from sqlmodel import select, func, desc
 from app.analytics.service import get_category_spending, get_total_buckets_spending
+from app.utils.date_utils import get_current_month_range
 from decimal import Decimal
 
 # Function to get dashboard data
 def get_dashboard_data(db_session, session_token):
     # Get user and unread notification count
     user, unread_count = get_user_and_unread_count(session_token, db_session)
+
+    # Get current month range
+    start_of_month, start_of_next_month = get_current_month_range()
 
     # Get user name
     user_name = user.name
@@ -16,15 +20,19 @@ def get_dashboard_data(db_session, session_token):
     currency_code = user.currency
 
     # total income
-    income_stmt = select(func.sum(Income.amount)).where(Income.user_id == user.id)
-    raw_income = db_session.exec(income_stmt).one()
-    total_income = Decimal(str(raw_income or 0))
+    income_stmt = select(Income.amount).where(Income.user_id == user.id)
+    total_income = db_session.exec(income_stmt).first() or Decimal("0.00")
 
-    # total spent
-    expense_stmt = select(func.sum(Expense.amount)).where(Expense.user_id == user.id)
+    # total spent for month
+    expense_stmt = select(func.sum(Expense.amount)).where(
+        Expense.user_id == user.id,
+        Expense.date >= start_of_month,
+        Expense.date < start_of_next_month
+        )
     raw_spent = db_session.exec(expense_stmt).one()
     total_spent = Decimal(str(raw_spent or 0))
 
+    # Remaining balance for month
     remaining_balance = total_income - total_spent
 
     # Get bucket spendings
