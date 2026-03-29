@@ -68,7 +68,7 @@ export function AllocationBanner({ data, plannedSavings, onRefresh }: Allocation
                         </h4>
                         <p className="text-sm text-muted-foreground mt-1 max-w-md">
                             It's a new month. Would you like to automatically allocate your
-                            <span className="font-semibold text-[#2E6B6B]"> {currencySymbol}{formatWithCommas((plannedSavings || 0).toFixed(0))} </span>
+                            <span className="font-semibold text-[#2E6B6B]"> {currencySymbol}{formatWithCommas(Number(plannedSavings || 0).toFixed(0))} </span>
                             savings target now?
                         </p>
                     </div>
