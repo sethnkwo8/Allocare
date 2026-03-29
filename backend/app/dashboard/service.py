@@ -108,6 +108,10 @@ def initialize_monthly_allocation(db_session, user):
 
     # Create an expense for each category
     for category in savings_categories:
+        # Skip auto filling financial goals category
+        if category.name == "Financial Goals":
+            continue
+
         if category.monthly_limit > 0:
             new_allocation = Expense(
                 title=f"Monthly Allocation: {category.name}",
