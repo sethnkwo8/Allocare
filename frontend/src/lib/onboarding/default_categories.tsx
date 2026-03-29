@@ -30,6 +30,6 @@ export const savingsCategories = [
     { id: "emergency", label: "Emergency Fund", icon: Shield, description: "3-6 months expenses" },
     { id: "retirement", label: "Retirement", icon: TrendingUp, description: "401k, IRA, pension" },
     { id: "investments", label: "Investments", icon: Landmark, description: "Stocks, bonds, crypto" },
-    { id: "goals", label: "Financial Goals", icon: Target, description: "House, car, education" },
+    { id: "goals", label: "Financial Goals", icon: Target, description: "Fill this by depositing into specific goals" },
     { id: "otherSavings", label: "Other Savings", icon: MoreHorizontal, description: "Other saving goals" },
 ];
