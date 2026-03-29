@@ -1,12 +1,11 @@
 from app.auth.service import get_current_user
-from app.models.base import Goal
+from app.models.base import Goal, Expense, BudgetBucket, BudgetCategory
 from app.models.notification import NotificationType
 from .schema import GoalCreateRequest, DepositRequest, GoalUpdateRequest
 from .exceptions import GoalAlreadyCompleted, GoalDoesNotExist
 from app.utils.milestone_check import check_goal_milestone
 from app.utils.calculate_goal_metrics import calculate_goal_metrics
 from app.utils.create_notification import create_notification
-from app.auth.exceptions import UnauthorizedError
 from sqlmodel import select
 import uuid
 
@@ -22,7 +21,6 @@ def create_goal(goal_data:GoalCreateRequest, db_session, session_token):
     goal = Goal(
         name=goal_data.name,
         target_amount=goal_data.target_amount,
-        current_amount=goal_data.current_amount,
         target_date=goal_data.target_date,
         description=goal_data.description,
         is_completed=is_done,
@@ -69,6 +67,19 @@ def deposit_for_goal(goal_id: uuid.UUID, deposit_data: DepositRequest, db_sessio
 
     # Adding deposit amount
     goal.current_amount += deposit_data.amount
+
+    category_stmt = select(BudgetCategory).where(BudgetCategory.name == "Financial Goals")
+    goal_category = db_session.exec(category_stmt).first()
+
+    # Create goal expense
+    if goal_category:
+        db_session.add(Expense(
+            title=f"Goal Deposit: {goal.name}",
+            amount=deposit_data.amount,
+            category_id=goal_category.id,
+            user_id=goal.user_id,
+            notes=f"Funds moved to {goal.name}"
+        ))
 
     # Automatic completion check
     goal.is_completed = goal.current_amount >= goal.target_amount
