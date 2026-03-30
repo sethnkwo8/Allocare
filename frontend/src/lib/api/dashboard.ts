@@ -71,3 +71,26 @@ export async function initializeSavings() {
 
     return await res.json()
 }
+
+// API call to deposit for a goal
+export async function depositForGoal(amount: string, id: string) {
+    const apiURL = process.env.NEXT_PUBLIC_API_URL
+
+    const res = await fetch(`${apiURL}/goals/${id}/deposit`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+            amount: parseFloat(amount)
+        })
+    })
+
+    if (!res.ok) {
+        const errorData = await res.json()
+        throw new Error(errorData.detail[0].msg || "Failed to deposit for goal")
+    }
+
+    return await res.json()
+}

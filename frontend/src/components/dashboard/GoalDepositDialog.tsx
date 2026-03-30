@@ -7,6 +7,7 @@ import { Input } from "../ui/input"
 import { Button } from "../ui/button"
 import { useState } from "react"
 import { DepositDialogProps } from "@/types/dashboard"
+import { depositForGoal } from "@/lib/api/dashboard"
 
 export function GoalDepositDialog({ goal, isOpen, onClose, onRefresh, currencySymbol }: DepositDialogProps) {
     // Amount state
@@ -14,6 +15,26 @@ export function GoalDepositDialog({ goal, isOpen, onClose, onRefresh, currencySy
 
     // Submit state
     const [isSubmitting, setIsSubmitting] = useState(false)
+
+    // Handle deposit action
+    async function handleDeposit() {
+        if (!amount || parseFloat(amount) <= 0) return;
+        setIsSubmitting(true)
+        try {
+            // Call api
+            await depositForGoal(amount, goal.id)
+            // Refresh page
+            onRefresh()
+            // Close dialog
+            onClose()
+            // Reset input
+            setAmount("")
+        } catch (error: any) {
+            alert("We couldn't complete your deposit at this time")
+        } finally {
+            setIsSubmitting(false)
+        }
+    }
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
@@ -55,7 +76,7 @@ export function GoalDepositDialog({ goal, isOpen, onClose, onRefresh, currencySy
                         Cancel
                     </Button>
                     <Button
-                        // onClick={handleDeposit}
+                        onClick={handleDeposit}
                         disabled={isSubmitting || !amount}
                         className="w-full sm:flex-1 h-11 bg-[#2E6B6B] hover:bg-[#2E6B6B]/90 text-white"
                     >
