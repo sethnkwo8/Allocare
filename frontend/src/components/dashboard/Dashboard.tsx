@@ -76,7 +76,7 @@ export function Dashboard() {
                 {/* Category Breakdowns */}
                 <CategoryBreakdown data={data} />
                 {/* Goals Section */}
-                <GoalsSection data={data} setIsGoalDialogOpen={setIsGoalDialogOpen} />
+                <GoalsSection data={data} setIsGoalDialogOpen={setIsGoalDialogOpen} onRefresh={refresh} />
                 {/* Recent Expenses */}
                 <RecentExpenses data={data} setIsExpenseDialogOpen={setIsExpenseDialogOpen} />
                 {/* Add Goal Dialog */}

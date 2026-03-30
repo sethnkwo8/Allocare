@@ -50,6 +50,7 @@ export interface RecentExpensesProps {
 export interface GoalSectionProps {
     data: DashboardResponse
     setIsGoalDialogOpen(value: boolean): void
+    onRefresh(): void
 }
 
 // Financial overview
@@ -133,4 +134,13 @@ export interface AllocationBannerProps {
     data: DashboardResponse
     plannedSavings: number
     onRefresh(): void
+}
+
+// Deposit Dialog props
+export interface DepositDialogProps {
+    goal: { id: string; name: string; currency_code: string };
+    isOpen: boolean;
+    onClose(): void;
+    onRefresh(): void;
+    currencySymbol: string
 }

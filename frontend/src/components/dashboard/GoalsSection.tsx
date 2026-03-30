@@ -6,12 +6,16 @@ import { Target, Calendar, Plus, ChevronRight } from "lucide-react";
 import { getCurrencySymbol } from "@/lib/dashboard/utils";
 import { GoalSectionProps } from "@/types/dashboard";
 import Link from "next/link";
+import { useState } from "react";
+import { GoalDepositDialog } from "./GoalDepositDialog";
 
-export function GoalsSection({ data, setIsGoalDialogOpen }: GoalSectionProps) {
+export function GoalsSection({ data, setIsGoalDialogOpen, onRefresh }: GoalSectionProps) {
     // Get currency symbol
     const currencySymbol = getCurrencySymbol(data.financial_overview.currency_code)
     // Get goal savings
     const { goal_savings } = data
+
+    const [selectedGoal, setSelectedGoal] = useState<any>(null);
 
     return (
         <Card className="p-6 bg-white shadow-sm border-none">
@@ -89,16 +93,36 @@ export function GoalsSection({ data, setIsGoalDialogOpen }: GoalSectionProps) {
                                         size="sm"
                                         variant="outline"
                                         className="h-8 border-[#2E6B6B] text-[#2E6B6B] hover:bg-[#2E6B6B] hover:text-white"
+                                        onClick={() => setSelectedGoal({
+                                            id: goal.id,
+                                            name: goal.name,
+                                            currency_code: data.financial_overview.currency_code,
+                                            // remainingCapacity: remainingCapacity
+                                        })}
                                     >
                                         <Plus className="h-3 w-3 mr-1" />
                                         Deposit
                                     </Button>
                                 </Card>
+
                             )
                         })
+
                     )}
                 </div>
             </div>
+            {/* Deposit Dialog */}
+            {
+                selectedGoal && (
+                    <GoalDepositDialog
+                        goal={selectedGoal}
+                        isOpen={!!selectedGoal}
+                        onClose={() => setSelectedGoal(null)}
+                        onRefresh={onRefresh}
+                        currencySymbol={currencySymbol}
+                    />
+                )
+            }
         </Card>
     )
 }
