@@ -56,6 +56,7 @@ export interface GoalSectionProps {
 // Financial overview
 export interface FinancialOverview {
     total_income: number
+    income_frequency: string
     total_spent: number
     remaining_balance: number
     currency_code: string
@@ -142,5 +143,15 @@ export interface DepositDialogProps {
     isOpen: boolean;
     onClose(): void;
     onRefresh(): void;
+    currencySymbol: string
+}
+
+// Update income dialog props
+export interface UpdateIncomeDialogProps {
+    isOpen: boolean
+    onClose(): void
+    onRefresh(): void
+    currentIncome: number
+    currentFrequeny: string
     currencySymbol: string
 }
