@@ -20,9 +20,13 @@ def get_dashboard_data(db_session, session_token):
     # Get users currency code
     currency_code = user.currency
 
-    # total income
-    income_stmt = select(Income.amount).where(Income.user_id == user.id)
-    total_income = db_session.exec(income_stmt).first() or Decimal("0.00")
+    # Income record
+    income_stmt = select(Income).where(Income.user_id == user.id)
+    income_record = db_session.exec(income_stmt).first()
+
+    # Total income
+    total_income = income_record.amount if income_record else Decimal("0.00")
+    income_frequency = income_record.frequency if income_record else "monthly"
 
     # total spent for month
     expense_stmt = select(func.sum(Expense.amount)).where(
@@ -73,7 +77,7 @@ def get_dashboard_data(db_session, session_token):
     # If count is 0, they haven't moved money to savings yet this month
     needs_savings_init = savings_count == 0
 
-    return total_income, total_spent, remaining_balance, recent_expenses, unread_count, goals, bucket_results, category_results, currency_code, user_name, needs_savings_init
+    return total_income, income_frequency, total_spent, remaining_balance, recent_expenses, unread_count, goals, bucket_results, category_results, currency_code, user_name, needs_savings_init
 
 # Function to initialize savings allocation automatically
 def initialize_monthly_allocation(db_session, user):

@@ -9,6 +9,7 @@ import uuid
 
 class FinancialOverview(BaseModel):
     total_income: float
+    income_frequency: str
     total_spent: float
     remaining_balance: float
     currency_code: str
