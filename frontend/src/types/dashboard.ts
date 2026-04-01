@@ -152,6 +152,6 @@ export interface UpdateIncomeDialogProps {
     onClose(): void
     onRefresh(): void
     currentIncome: number
-    currentFrequeny: string
+    currentFrequency: string
     currencySymbol: string
 }

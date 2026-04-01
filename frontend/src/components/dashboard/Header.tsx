@@ -1,7 +1,10 @@
 import { HeaderProps } from "@/types/dashboard"
 import { Button } from "../ui/button"
-import { Bell, RefreshCw } from "lucide-react"
+import { Bell, RefreshCw, Wallet } from "lucide-react"
 import { SettingsDropdown } from "./SettingsDropdown"
+import { getCurrencySymbol } from "@/lib/dashboard/utils"
+import { useState } from "react"
+import { UpdateIncomeDialog } from "./UpdateIncomeDialog"
 
 export function Header({ data, onRefresh }: HeaderProps) {
     // Get user's name
@@ -12,6 +15,14 @@ export function Header({ data, onRefresh }: HeaderProps) {
 
     // Get the current month
     const currentMonth = new Intl.DateTimeFormat('en-US', { month: 'long' }).format(new Date());
+
+    // Get current user currency, income and frequency
+    const currentIncome = data.financial_overview.total_income
+    const currentFrequency = data.financial_overview.income_frequency
+    const currencySymbol = getCurrencySymbol(data.financial_overview.currency_code)
+
+    // State for income dialog
+    const [isIncomeDialogOpen, setIsIncomeDialogOpen] = useState<boolean>(false)
 
     return (
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -33,7 +44,11 @@ export function Header({ data, onRefresh }: HeaderProps) {
                     <RefreshCw className="h-5 w-5" />
                 </Button>
 
-                <Button className="bg-[#2E6B6B] hover:bg-[#2E6B6B]/90 text-white">
+                <Button
+                    className="bg-[#2E6B6B] hover:bg-[#2E6B6B]/90 text-white"
+                    onClick={() => setIsIncomeDialogOpen(true)}
+                >
+                    <Wallet className="h-4 w-4 mr-2" />
                     Edit Income
                 </Button>
 
@@ -47,6 +62,16 @@ export function Header({ data, onRefresh }: HeaderProps) {
                 </Button>
 
                 <SettingsDropdown />
+
+                {/* Income dialog */}
+                <UpdateIncomeDialog
+                    isOpen={isIncomeDialogOpen}
+                    onClose={() => setIsIncomeDialogOpen(false)}
+                    onRefresh={onRefresh}
+                    currentIncome={currentIncome}
+                    currentFrequency={currentFrequency}
+                    currencySymbol={currencySymbol}
+                />
 
             </div>
         </div>

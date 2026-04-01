@@ -7,8 +7,10 @@ import { Input } from "../ui/input"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "../ui/select"
 import { Button } from "../ui/button"
 import { useState, useEffect } from "react"
+import { UpdateIncomeDialogProps } from "@/types/dashboard"
+import { SetIncomeFrequency } from "@/lib/api/onboarding"
 
-export function UpdateIncomeDialog() {
+export function UpdateIncomeDialog({ isOpen, onClose, onRefresh, currentIncome, currentFrequency, currencySymbol }: UpdateIncomeDialogProps) {
     // Amount state
     const [amount, setAmount] = useState<string>()
 
@@ -17,6 +19,37 @@ export function UpdateIncomeDialog() {
 
     // Submitting state
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
+
+    // Input should update if data changes in backgroound
+    useEffect(() => {
+        if (isOpen) {
+            setAmount(currentIncome.toString())
+            setFrequency(currentFrequency || "monthly")
+        }
+    }, [isOpen, currentIncome, currentFrequency])
+
+    // Handle income update function
+    async function handleUpdate() {
+        // Input validation
+        if (!amount || parseFloat(amount) <= 0 || !frequency) return;
+
+        // Set submitting state
+        setIsSubmitting(true)
+
+        try {
+            // API call
+            await SetIncomeFrequency(amount, frequency)
+            // Refresh page
+            onRefresh()
+            // Close dialog
+            onClose()
+        } catch (error: any) {
+            console.error(error)
+            alert("Could not update income. Please try again.")
+        } finally {
+            setIsSubmitting(false)
+        }
+    }
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
@@ -55,6 +88,7 @@ export function UpdateIncomeDialog() {
                                 <SelectItem value="monthly">Monthly</SelectItem>
                                 <SelectItem value="weekly">Weekly</SelectItem>
                                 <SelectItem value="bi-weekly">Bi-Weekly</SelectItem>
+                                <SelectItem value="yearly">Yearly</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
