@@ -113,6 +113,15 @@ export interface UnreadCount {
     unread_count: number
 }
 
+// Notification response
+export interface Notification {
+    title: string
+    type: string
+    message: string
+    created_at: string
+    is_read: boolean
+}
+
 // Dashboard response interface
 export interface DashboardResponse {
     financial_overview: FinancialOverview
@@ -121,6 +130,7 @@ export interface DashboardResponse {
     goal_savings: SavingsGoal[]
     category_spendings: ExpenseCalculationResponse[]
     bucket_spendings: BucketCalculationResponse[]
+    notifications: Notification[]
     unread_count: UnreadCount
     needs_savings_init: boolean
 }
