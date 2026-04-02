@@ -166,3 +166,10 @@ export interface UpdateIncomeDialogProps {
     currentFrequency: string
     currencySymbol: string
 }
+
+// Notification dialog props
+export interface NotificationDialogProps {
+    data: DashboardResponse
+    isNotificationsOpen: boolean
+    setIsNotificationsOpen(value: boolean): void
+}

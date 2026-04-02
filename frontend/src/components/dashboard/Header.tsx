@@ -5,6 +5,7 @@ import { SettingsDropdown } from "./SettingsDropdown"
 import { getCurrencySymbol } from "@/lib/dashboard/utils"
 import { useState } from "react"
 import { UpdateIncomeDialog } from "./UpdateIncomeDialog"
+import { NotificationDialog } from "./NotificationDialog"
 
 export function Header({ data, onRefresh }: HeaderProps) {
     // Get user's name
@@ -23,6 +24,9 @@ export function Header({ data, onRefresh }: HeaderProps) {
 
     // State for income dialog
     const [isIncomeDialogOpen, setIsIncomeDialogOpen] = useState<boolean>(false)
+
+    // State for notification dialog
+    const [isNotificationsOpen, setIsNotificationsOpen] = useState<boolean>(false)
 
     return (
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -52,7 +56,7 @@ export function Header({ data, onRefresh }: HeaderProps) {
                     Edit Income
                 </Button>
 
-                <Button variant="outline" size="icon" className="relative">
+                <Button variant="outline" size="icon" className="relative" onClick={() => setIsNotificationsOpen(true)}>
                     <Bell className="h-5 w-5" />
                     {unread_count.unread_count > 0 && (
                         <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#2E6B6B] text-[10px] font-bold text-white ring-2 ring-white">
@@ -71,6 +75,13 @@ export function Header({ data, onRefresh }: HeaderProps) {
                     currentIncome={currentIncome}
                     currentFrequency={currentFrequency}
                     currencySymbol={currencySymbol}
+                />
+
+                {/* Notifications dialog */}
+                <NotificationDialog
+                    data={data}
+                    isNotificationsOpen={isNotificationsOpen}
+                    setIsNotificationsOpen={setIsNotificationsOpen}
                 />
 
             </div>
