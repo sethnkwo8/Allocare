@@ -22,6 +22,13 @@ class RecentExpense(BaseModel):
     created_at: datetime
     category_id: uuid.UUID
 
+class Notification(BaseModel):
+    title: str
+    type: str
+    message: str
+    created_at: datetime
+    is_read: bool
+
 class UnreadCount(BaseModel):
     unread_count: int
 
@@ -45,6 +52,7 @@ class DashboardResponse(BaseModel):
     goal_savings: List[SavingsGoal]
     category_spendings: List[ExpenseCalculationResponse]
     bucket_spendings: List[BucketCalculationResponse]
+    notifications: List[Notification]
     unread_count: UnreadCount
     needs_savings_init: bool
 

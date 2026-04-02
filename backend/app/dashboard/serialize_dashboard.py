@@ -3,7 +3,7 @@ from app.utils.calculate_spending_percentage import calculate_percentage
 
 # Serialize dashboard data for response
 def serialiaze_dashboard(db_session, session_token):
-    total_income, income_frequency, total_spent, remaining_balance, recent_expenses, unread_count, goals, bucket_results, category_results, currency_code, user_name, needs_savings_init = service.get_dashboard_data(db_session, session_token)
+    total_income, income_frequency, total_spent, remaining_balance, recent_expenses, unread_count, recent_notifications, goals, bucket_results, category_results, currency_code, user_name, needs_savings_init = service.get_dashboard_data(db_session, session_token)
 
     return schema.DashboardResponse(
         # Financial overview
@@ -61,6 +61,15 @@ def serialiaze_dashboard(db_session, session_token):
                 remaining_budget=(total_limit - total_spent),
                 spending_percentage=calculate_percentage(total_spent, total_limit)
             ) for bucket, total_spent, total_limit in bucket_results
+        ],
+        notifications=[
+            schema.Notification(
+                title=notification.title,
+                type=notification.type,
+                message=notification.message,
+                created_at=notification.created_at,
+                is_read=notification.is_read
+            ) for notification in recent_notifications
         ],
         unread_count=schema.UnreadCount(
             unread_count=unread_count

@@ -1,4 +1,4 @@
-from app.models.base import Income,Expense, Goal, BudgetBucket, BudgetCategory
+from app.models.base import Income,Expense, Goal, BudgetBucket, BudgetCategory, Notification
 from app.notifications.service import get_user_and_unread_count
 from sqlmodel import select, func, desc
 from app.analytics.service import get_category_spending, get_total_buckets_spending
@@ -77,7 +77,16 @@ def get_dashboard_data(db_session, session_token):
     # If count is 0, they haven't moved money to savings yet this month
     needs_savings_init = savings_count == 0
 
-    return total_income, income_frequency, total_spent, remaining_balance, recent_expenses, unread_count, goals, bucket_results, category_results, currency_code, user_name, needs_savings_init
+    # Get recent notifications
+    notification_stmt = (
+        select(Notification)
+        .where(Notification.user_id == user.id)
+        .order_by(desc(Notification.created_at))
+        .limit(5)
+    )
+    recent_notifications = db_session.exec(notification_stmt).all()
+
+    return total_income, income_frequency, total_spent, remaining_balance, recent_expenses, unread_count, recent_notifications, goals, bucket_results, category_results, currency_code, user_name, needs_savings_init
 
 # Function to initialize savings allocation automatically
 def initialize_monthly_allocation(db_session, user):
