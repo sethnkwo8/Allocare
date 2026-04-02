@@ -64,6 +64,7 @@ def serialiaze_dashboard(db_session, session_token):
         ],
         notifications=[
             schema.Notification(
+                id=notification.id,
                 title=notification.title,
                 type=notification.type,
                 message=notification.message,

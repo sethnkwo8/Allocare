@@ -23,6 +23,7 @@ class RecentExpense(BaseModel):
     category_id: uuid.UUID
 
 class Notification(BaseModel):
+    id: uuid.UUID
     title: str
     type: str
     message: str
