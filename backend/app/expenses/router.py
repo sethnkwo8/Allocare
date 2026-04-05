@@ -27,8 +27,14 @@ def get_expenses(
 
     return [
         ExpenseResponse(
-            id=e.id, title=e.title, amount=e.amount, category_id=e.category_id, notes=e.notes, date=e.date
-        ) for e in expenses
+            id=exp.id, 
+            title=exp.title, 
+            amount=exp.amount, 
+            category_id=exp.category_id, 
+            category_name=category_name,
+            notes=exp.notes, 
+            date=exp.date
+        ) for exp, category_name in expenses
     ]
 
 # GET route to get specific expense

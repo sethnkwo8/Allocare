@@ -17,6 +17,7 @@ class ExpenseResponse(BaseModel):
     title: str
     amount: Decimal
     category_id: uuid.UUID
+    category_name: str
     notes: Optional[str]
     date: datetime
 

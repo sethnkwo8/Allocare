@@ -2,7 +2,7 @@ from .schema import ExpenseCreate, ExpenseUpdate
 from app.models.base import Expense, BudgetCategory, BudgetBucket
 from app.auth.service import get_current_user
 from .exceptions import CategoryDoesntExist, AmountError, ExpenseNotFound
-from sqlmodel import select
+from sqlmodel import select, desc
 
 # Function for creating an expense
 def create_expense(expense_data: ExpenseCreate, db_session, session_token):
@@ -39,24 +39,31 @@ def get_expenses(db_session, session_token):
     user = get_current_user(db_session, session_token)
     
     # Get all expenses for user
-    result = db_session.exec(select(Expense).where(Expense.user_id == user.id))
+    statement = (
+        select(Expense, BudgetCategory.name)
+        .join(BudgetCategory, Expense.category_id == BudgetCategory.id)
+        .where(Expense.user_id == user.id)
+        .order_by(desc(Expense.date))
+    )
+
     # Return all results
-    return result.all()
+    return db_session.exec(statement).all()
 
 # Function to get specific expense
 def get_expense(expense_id, db_session, session_token):
-    # Get current user
     user = get_current_user(db_session, session_token)
     
-    # Get specific expense
-    result = db_session.exec(select(Expense).where(Expense.id == expense_id, Expense.user_id == user.id))
-    expense = result.first()
+    statement = (
+        select(Expense, BudgetCategory.name)
+        .join(BudgetCategory, Expense.category_id == BudgetCategory.id)
+        .where(Expense.user_id == user.id, Expense.id == expense_id)
+    )
+    result = db_session.exec(statement).first()
 
-    # Validate expense belongs to user
-    if not expense:
+    if not result:
         raise ExpenseNotFound()
     
-    return expense
+    return result
 
 # Function to edit expense
 def edit_expense(update_data: ExpenseUpdate, expense_id, db_session, session_token):
