@@ -45,11 +45,6 @@ export function SettingsDropdown() {
                     <span>Profile Settings</span>
                 </DropdownMenuItem>
 
-                <DropdownMenuItem onClick={() => console.log("Open Preferences")}>
-                    <Settings className="mr-2 h-4 w-4" />
-                    <span>App Preferences</span>
-                </DropdownMenuItem>
-
                 <DropdownMenuSeparator />
 
                 <DropdownMenuItem
