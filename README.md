@@ -28,11 +28,11 @@ It provides a clean dashboard, smart budgeting tools, and AI-powered insights to
 	- Custom percentage distribution
 	- Category-level breakdowns
 
-- 🏁 Goals (Planned)
+- 🏁 Goals
 	- Savings goals tracking
 	- Progress visualization
 
-- 🔔 Notifications (Planned)
+- 🔔 Notifications
 	- Overspending alerts
 	- Budget usage warnings
 
