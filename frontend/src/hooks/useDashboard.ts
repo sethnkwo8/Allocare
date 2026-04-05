@@ -1,5 +1,4 @@
 // useDashboard custom hook
-"use client"
 import { DashboardResponse } from "@/types/dashboard"
 import { useEffect, useState, useCallback } from "react"
 
