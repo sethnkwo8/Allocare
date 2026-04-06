@@ -24,6 +24,7 @@ import { ExpenseForm } from "@/types/dashboard";
 import { ExpenseResponse } from "@/types/expense";
 import { ExpenseDialog } from "../dashboard/ExpenseDialog";
 import { useDashboard } from "@/hooks/useDashboard";
+import { formatWithCommas, getCurrencySymbol } from "@/lib/dashboard/utils";
 
 export function AllExpenses() {
     // Custom hook returns
@@ -32,6 +33,12 @@ export function AllExpenses() {
     // Fetch categories
     const { data: dashboardData } = useDashboard();
     const categories = dashboardData?.category_spendings || [];
+
+    // Get currency code
+    const currencyCode = dashboardData?.financial_overview.currency_code || "NGN";
+
+    // Get currency symbol
+    const currencySymbol = getCurrencySymbol(currencyCode) || "₦";
 
     // Router for navigation
     const router = useRouter()
@@ -121,8 +128,6 @@ export function AllExpenses() {
         setIsExpenseDialogOpen(true);
     };
 
-    const currencySymbol = "₦";
-
     // Loading skeleton
     if (isLoading) return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-background">
@@ -152,21 +157,21 @@ export function AllExpenses() {
                             <h1 className="font-semibold text-3xl text-[#2E6B6B]">All Expenses</h1>
                             <p className="text-muted-foreground">View and manage all your expenses</p>
                         </div>
-                        <Button
-                            className="bg-[#2E6B6B] hover:bg-[#2E6B6B]/90 text-white"
-                            onClick={() => {
-                                // Not in edit mode
-                                setEditId(null);
-                                // Clear form
-                                setExpenseForm({ title: "", amount: "", category: "", description: "" });
-                                // Open dialog
-                                setIsExpenseDialogOpen(true);
-                            }}
-                        >
-                            <Plus className="h-4 w-4 mr-2" />
-                            Add Expense
-                        </Button>
                     </div>
+                    <Button
+                        className="bg-[#2E6B6B] hover:bg-[#2E6B6B]/90 text-white"
+                        onClick={() => {
+                            // Not in edit mode
+                            setEditId(null);
+                            // Clear form
+                            setExpenseForm({ title: "", amount: "", category: "", description: "" });
+                            // Open dialog
+                            setIsExpenseDialogOpen(true);
+                        }}
+                    >
+                        <Plus className="h-4 w-4 mr-2" />
+                        Add Expense
+                    </Button>
                 </div>
 
                 {/* Search Bar */}
@@ -231,8 +236,8 @@ export function AllExpenses() {
                                                     {expense.category_name}
                                                 </Badge>
                                             </TableCell>
-                                            <TableCell className="text-right font-medium">
-                                                -{currencySymbol}{(Number(expense.amount) || 0).toFixed(2)}
+                                            <TableCell className="text-right font-medium text-red-600">
+                                                -{currencySymbol}{(formatWithCommas(Number(expense.amount)) || 0.00)}
                                             </TableCell>
                                             <TableCell>
                                                 <ExpenseActions
