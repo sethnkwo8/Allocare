@@ -40,7 +40,7 @@ export function SettingsDropdown() {
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
 
-                <DropdownMenuItem onClick={() => console.log("Open Profile")}>
+                <DropdownMenuItem onClick={() => router.push('/profile-settings')}>
                     <User className="mr-2 h-4 w-4" />
                     <span>Profile Settings</span>
                 </DropdownMenuItem>
