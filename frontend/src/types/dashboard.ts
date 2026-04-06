@@ -14,7 +14,7 @@ export interface ExpenseForm {
 
 // Expense dialog props
 export interface ExpenseDialogProps {
-    data: DashboardResponse
+    categories: ExpenseCalculationResponse[]
     isExpenseDialogOpen: boolean
     setIsExpenseDialogOpen(value: boolean): void
     expenseForm: ExpenseForm

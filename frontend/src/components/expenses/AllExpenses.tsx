@@ -3,7 +3,7 @@
 
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
-import { ArrowLeft, Search, Calendar, Tag, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft, Search, Calendar, Tag, ChevronLeft, ChevronRight, Plus } from "lucide-react";
 import {
     Table,
     TableBody,
@@ -20,10 +20,18 @@ import { expenseCategoryColors } from "@/lib/expenses/expenseCategoryColors";
 import { useExpense } from "@/hooks/useExpense";
 import { ExpenseActions } from "./ExpenseActions";
 import { deleteExpense } from "@/lib/api/expenses";
+import { ExpenseForm } from "@/types/dashboard";
+import { ExpenseResponse } from "@/types/expense";
+import { ExpenseDialog } from "../dashboard/ExpenseDialog";
+import { useDashboard } from "@/hooks/useDashboard";
 
 export function AllExpenses() {
     // Custom hook returns
     const { data, isLoading, errorData, refresh } = useExpense()
+
+    // Fetch categories
+    const { data: dashboardData } = useDashboard();
+    const categories = dashboardData?.category_spendings || [];
 
     // Router for navigation
     const router = useRouter()
@@ -33,6 +41,20 @@ export function AllExpenses() {
 
     // State to store current page
     const [currentPage, setCurrentPage] = useState(1);
+
+    // Expense dialog state
+    const [isExpenseDialogOpen, setIsExpenseDialogOpen] = useState(false);
+
+    // Expense form state
+    const [expenseForm, setExpenseForm] = useState<ExpenseForm>({
+        title: "",
+        amount: "",
+        category: "",
+        description: ""
+    });
+
+    // Expense id
+    const [editId, setEditId] = useState<string | null>(null);
 
     // Expenses per page
     const itemsPerPage = 10;
@@ -82,6 +104,23 @@ export function AllExpenses() {
         }
     }
 
+    // Function to trigger edit UI
+    const handleEditClick = (expense: ExpenseResponse) => {
+        // Fill form with existing data
+        setExpenseForm({
+            title: expense.title,
+            amount: expense.amount.toString(),
+            category: expense.category_id,
+            description: expense.notes || ""
+        });
+
+        // Set the ID to lnow we are in edit mode not add
+        setEditId(expense.id);
+
+        // Open the dialog
+        setIsExpenseDialogOpen(true);
+    };
+
     const currencySymbol = "₦";
 
     // Loading skeleton
@@ -113,6 +152,20 @@ export function AllExpenses() {
                             <h1 className="font-semibold text-3xl text-[#2E6B6B]">All Expenses</h1>
                             <p className="text-muted-foreground">View and manage all your expenses</p>
                         </div>
+                        <Button
+                            className="bg-[#2E6B6B] hover:bg-[#2E6B6B]/90 text-white"
+                            onClick={() => {
+                                // Not in edit mode
+                                setEditId(null);
+                                // Clear form
+                                setExpenseForm({ title: "", amount: "", category: "", description: "" });
+                                // Open dialog
+                                setIsExpenseDialogOpen(true);
+                            }}
+                        >
+                            <Plus className="h-4 w-4 mr-2" />
+                            Add Expense
+                        </Button>
                     </div>
                 </div>
 
@@ -182,7 +235,11 @@ export function AllExpenses() {
                                                 -{currencySymbol}{(Number(expense.amount) || 0).toFixed(2)}
                                             </TableCell>
                                             <TableCell>
-                                                <ExpenseActions onDelete={() => onDelete(expense.id)} />
+                                                <ExpenseActions
+                                                    expense={expense}
+                                                    onEdit={handleEditClick}
+                                                    onDelete={() => onDelete(expense.id)}
+                                                />
                                             </TableCell>
                                         </TableRow>
                                     ))
@@ -214,9 +271,16 @@ export function AllExpenses() {
                                 <div key={expense.id} className="p-4 active:bg-slate-50 transition-colors">
                                     <div className="flex justify-between items-start mb-1">
                                         <span className="font-bold text-slate-900">{expense.title}</span>
-                                        <span className="font-bold text-red-600">
-                                            -{currencySymbol}{Number(expense.amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                                        </span>
+                                        <div className="flex items-center gap-2">
+                                            <span className="font-bold text-red-600">
+                                                -{currencySymbol}{Number(expense.amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                            </span>
+                                            <ExpenseActions
+                                                expense={expense}
+                                                onEdit={handleEditClick}
+                                                onDelete={() => onDelete(expense.id)}
+                                            />
+                                        </div>
                                     </div>
                                     <div className="flex flex-wrap gap-2 items-center text-xs text-slate-500 mb-2">
                                         <div className="flex items-center gap-1">
@@ -298,6 +362,18 @@ export function AllExpenses() {
                     )}
                 </Card>
             </div>
+
+            {/* Expense Dialog */}
+            <ExpenseDialog
+                categories={categories}
+                isExpenseDialogOpen={isExpenseDialogOpen}
+                setIsExpenseDialogOpen={setIsExpenseDialogOpen}
+                expenseForm={expenseForm}
+                setExpenseForm={setExpenseForm}
+                onRefresh={refresh}
+                mode={editId ? "edit" : "add"}
+                expenseId={editId}
+            />
         </div>
     )
 }

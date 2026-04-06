@@ -1,4 +1,4 @@
-// Add expense dialog
+// Expense dialog
 "use client"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
 import { Input } from "../ui/input";
@@ -10,10 +10,18 @@ import { ExpenseDialogProps, ExpenseForm } from "@/types/dashboard";
 import { createExpense } from "@/lib/api/dashboard";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
+import { updateExpense } from "@/lib/api/expenses";
 
-export function AddExpenseDialog({ data, isExpenseDialogOpen, setIsExpenseDialogOpen, expenseForm, setExpenseForm, onRefresh }: ExpenseDialogProps) {
-    // Get categories
-    const { category_spendings } = data
+export function ExpenseDialog({
+    categories,
+    isExpenseDialogOpen,
+    setIsExpenseDialogOpen,
+    expenseForm,
+    setExpenseForm,
+    onRefresh,
+    mode = "add", // add as default
+    expenseId = null // expense id if editing
+}: ExpenseDialogProps & { mode?: "add" | "edit", expenseId?: string | null }) {
 
     // Loading state for submission
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
@@ -28,14 +36,21 @@ export function AddExpenseDialog({ data, isExpenseDialogOpen, setIsExpenseDialog
         // Start loading
         setIsSubmitting(true);
 
+        // API call
         try {
-            // API call
-            await createExpense(expenseForm)
+            if (mode === "edit" && expenseId) {
+                // If mode is edit call update api cal;
+                await updateExpense(expenseId, expenseForm)
+            } else {
+                // If mode is add call create call
+                await createExpense(expenseForm)
+            }
+
             // Close dialog
             setIsExpenseDialogOpen(false)
-            // Reset Expense Form
+            // Reset form
             setExpenseForm({ title: "", amount: "", category: "", description: "" });
-            // Refresh
+            // Refresh page
             onRefresh()
         } catch (error: any) {
             alert(error.message)
@@ -48,11 +63,14 @@ export function AddExpenseDialog({ data, isExpenseDialogOpen, setIsExpenseDialog
         <Dialog open={isExpenseDialogOpen} onOpenChange={setIsExpenseDialogOpen}>
             <DialogContent className="sm:max-w-106.25">
                 <DialogHeader>
-                    <DialogTitle>Add Expense</DialogTitle>
+                    <DialogTitle>{mode === "edit" ? "Edit Expense" : "Add Expense"}</DialogTitle>
                     <DialogDescription>
-                        Add a new expense to your financial overview.
+                        {mode === "edit"
+                            ? "Make changes to your expense details below."
+                            : "Add a new expense to your financial overview."}
                     </DialogDescription>
                 </DialogHeader>
+
                 <div className="space-y-4">
                     <div className="space-y-2">
                         <Label htmlFor="title">Title</Label>
@@ -69,6 +87,7 @@ export function AddExpenseDialog({ data, isExpenseDialogOpen, setIsExpenseDialog
                         <Input
                             id="amount"
                             type="number"
+                            inputMode="decimal" // Numeric keypad
                             placeholder="Enter amount"
                             value={expenseForm.amount}
                             onChange={(e) => setExpenseForm({ ...expenseForm, amount: e.target.value })}
@@ -84,7 +103,7 @@ export function AddExpenseDialog({ data, isExpenseDialogOpen, setIsExpenseDialog
                                 <SelectValue placeholder="Select category" />
                             </SelectTrigger>
                             <SelectContent>
-                                {category_spendings.map((c) => (
+                                {categories.map((c) => (
                                     <SelectItem key={c.category_id} value={c.category_id}>{c.category_name}</SelectItem>
                                 ))}
                             </SelectContent>
@@ -100,6 +119,7 @@ export function AddExpenseDialog({ data, isExpenseDialogOpen, setIsExpenseDialog
                         />
                     </div>
                 </div>
+
                 <div className="flex justify-end gap-3 mt-4">
                     <Button variant="outline" disabled={isSubmitting} onClick={() => setIsExpenseDialogOpen(false)}>
                         Cancel
@@ -107,17 +127,12 @@ export function AddExpenseDialog({ data, isExpenseDialogOpen, setIsExpenseDialog
                     <Button
                         className="bg-[#2E6B6B] hover:bg-[#2E6B6B]/90 text-white"
                         disabled={isSubmitting}
-                        onClick={() => {
-                            handleExpenseSubmit(expenseForm)
-                        }}
+                        onClick={() => handleExpenseSubmit(expenseForm)}
                     >
                         {isSubmitting ? (
-                            <>
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                Adding...
-                            </>
+                            <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> {mode === "edit" ? "Updating..." : "Adding..."}</>
                         ) : (
-                            "Add Expense"
+                            mode === "edit" ? "Update Expense" : "Add Expense"
                         )}
                     </Button>
                 </div>

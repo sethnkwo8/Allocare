@@ -27,4 +27,4 @@ class ExpenseUpdate(BaseModel):
     amount: Optional[Decimal]
     notes: Optional[str]
     category_id: Optional[uuid.UUID]
-    date: Optional[datetime]
+    date: Optional[datetime] = None

@@ -9,7 +9,7 @@ import { CategoryBreakdown } from "./CategoryBreakdowns"
 import { RecentExpenses } from "./RecentExpenses"
 import { GoalsSection } from "./GoalsSection"
 import { useState } from "react"
-import { AddExpenseDialog } from "./AddExpenseDialog"
+import { ExpenseDialog } from "./ExpenseDialog"
 import { ExpenseForm, GoalForm } from "@/types/dashboard"
 import { AddGoalDialog } from "./AddGoalDialog"
 import { AllocationBanner } from "./AllocationBanner"
@@ -89,8 +89,8 @@ export function Dashboard() {
                     onRefresh={refresh}
                 />
                 {/* Add Expense Dialog */}
-                <AddExpenseDialog
-                    data={data}
+                <ExpenseDialog
+                    categories={data.category_spendings}
                     isExpenseDialogOpen={isExpenseDialogOpen}
                     setIsExpenseDialogOpen={setIsExpenseDialogOpen}
                     expenseForm={expenseForm}
