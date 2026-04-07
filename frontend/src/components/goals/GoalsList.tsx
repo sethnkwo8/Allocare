@@ -3,23 +3,19 @@
 import { Card } from "../ui/card";
 import { Badge } from "../ui/badge";
 import { Progress } from "../ui/progress";
-import { Button } from "@/components/ui/button";
-import { MoreVertical, Pencil, Trash2, Calendar } from "lucide-react";
+import { Calendar } from "lucide-react";
 import { SavingsGoal } from "@/types/dashboard";
 import { formatWithCommas, getCurrencySymbol } from "@/lib/dashboard/utils";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown";
+import { GoalActions } from "./GoalActions";
 
 export function GoalsList({
     currencyCode,
-    goals
+    goals,
+    onDelete
 }: {
-    currencyCode: string,
+    currencyCode: string
     goals: SavingsGoal[]
+    onDelete(id: string): void
 }) {
     // Get currency symbol
     const currencySymbol = getCurrencySymbol(currencyCode)
@@ -67,29 +63,7 @@ export function GoalsList({
                                     </Badge>
 
                                     {/* Action Dropdown */}
-                                    <DropdownMenu>
-                                        <DropdownMenuTrigger asChild>
-                                            <Button variant="ghost" className="h-8 w-8 p-0">
-                                                <MoreVertical className="h-4 w-4" />
-                                            </Button>
-                                        </DropdownMenuTrigger>
-                                        <DropdownMenuContent align="end">
-                                            <DropdownMenuItem
-                                                // onClick={() => onEdit(goal)}
-                                                className="cursor-pointer"
-                                            >
-                                                <Pencil className="mr-2 h-4 w-4" />
-                                                <span>Edit</span>
-                                            </DropdownMenuItem>
-                                            <DropdownMenuItem
-                                                // onClick={() => onDelete(goal.id)}
-                                                className="text-red-600 cursor-pointer focus:text-red-600 focus:bg-red-50"
-                                            >
-                                                <Trash2 className="mr-2 h-4 w-4" />
-                                                <span>Delete</span>
-                                            </DropdownMenuItem>
-                                        </DropdownMenuContent>
-                                    </DropdownMenu>
+                                    <GoalActions goal={goal} onDelete={onDelete} />
                                 </div>
                             </div>
                             <div className="space-y-2">

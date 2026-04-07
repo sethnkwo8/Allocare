@@ -8,6 +8,7 @@ import { GoalsList } from "./GoalsList"
 import { AddGoalDialog } from "../dashboard/AddGoalDialog"
 import { useState } from "react"
 import { GoalForm } from "@/types/dashboard"
+import { deleteGoal } from "@/lib/api/goals"
 
 export function AllGoals() {
     // Get dashboard data
@@ -30,6 +31,23 @@ export function AllGoals() {
     // Get user currency code
     const currencyCode = data?.financial_overview.currency_code || "NGN"
 
+    // Function to handle expense delete
+    async function onDelete(id: string) {
+        if (!confirm("Are you sure you want to delete this goal? This action cannot be undone.")) {
+            return;
+        }
+
+        try {
+            // Delete call
+            await deleteGoal(id)
+            // Refresh page
+            refresh()
+        } catch (error: any) {
+            alert(error.message)
+            console.error(error)
+        }
+    }
+
     // Loading skeleton
     if (isLoading) return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-background">
@@ -50,7 +68,7 @@ export function AllGoals() {
                 {/* Overview Cards */}
                 <OverviewCards currencyCode={currencyCode} goals={goals} />
                 {/* Goals List */}
-                <GoalsList currencyCode={currencyCode} goals={goals} />
+                <GoalsList currencyCode={currencyCode} goals={goals} onDelete={onDelete} />
             </div>
 
             {data && <AddGoalDialog
