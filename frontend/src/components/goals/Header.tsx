@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { Button } from "../ui/button"
 import { ArrowLeft, Plus } from "lucide-react"
 
-export function Header() {
+export function Header({ setIsGoalDialogOpen }: { setIsGoalDialogOpen(value: boolean): void }) {
     const router = useRouter()
     return (
         <div className="flex items-center justify-between">
@@ -22,7 +22,7 @@ export function Header() {
                     <p className="text-muted-foreground">Track and manage your savings goals</p>
                 </div>
             </div>
-            <Button className="bg-[#2E6B6B] hover:bg-[#2E6B6B]/90 text-white">
+            <Button onClick={() => setIsGoalDialogOpen(true)} className="bg-[#2E6B6B] hover:bg-[#2E6B6B]/90 text-white">
                 <Plus className="h-4 w-4 mr-2" />
                 Add Goal
             </Button>
