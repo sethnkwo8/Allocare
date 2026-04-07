@@ -3,9 +3,16 @@
 import { Card } from "../ui/card";
 import { Badge } from "../ui/badge";
 import { Progress } from "../ui/progress";
-import { Calendar } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { MoreVertical, Pencil, Trash2, Calendar } from "lucide-react";
 import { SavingsGoal } from "@/types/dashboard";
 import { formatWithCommas, getCurrencySymbol } from "@/lib/dashboard/utils";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown";
 
 export function GoalsList({
     currencyCode,
@@ -51,12 +58,39 @@ export function GoalsList({
                                     <h3 className="mb-1 font-semibold">{goal.name}</h3>
                                     <p className="text-sm text-muted-foreground">Financial Goals</p>
                                 </div>
-                                <Badge
-                                    variant="secondary"
-                                    className={`${getStatusColor(goal)} text-white border-none`}
-                                >
-                                    {getStatusText(goal)}
-                                </Badge>
+                                <div className="flex items-center gap-2">
+                                    <Badge
+                                        variant="secondary"
+                                        className={`${getStatusColor(goal)} text-white border-none`}
+                                    >
+                                        {getStatusText(goal)}
+                                    </Badge>
+
+                                    {/* Action Dropdown */}
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                            <Button variant="ghost" className="h-8 w-8 p-0">
+                                                <MoreVertical className="h-4 w-4" />
+                                            </Button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent align="end">
+                                            <DropdownMenuItem
+                                                // onClick={() => onEdit(goal)}
+                                                className="cursor-pointer"
+                                            >
+                                                <Pencil className="mr-2 h-4 w-4" />
+                                                <span>Edit</span>
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem
+                                                // onClick={() => onDelete(goal.id)}
+                                                className="text-red-600 cursor-pointer focus:text-red-600 focus:bg-red-50"
+                                            >
+                                                <Trash2 className="mr-2 h-4 w-4" />
+                                                <span>Delete</span>
+                                            </DropdownMenuItem>
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
+                                </div>
                             </div>
                             <div className="space-y-2">
                                 <div className="flex items-center justify-between text-sm">
