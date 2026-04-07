@@ -1,7 +1,8 @@
-// Profile settings page
+import { ProfileSettings } from "@/components/profile-settings/ProfileSettings";
 
+// Profile settings page
 export default function ProfileSettingsPage() {
     return (
-        <div>page</div>
+        <ProfileSettings />
     )
 }
