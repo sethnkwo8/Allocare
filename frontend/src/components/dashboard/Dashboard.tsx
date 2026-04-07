@@ -11,7 +11,7 @@ import { GoalsSection } from "./GoalsSection"
 import { useState } from "react"
 import { ExpenseDialog } from "./ExpenseDialog"
 import { ExpenseForm, GoalForm } from "@/types/dashboard"
-import { AddGoalDialog } from "./AddGoalDialog"
+import { GoalDialog } from "./GoalDialog"
 import { AllocationBanner } from "./AllocationBanner"
 
 export function Dashboard() {
@@ -80,7 +80,7 @@ export function Dashboard() {
                 {/* Recent Expenses */}
                 <RecentExpenses data={data} setIsExpenseDialogOpen={setIsExpenseDialogOpen} />
                 {/* Add Goal Dialog */}
-                <AddGoalDialog
+                <GoalDialog
                     data={data}
                     isGoalDialogOpen={isGoalDialogOpen}
                     setIsGoalDialogOpen={setIsGoalDialogOpen}
