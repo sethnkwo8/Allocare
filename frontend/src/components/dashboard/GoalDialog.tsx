@@ -9,26 +9,50 @@ import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { GoalDialogProps, GoalForm } from "@/types/dashboard";
 import { createGoal } from "@/lib/api/dashboard";
+import { updateGoal } from "@/lib/api/goals";
 
-export function GoalDialog({ data, isGoalDialogOpen, setIsGoalDialogOpen, goalForm, setGoalForm, onRefresh }: GoalDialogProps) {
-    // Get goal savings
-    const { goal_savings } = data;
+export function GoalDialog({
+    isGoalDialogOpen,
+    setIsGoalDialogOpen,
+    goalForm,
+    setGoalForm,
+    onRefresh,
+    mode = "add", // add as default
+    goalId = null // goal id if editing
+}: GoalDialogProps & { mode?: "add" | "edit", goalId?: string | null }) {
 
     // Submit state
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
 
     // Handle goal submit
     async function handleGoalSubmit(goalForm: GoalForm) {
-        if (!goalForm.name || !goalForm.target_amount) {
-            alert("Please fill in required fields")
-            return
+        if (!goalForm.name || !goalForm.target_amount || !goalForm.target_date) {
+            alert("Please fill in all required fields, including the target date.");
+            return;
+        }
+
+        // Target date has to be in future
+        const selectedDate = new Date(goalForm.target_date);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Reset time to compare only dates
+
+        if (selectedDate < today) {
+            alert("Wait! The target date cannot be in the past. Please pick a future date.");
+            return;
         }
 
         setIsSubmitting(true)
 
         try {
             // API call
-            await createGoal(goalForm)
+            if (mode === "edit" && goalId) {
+                // If mode is edit call update api cal;
+                await updateGoal(goalId, goalForm)
+            } else {
+                // If mode is add call create call
+                await createGoal(goalForm)
+            }
+
             // Close dialog
             setIsGoalDialogOpen(false)
             // Reset Goal Form
@@ -46,9 +70,11 @@ export function GoalDialog({ data, isGoalDialogOpen, setIsGoalDialogOpen, goalFo
         <Dialog open={isGoalDialogOpen} onOpenChange={setIsGoalDialogOpen}>
             <DialogContent className="sm:max-w-106.25">
                 <DialogHeader>
-                    <DialogTitle>Add Goal</DialogTitle>
+                    <DialogTitle>{mode === "edit" ? "Edit Goal" : "Add Goal"}</DialogTitle>
                     <DialogDescription>
-                        Add a new goal to your financial overview.
+                        {mode === "edit"
+                            ? "Make changes to your goal details below."
+                            : "Add a new goal to your financial overview."}
                     </DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4">
@@ -67,6 +93,7 @@ export function GoalDialog({ data, isGoalDialogOpen, setIsGoalDialogOpen, goalFo
                         <Input
                             id="target_amount"
                             type="number"
+                            inputMode="decimal"
                             placeholder="Enter your target amount"
                             value={goalForm.target_amount}
                             onChange={(e) => setGoalForm({ ...goalForm, target_amount: e.target.value })}
@@ -102,12 +129,9 @@ export function GoalDialog({ data, isGoalDialogOpen, setIsGoalDialogOpen, goalFo
                         onClick={() => handleGoalSubmit(goalForm)}
                     >
                         {isSubmitting ? (
-                            <>
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                Adding...
-                            </>
+                            <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> {mode === "edit" ? "Updating..." : "Adding..."}</>
                         ) : (
-                            "Add Goal"
+                            mode === "edit" ? "Update Goal" : "Add Goal"
                         )}
                     </Button>
                 </div>

@@ -14,9 +14,21 @@ class GoalCreateRequest(BaseModel):
 
     # Validate target_date 
     @field_validator('target_date')
+    @classmethod
     def date_must_be_future(cls, v):
-        if v is not None and v <= datetime.now(timezone.utc):
-            raise ValueError('Target date must be in the future')
+        if v is not None:
+            # Check if v has timezone info
+            if v.tzinfo is None:
+                # If it's naive (from your frontend string), make it UTC aware
+                v_to_compare = v.replace(tzinfo=timezone.utc)
+            else:
+                # If it's already aware, ensure it's converted to UTC for consistency
+                v_to_compare = v.astimezone(timezone.utc)
+                
+            # Now both are 'aware' and can be compared safely
+            if v_to_compare <= datetime.now(timezone.utc):
+                raise ValueError("Target date must be in the future")
+                
         return v
 
 # Schema response for goal
@@ -62,7 +74,16 @@ class GoalUpdateRequest(BaseModel):
 
     # Validate target_date 
     @field_validator('target_date')
+    @classmethod
     def date_must_be_future(cls, v):
-        if v is not None and v <= datetime.now(timezone.utc):
-            raise ValueError('Target date must be in the future')
+        if v is not None:
+            if v.tzinfo is None:
+                v_to_compare = v.replace(tzinfo=timezone.utc)
+            else:
+                v_to_compare = v.astimezone(timezone.utc)
+                
+            # 2. Compare aware to aware
+            if v_to_compare <= datetime.now(timezone.utc):
+                raise ValueError('Target date must be in the future')
+                
         return v

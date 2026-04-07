@@ -7,15 +7,18 @@ import { Calendar } from "lucide-react";
 import { SavingsGoal } from "@/types/dashboard";
 import { formatWithCommas, getCurrencySymbol } from "@/lib/dashboard/utils";
 import { GoalActions } from "./GoalActions";
+import { GoalResponse } from "@/types/goals";
 
 export function GoalsList({
     currencyCode,
     goals,
-    onDelete
+    onDelete,
+    handleEditClick
 }: {
     currencyCode: string
-    goals: SavingsGoal[]
+    goals: GoalResponse[]
     onDelete(id: string): void
+    handleEditClick(value: GoalResponse): void
 }) {
     // Get currency symbol
     const currencySymbol = getCurrencySymbol(currencyCode)
@@ -63,13 +66,13 @@ export function GoalsList({
                                     </Badge>
 
                                     {/* Action Dropdown */}
-                                    <GoalActions goal={goal} onDelete={onDelete} />
+                                    <GoalActions goal={goal} onEdit={handleEditClick} onDelete={onDelete} />
                                 </div>
                             </div>
                             <div className="space-y-2">
                                 <div className="flex items-center justify-between text-sm">
                                     <span className="text-muted-foreground">Progress</span>
-                                    <span className="font-medium">{progress.toFixed(0)}%</span>
+                                    <span className="font-medium">{Number(progress).toFixed(0)}%</span>
                                 </div>
                                 <Progress value={progress} className="h-2" />
                             </div>

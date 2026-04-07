@@ -32,7 +32,6 @@ export interface GoalForm {
 
 // Goal dialog props
 export interface GoalDialogProps {
-    data: DashboardResponse
     isGoalDialogOpen: boolean
     setIsGoalDialogOpen(value: boolean): void
     goalForm: GoalForm

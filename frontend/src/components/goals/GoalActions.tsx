@@ -9,13 +9,15 @@ import {
 } from "@/components/ui/dropdown";
 import { MoreVertical, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { SavingsGoal } from "@/types/dashboard";
+import { GoalResponse } from "@/types/goals";
 
 export function GoalActions({
     goal,
+    onEdit,
     onDelete
 }: {
-    goal: SavingsGoal
+    goal: GoalResponse
+    onEdit(goal: GoalResponse): void
     onDelete(id: string): void
 }) {
     return (
@@ -27,7 +29,7 @@ export function GoalActions({
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
                 <DropdownMenuItem
-                    // onClick={() => onEdit(goal)}
+                    onClick={() => onEdit(goal)}
                     className="cursor-pointer"
                 >
                     <Pencil className="mr-2 h-4 w-4" />

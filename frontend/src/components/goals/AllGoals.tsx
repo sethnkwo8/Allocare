@@ -5,17 +5,19 @@ import { Header } from "./Header"
 import { useDashboard } from "@/hooks/useDashboard"
 import { OverviewCards } from "./OverviewCards"
 import { GoalsList } from "./GoalsList"
-import { AddGoalDialog } from "../dashboard/AddGoalDialog"
+import { GoalDialog } from "../dashboard/GoalDialog"
 import { useState } from "react"
 import { GoalForm } from "@/types/dashboard"
 import { deleteGoal } from "@/lib/api/goals"
+import { GoalResponse } from "@/types/goals"
+import { useGoal } from "@/hooks/useGoal"
 
 export function AllGoals() {
     // Get dashboard data
-    const { data, isLoading, errorData, refresh } = useDashboard()
+    const { data: dashboardData } = useDashboard() || []
 
-    // Get user goals
-    const goals = data?.goal_savings || []
+    // Get goals data
+    const { data, isLoading, errorData, refresh } = useGoal()
 
     // Goal Dialog state
     const [isGoalDialogOpen, setIsGoalDialogOpen] = useState<boolean>(false)
@@ -28,8 +30,11 @@ export function AllGoals() {
         description: "",
     })
 
+    // Goal id
+    const [editId, setEditId] = useState<string | null>(null);
+
     // Get user currency code
-    const currencyCode = data?.financial_overview.currency_code || "NGN"
+    const currencyCode = dashboardData?.financial_overview.currency_code || "NGN"
 
     // Function to handle expense delete
     async function onDelete(id: string) {
@@ -48,6 +53,23 @@ export function AllGoals() {
         }
     }
 
+    // Function to trigger edit UI
+    const handleEditClick = (goal: GoalResponse) => {
+        // Fill form with existing data
+        setGoalForm({
+            name: goal.name,
+            target_amount: goal.target_amount.toString(),
+            target_date: goal.target_date.split('T')[0],
+            description: goal.description || ""
+        });
+
+        // Set the ID to lnow we are in edit mode not add
+        setEditId(goal.id);
+
+        // Open the dialog
+        setIsGoalDialogOpen(true);
+    };
+
     // Loading skeleton
     if (isLoading) return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-background">
@@ -64,20 +86,21 @@ export function AllGoals() {
         <div className="min-h-screen bg-linear-to-br from-[#d4f1f1] to-[#e6f5f5] p-4 md:p-8">
             <div className="max-w-7xl mx-auto space-y-6">
                 {/* Header */}
-                <Header setIsGoalDialogOpen={setIsGoalDialogOpen} />
+                <Header setIsGoalDialogOpen={setIsGoalDialogOpen} setEditId={setEditId} setGoalForm={setGoalForm} />
                 {/* Overview Cards */}
-                <OverviewCards currencyCode={currencyCode} goals={goals} />
+                <OverviewCards currencyCode={currencyCode} goals={data} />
                 {/* Goals List */}
-                <GoalsList currencyCode={currencyCode} goals={goals} onDelete={onDelete} />
+                <GoalsList currencyCode={currencyCode} goals={data} onDelete={onDelete} handleEditClick={handleEditClick} />
             </div>
 
-            {data && <AddGoalDialog
-                data={data}
+            {data && <GoalDialog
                 isGoalDialogOpen={isGoalDialogOpen}
                 setIsGoalDialogOpen={setIsGoalDialogOpen}
                 goalForm={goalForm}
                 setGoalForm={setGoalForm}
                 onRefresh={refresh}
+                mode={editId ? "edit" : "add"}
+                goalId={editId}
             />}
 
         </div>

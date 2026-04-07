@@ -159,7 +159,7 @@ def update_specific_goal(update_data: GoalUpdateRequest, goal_id: uuid.UUID, db_
         setattr(goal, key, value)
 
     # Check if we need to re-evaluate the completion status
-    if "target_amount" in update_dict in update_dict:
+    if "target_amount" in update_dict:
         # Ensure target_amount isn't zero
         if goal.target_amount > 0:
             goal.is_completed = goal.current_amount >= goal.target_amount
