@@ -18,7 +18,7 @@ export function Header({ setIsGoalDialogOpen }: { setIsGoalDialogOpen(value: boo
                     <ArrowLeft className="h-5 w-5" />
                 </Button>
                 <div>
-                    <h1 className="text-3xl">Financial Goals</h1>
+                    <h1 className="font-semibold text-3xl text-[#2E6B6B]">Financial Goals</h1>
                     <p className="text-muted-foreground">Track and manage your savings goals</p>
                 </div>
             </div>
