@@ -46,9 +46,6 @@ export async function updateExpense(expenseId: string, data: ExpenseForm) {
 
     if (!res.ok) {
         const errorData = await res.json()
-        // Log the actual detail to see EXACTLY which field failed in your console
-        console.error("FastAPI 422 Detail:", errorData.detail);
-
         const errorMessage = errorData.detail?.[0]?.msg || errorData.detail || "Failed to edit expense";
         throw new Error(errorMessage)
     }
