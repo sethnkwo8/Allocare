@@ -11,6 +11,8 @@ import { GoalForm } from "@/types/dashboard"
 import { deleteGoal } from "@/lib/api/goals"
 import { GoalResponse } from "@/types/goals"
 import { useGoal } from "@/hooks/useGoal"
+import { GoalDepositDialog } from "../dashboard/GoalDepositDialog"
+import { getCurrencySymbol } from "@/lib/dashboard/utils"
 
 export function AllGoals() {
     // Get dashboard data
@@ -21,6 +23,9 @@ export function AllGoals() {
 
     // Goal Dialog state
     const [isGoalDialogOpen, setIsGoalDialogOpen] = useState<boolean>(false)
+
+    // Current selected goal for deposit
+    const [selectedGoal, setSelectedGoal] = useState<any>(null);
 
     // Goal Form state
     const [goalForm, setGoalForm] = useState<GoalForm>({
@@ -35,6 +40,9 @@ export function AllGoals() {
 
     // Get user currency code
     const currencyCode = dashboardData?.financial_overview.currency_code || "NGN"
+
+    // Get currency symbol
+    const currencySymbol = getCurrencySymbol(currencyCode)
 
     // Function to handle expense delete
     async function onDelete(id: string) {
@@ -90,7 +98,7 @@ export function AllGoals() {
                 {/* Overview Cards */}
                 <OverviewCards currencyCode={currencyCode} goals={data} />
                 {/* Goals List */}
-                <GoalsList currencyCode={currencyCode} goals={data} onDelete={onDelete} handleEditClick={handleEditClick} />
+                <GoalsList currencyCode={currencyCode} goals={data} onDelete={onDelete} handleEditClick={handleEditClick} setSelectedGoal={setSelectedGoal} />
             </div>
 
             {data && <GoalDialog
@@ -101,6 +109,14 @@ export function AllGoals() {
                 onRefresh={refresh}
                 mode={editId ? "edit" : "add"}
                 goalId={editId}
+            />}
+
+            {selectedGoal && <GoalDepositDialog
+                goal={selectedGoal}
+                isOpen={!!selectedGoal}
+                onClose={() => setSelectedGoal(null)}
+                onRefresh={refresh}
+                currencySymbol={currencySymbol}
             />}
 
         </div>

@@ -81,7 +81,6 @@ export function Dashboard() {
                 <RecentExpenses data={data} setIsExpenseDialogOpen={setIsExpenseDialogOpen} />
                 {/* Add Goal Dialog */}
                 <GoalDialog
-                    data={data}
                     isGoalDialogOpen={isGoalDialogOpen}
                     setIsGoalDialogOpen={setIsGoalDialogOpen}
                     goalForm={goalForm}

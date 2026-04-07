@@ -97,7 +97,6 @@ export function GoalsSection({ data, setIsGoalDialogOpen, onRefresh }: GoalSecti
                                             id: goal.id,
                                             name: goal.name,
                                             currency_code: data.financial_overview.currency_code,
-                                            // remainingCapacity: remainingCapacity
                                         })}
                                     >
                                         <Plus className="h-3 w-3 mr-1" />

@@ -2,6 +2,7 @@
 
 import { Card } from "../ui/card";
 import { Badge } from "../ui/badge";
+import { Button } from "../ui/button";
 import { Progress } from "../ui/progress";
 import { Calendar } from "lucide-react";
 import { SavingsGoal } from "@/types/dashboard";
@@ -13,12 +14,14 @@ export function GoalsList({
     currencyCode,
     goals,
     onDelete,
-    handleEditClick
+    handleEditClick,
+    setSelectedGoal
 }: {
     currencyCode: string
     goals: GoalResponse[]
     onDelete(id: string): void
     handleEditClick(value: GoalResponse): void
+    setSelectedGoal(value: any): void
 }) {
     // Get currency symbol
     const currencySymbol = getCurrencySymbol(currencyCode)
@@ -74,7 +77,24 @@ export function GoalsList({
                                     <span className="text-muted-foreground">Progress</span>
                                     <span className="font-medium">{Number(progress).toFixed(0)}%</span>
                                 </div>
-                                <Progress value={progress} className="h-2" />
+                                <div className="flex items-center gap-3">
+                                    <Progress value={progress} className="h-2 flex-1" />
+                                    {/* Deposit Button */}
+                                    {!goal.is_completed && (
+                                        <Button
+                                            size="sm"
+                                            variant="outline"
+                                            className="h-8 border-[#2E6B6B] text-[#2E6B6B] hover:bg-[#2E6B6B] hover:text-white"
+                                            onClick={() => setSelectedGoal({
+                                                id: goal.id,
+                                                name: goal.name,
+                                                currency_code: currencyCode,
+                                            })}
+                                        >
+                                            Deposit
+                                        </Button>
+                                    )}
+                                </div>
                             </div>
 
                             <div className="grid grid-cols-2 gap-4">
