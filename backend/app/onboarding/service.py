@@ -118,4 +118,60 @@ def complete_onboarding(session_token, db_session, buckets: OnboardingRequest ):
     except Exception as e:
         db_session.rollback()
         raise e
+
+# Function to update budget allocations
+def update_budget_allocations(session_token, db_session, buckets_data: OnboardingRequest):
+    user = get_current_user(db_session, session_token)
+    
+    # Get current income to recalculate limits
+    statement = select(Income).where(Income.user_id == user.id)
+    user_income = db_session.exec(statement).first()
+
+    # Convert income to monthly
+    monthly_income = convert_to_monthly(user_income.amount, user_income.frequency)
+
+    # Check percentage total
+    total_percentage = sum(b.percentage_allocation for b in buckets_data.buckets)
+    if total_percentage != 100:
+        raise BucketAllocationError()
+
+    # 1. Update Buckets
+    try:
+        for b_data in buckets_data.buckets:
+            # Find existing bucket for this user by name
+            stmt = select(BudgetBucket).where(
+                BudgetBucket.user_id == user.id, 
+                BudgetBucket.name == b_data.name
+            )
+            bucket = db_session.exec(stmt).first()
+
+            if bucket:
+                bucket.percentage_allocation = b_data.percentage_allocation
+                db_session.add(bucket)
+                
+                # 2. Update Categories inside this bucket
+                if b_data.categories:
+                    bucket_share = (monthly_income * bucket.percentage_allocation) / 100
+                    
+                    for c_data in b_data.categories:
+                        # Find existing category
+                        c_stmt = select(BudgetCategory).where(
+                            BudgetCategory.bucket_id == bucket.id,
+                            BudgetCategory.name == c_data.name
+                        )
+                        category = db_session.exec(c_stmt).first()
+                        
+                        if category:
+                            # Calculate new limit based on new percentage
+                            percentage = float(c_data.monthly_limit)
+                            actual_limit = (bucket_share * percentage) / 100
+                            category.monthly_limit = round(actual_limit, 2)
+                            db_session.add(category)
+
+        db_session.commit()
+
+    except Exception as e:
+        db_session.rollback()
+        raise e
+    return {"message": "Allocations updated successfully"}
         
