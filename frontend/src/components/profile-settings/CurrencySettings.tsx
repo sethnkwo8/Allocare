@@ -12,7 +12,7 @@ export function CurrencySettings({ value, onChange }: CurrencyStepProps) {
         <Card className="p-6 bg-white">
             <div className="space-y-6">
                 <div>
-                    <h3 className="mb-2">Currency Settings</h3>
+                    <h3 className="font-semibold text-lg mb-1 text-[#2E6B6B]">Currency Settings</h3>
                     <p className="text-sm text-muted-foreground mb-4">
                         Select your preferred currency
                     </p>
