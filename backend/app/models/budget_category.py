@@ -20,3 +20,4 @@ class BudgetCategory(SQLModel, table=True):
     bucket: "BudgetBucket" = Relationship(back_populates="categories")
     expenses: List["Expense"] = Relationship(back_populates="category")
     monthly_limit: Optional[Decimal] = Field(ge=0, decimal_places=2)
+    percentage_allocation: float = Field(default=0.0)
