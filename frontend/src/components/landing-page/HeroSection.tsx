@@ -1,6 +1,8 @@
 'use client'
 // Hero Section
 
+import Link from "next/link"
+
 export function HeroSection() {
     return (
         <section className="pt-20 pb-28 px-6 text-center relative overflow-hidden">
@@ -15,24 +17,17 @@ export function HeroSection() {
                 <p className="text-gray-500 mb-10 max-w-xl mx-auto" style={{ fontSize: "1.125rem", lineHeight: 1.7 }}>
                     Allocare helps you give every pound or dollar a purpose before you spend it — so you always know what's available, and nothing comes as a surprise.
                 </p>
-                <div className="flex flex-col sm:flex-row gap-3 justify-center max-w-md mx-auto mb-5">
-                    <input
-                        type="email"
-                        placeholder="Your email address"
-                        // value={}
-                        // onChange={e => setEmail(e.target.value)}
-                        className="flex-1 border border-gray-200 bg-white rounded-lg px-4 py-3 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-[#2E6B6B]/40"
-                        style={{ outline: "none" }}
-
-                    />
-                    <button
-                        // onClick={() => setShowOnboarding(true)}
-                        className="text-white px-6 py-3 rounded-lg text-sm transition-colors whitespace-nowrap shadow-sm font-semibold bg-[#2E6B6B] hover:bg-[#245858]"
+                <div className="flex flex-col items-center gap-5">
+                    <Link
+                        href="/register"
+                        className="text-white px-10 py-4 rounded-full text-base transition-all transform hover:scale-105 shadow-md font-bold bg-[#2E6B6B] hover:bg-[#245858]"
                     >
-                        Start for free →
-                    </button>
+                        Start for free — in 2 minutes
+                    </Link>
+                    <p className="text-xs text-gray-400">
+                        Free forever · No credit card required · Setup is instant
+                    </p>
                 </div>
-                <p className="text-xs text-gray-400">Free forever · No credit card needed · Setup in 2 minutes</p>
             </div>
         </section>
     )
