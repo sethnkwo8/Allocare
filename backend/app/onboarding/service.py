@@ -2,7 +2,7 @@ from app.auth.service import get_current_user
 from .schema import CurrencyRequest, IncomeRequest, BucketCreate, CategoryCreate, OnboardingRequest
 from app.models.base import Income, BudgetBucket, BudgetCategory
 from sqlmodel import select
-from .exceptions import BucketAccessDenied, BucketAllocationError, OnboardingAlreadyComplete, IncorrectBucketCount, CategoryAllocationError
+from .exceptions import BucketAccessDenied, BucketAllocationError, OnboardingAlreadyComplete, IncorrectBucketCount
 from app.utils.convert_to_monthly import convert_to_monthly
 
 # Function to set user currency
@@ -120,99 +120,3 @@ def complete_onboarding(session_token, db_session, buckets: OnboardingRequest ):
     except Exception as e:
         db_session.rollback()
         raise e
-
-# Function to update budget allocations
-def update_budget_allocations(session_token, db_session, buckets_data: OnboardingRequest):
-    user = get_current_user(db_session, session_token)
-    
-    # Get current income to recalculate limits
-    statement = select(Income).where(Income.user_id == user.id)
-    user_income = db_session.exec(statement).first()
-
-    # Convert income to monthly
-    monthly_income = convert_to_monthly(user_income.amount, user_income.frequency)
-
-    # Check percentage total
-    total_percentage = sum(b.percentage_allocation for b in buckets_data.buckets)
-    if total_percentage != 100:
-        raise BucketAllocationError()
-
-    # Update Buckets
-    try:
-        for b_data in buckets_data.buckets:
-            if b_data.categories and sum(c.percentage_allocation for c in b_data.categories) != 100:
-                raise CategoryAllocationError()
-            
-            # Find existing bucket for this user by name
-            stmt = select(BudgetBucket).where(
-                BudgetBucket.user_id == user.id, 
-                BudgetBucket.name == b_data.name
-            )
-            bucket = db_session.exec(stmt).first()
-
-            if bucket:
-                bucket.percentage_allocation = b_data.percentage_allocation
-                db_session.add(bucket)
-                
-                # Update Categories inside this bucket
-                if b_data.categories:
-                    bucket_share = (monthly_income * bucket.percentage_allocation) / 100
-                    
-                    for c_data in b_data.categories:
-                        # Find existing category
-                        c_stmt = select(BudgetCategory).where(
-                            BudgetCategory.bucket_id == bucket.id,
-                            BudgetCategory.name == c_data.name
-                        )
-                        category = db_session.exec(c_stmt).first()
-                        
-                        if category:
-                            # Calculate new limit based on new percentage
-                            percentage = float(c_data.percentage_allocation)
-                            actual_limit = (bucket_share * percentage) / 100
-
-                            # Update fields
-                            category.percentage_allocation = percentage
-                            category.monthly_limit = round(actual_limit, 2)
-                            db_session.add(category)
-
-        db_session.commit()
-
-    except Exception as e:
-        db_session.rollback()
-        raise e
-    return {"message": "Allocations updated successfully"}
-        
-# Function to get budget configurations
-def get_bucket_configurations(session_token, db_session):
-    # Get current user
-    user = get_current_user(db_session, session_token)
-
-    # Get all buckets belonging to user
-    bucket_statement = select(BudgetBucket).where(BudgetBucket.user_id == user.id)
-    buckets = db_session.exec(bucket_statement).all()
-
-    # 3. Response structure
-    config_data = {
-        "buckets": []
-    }
-
-    for bucket in buckets:
-        # Get categories for specific bucket
-        category_statement = select(BudgetCategory).where(BudgetCategory.bucket_id == bucket.id)
-        categories = db_session.exec(category_statement).all()
-
-        bucket_dict = {
-            "name": bucket.name,
-            "percentage_allocation": bucket.percentage_allocation,
-            "categories": [
-                {
-                    "name": cat.name,
-                    "percentage_allocation": cat.percentage_allocation,
-                    "monthly_limit": cat.monthly_limit
-                } for cat in categories
-            ]
-        }
-        config_data["buckets"].append(bucket_dict)
-
-    return config_data

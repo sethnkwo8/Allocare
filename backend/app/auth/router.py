@@ -1,5 +1,6 @@
 from . import schema
 from . import service
+from app.onboarding.schema import OnboardingRequest
 from fastapi import APIRouter, Depends, Response, Cookie
 from typing import Annotated, Optional
 from app.database import get_session
@@ -81,4 +82,21 @@ def get_user(
     user = service.get_current_user(db_session, session_token)
 
     return schema.UserResponse(id=user.id, name=user.name, email=user.email, currency=user.currency, onboarding=user.onboarding)
+
+# GET route to get budget configurations
+@router.get("/budget-configuration", response_model=OnboardingRequest)
+def get_config(
+    session_token: Annotated[Optional[str], Cookie()] = None,
+    db_session: Session = Depends(get_session)   
+):
+    return service.get_bucket_configurations(session_token, db_session)
+
+# PATCH route to update budgets
+@router.patch("/budget-update", status_code=200)
+def update_allocations(
+    payload: OnboardingRequest,
+    session_token: Annotated[Optional[str], Cookie()] = None,
+    db_session: Session = Depends(get_session)
+):
+    return service.update_budget_allocations(session_token=session_token, db_session=db_session, buckets_data=payload)
 
