@@ -38,6 +38,9 @@ class BucketCreate(BaseModel):
 
 # Schema for accepting buckets (needs, wants, savings)
 class OnboardingRequest(BaseModel):
+    currency: str
+    income: Decimal
+    frequency: str
     buckets: List[BucketCreate]
 
 # Response after onboarding completion
