@@ -183,3 +183,36 @@ def update_budget_allocations(session_token, db_session, buckets_data: Onboardin
         raise e
     return {"message": "Allocations updated successfully"}
         
+# Function to get budget configurations
+def get_bucket_configurations(session_token, db_session):
+    # Get current user
+    user = get_current_user(db_session, session_token)
+
+    # Get all buckets belonging to user
+    bucket_statement = select(BudgetBucket).where(BudgetBucket.user_id == user.id)
+    buckets = db_session.exec(bucket_statement).all()
+
+    # 3. Response structure
+    config_data = {
+        "buckets": []
+    }
+
+    for bucket in buckets:
+        # Get categories for specific bucket
+        category_statement = select(BudgetCategory).where(BudgetCategory.bucket_id == bucket.id)
+        categories = db_session.exec(category_statement).all()
+
+        bucket_dict = {
+            "name": bucket.name,
+            "percentage_allocation": bucket.percentage_allocation,
+            "categories": [
+                {
+                    "name": cat.name,
+                    "percentage_allocation": cat.percentage_allocation,
+                    "monthly_limit": cat.monthly_limit
+                } for cat in categories
+            ]
+        }
+        config_data["buckets"].append(bucket_dict)
+
+    return config_data
