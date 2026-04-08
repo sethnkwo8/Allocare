@@ -1,14 +1,35 @@
 // Notification Dialog
 "use client"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "../ui/dialog"
-import { Bell } from "lucide-react"
+import { Bell, Loader2 } from "lucide-react"
 import { Button } from "../ui/button"
 import { NotificationDialogProps } from "@/types/dashboard"
 import { NOTIFICATION_STYLES } from "@/lib/notifications/styles"
+import { markAsRead } from "@/lib/api/dashboard"
+import { useState } from "react"
 
-export function NotificationDialog({ data, isNotificationsOpen, setIsNotificationsOpen }: NotificationDialogProps) {
+export function NotificationDialog({ data, isNotificationsOpen, setIsNotificationsOpen, refresh }: NotificationDialogProps) {
 
     const { notifications } = data
+    const [loadingId, setLoadingId] = useState<string | null>(null)
+
+    async function handleNotificationClick(id: string, isRead: boolean) {
+        if (isRead) return; // Don't call API if already read
+
+        setLoadingId(id)
+        try {
+            // api call
+            await markAsRead(id)
+
+            // Refresh
+            refresh();
+
+        } catch (error) {
+            console.error("Failed to mark as read:", error)
+        } finally {
+            setLoadingId(null)
+        }
+    }
 
     return (
         <Dialog open={isNotificationsOpen} onOpenChange={setIsNotificationsOpen}>
@@ -35,21 +56,33 @@ export function NotificationDialog({ data, isNotificationsOpen, setIsNotificatio
                                 bg: "bg-gray-50"
                             }
                             const Icon = style.icon
+                            const isCurrentlyMarking = loadingId === notification.id
 
                             return (
                                 <div
                                     key={notification.id}
-                                    className={`p-4 border rounded-xl transition-all hover:border-[#2E6B6B]/30 ${!notification.is_read ? 'bg-white shadow-sm' : 'bg-gray-50/50'}`}
+                                    onClick={() => handleNotificationClick(notification.id, notification.is_read)}
+                                    className={`p-4 border rounded-xl transition-all cursor-pointer group
+                                        ${!notification.is_read
+                                            ? 'bg-white shadow-sm border-[#2E6B6B]/10 hover:border-[#2E6B6B]/40'
+                                            : 'bg-gray-50/50 border-transparent hover:bg-gray-50'
+                                        } ${isCurrentlyMarking ? 'opacity-60 pointer-events-none' : ''}`}
                                 >
                                     <div className="flex items-start gap-4">
                                         <div className={`h-10 w-10 rounded-full flex items-center justify-center shrink-0 ${style.bg}`}>
-                                            <Icon className={`h-5 w-5 ${style.color}`} />
+                                            {isCurrentlyMarking ? (
+                                                <Loader2 className="h-5 w-5 animate-spin text-[#2E6B6B]" />
+                                            ) : (
+                                                <Icon className={`h-5 w-5 ${style.color}`} />
+                                            )}
                                         </div>
                                         <div className="flex-1">
                                             <div className="flex justify-between items-start">
-                                                <div className="font-semibold text-sm text-gray-900">{notification.title}</div>
-                                                {!notification.is_read && (
-                                                    <span className="h-2 w-2 rounded-full bg-[#2E6B6B]" />
+                                                <div className={`text-sm font-semibold ${!notification.is_read ? 'text-gray-900' : 'text-gray-500'}`}>
+                                                    {notification.title}
+                                                </div>
+                                                {!notification.is_read && !isCurrentlyMarking && (
+                                                    <span className="h-2 w-2 rounded-full bg-[#2E6B6B] mt-1.5" />
                                                 )}
                                             </div>
                                             <div className="text-sm text-muted-foreground mt-1 leading-relaxed">

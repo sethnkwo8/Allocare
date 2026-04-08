@@ -94,3 +94,23 @@ export async function depositForGoal(amount: string, id: string) {
 
     return await res.json()
 }
+
+// PATCH api call to mark notification as read
+export async function markAsRead(notificationId: string) {
+    const apiURL = process.env.NEXT_PUBLIC_API_URL
+
+    const res = await fetch(`${apiURL}/notifications/${notificationId}/read`, {
+        method: "PATCH",
+        credentials: "include",
+        headers: {
+            "Content-Type": "application/json",
+        }
+    })
+
+    if (!res.ok) {
+        const errorData = await res.json()
+        throw new Error(errorData.detail[0].msg || "Failed to mark notification as read")
+    }
+
+    return await res.json()
+}

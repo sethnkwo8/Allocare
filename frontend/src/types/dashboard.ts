@@ -172,4 +172,5 @@ export interface NotificationDialogProps {
     data: DashboardResponse
     isNotificationsOpen: boolean
     setIsNotificationsOpen(value: boolean): void
+    refresh(): void
 }

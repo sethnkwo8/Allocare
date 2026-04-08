@@ -82,6 +82,7 @@ export function Header({ data, onRefresh }: HeaderProps) {
                     data={data}
                     isNotificationsOpen={isNotificationsOpen}
                     setIsNotificationsOpen={setIsNotificationsOpen}
+                    refresh={onRefresh}
                 />
 
             </div>
