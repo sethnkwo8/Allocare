@@ -2,7 +2,7 @@ from app.auth.service import get_current_user
 from .schema import CurrencyRequest, IncomeRequest, BucketCreate, CategoryCreate, OnboardingRequest
 from app.models.base import Income, BudgetBucket, BudgetCategory
 from sqlmodel import select
-from .exceptions import BucketAccessDenied, BucketAllocationError, OnboardingAlreadyComplete, IncorrectBucketCount
+from .exceptions import BucketAccessDenied, BucketAllocationError, OnboardingAlreadyComplete, IncorrectBucketCount, CategoryAllocationError
 from app.utils.convert_to_monthly import convert_to_monthly
 
 # Function to set user currency
@@ -66,7 +66,7 @@ def create_category(category_data: CategoryCreate, db_session, bucket):
         raise BucketAccessDenied()
 
     # Create budget category
-    category = BudgetCategory(name=category_data.name, monthly_limit=category_data.monthly_limit, bucket=bucket)
+    category = BudgetCategory(name=category_data.name, monthly_limit=category_data.monthly_limit, percentage_allocation=category_data.percentage_allocation, bucket=bucket)
 
     db_session.add(category)
 
@@ -96,7 +96,7 @@ def complete_onboarding(session_token, db_session, buckets: OnboardingRequest ):
         raise BucketAllocationError()
     
     try:
-        # Create default categories and categories for each bucket
+        # Create categories for each bucket
         for bucket_data in buckets.buckets:
             # Create buckets (Needs, Wants, Savings)
             bucket = create_bucket(bucket_data, db_session, user)
@@ -104,7 +104,9 @@ def complete_onboarding(session_token, db_session, buckets: OnboardingRequest ):
             if bucket_data.categories:
                 for category_data in bucket_data.categories:
                     # Convert percentage to currency amount
-                    percentage = float(category_data.monthly_limit)
+                    percentage = float(category_data.percentage_allocation)
+
+                    # Get bucket share
                     bucket_share = (monthly_income * bucket_data.percentage_allocation) / 100
                     actual_limit = (bucket_share * percentage) / 100
 
@@ -135,9 +137,12 @@ def update_budget_allocations(session_token, db_session, buckets_data: Onboardin
     if total_percentage != 100:
         raise BucketAllocationError()
 
-    # 1. Update Buckets
+    # Update Buckets
     try:
         for b_data in buckets_data.buckets:
+            if b_data.categories and sum(c.percentage_allocation for c in b_data.categories) != 100:
+                raise CategoryAllocationError()
+            
             # Find existing bucket for this user by name
             stmt = select(BudgetBucket).where(
                 BudgetBucket.user_id == user.id, 
@@ -149,7 +154,7 @@ def update_budget_allocations(session_token, db_session, buckets_data: Onboardin
                 bucket.percentage_allocation = b_data.percentage_allocation
                 db_session.add(bucket)
                 
-                # 2. Update Categories inside this bucket
+                # Update Categories inside this bucket
                 if b_data.categories:
                     bucket_share = (monthly_income * bucket.percentage_allocation) / 100
                     
@@ -163,8 +168,11 @@ def update_budget_allocations(session_token, db_session, buckets_data: Onboardin
                         
                         if category:
                             # Calculate new limit based on new percentage
-                            percentage = float(c_data.monthly_limit)
+                            percentage = float(c_data.percentage_allocation)
                             actual_limit = (bucket_share * percentage) / 100
+
+                            # Update fields
+                            category.percentage_allocation = percentage
                             category.monthly_limit = round(actual_limit, 2)
                             db_session.add(category)
 

@@ -23,6 +23,7 @@ class IncomeRequest(BaseModel):
 class CategoryCreate(BaseModel):
     name: str
     monthly_limit: Optional[Decimal] = Field(ge=0)
+    percentage_allocation: int = Field(ge=0, le=100)
 
 # Schema for budget bucket
 class AllocationName(str, Enum):

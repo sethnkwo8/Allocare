@@ -14,6 +14,14 @@ class BucketAllocationError(OnboardingError):
             code="INCORRECT_ALLOCATION_CALCULATION"
         )
 
+class CategoryAllocationError(OnboardingError):
+    def __init__(self):
+        super().__init__(
+            message=f"Allocations must equal 100",
+            status_code=400,
+            code="INCORRECT_CATEGORY_ALLOCATION_CALCULATION"
+        )
+
 class BucketAccessDenied(OnboardingError):
     def __init__(self):
         super().__init__(

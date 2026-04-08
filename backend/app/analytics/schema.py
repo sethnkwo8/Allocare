@@ -6,6 +6,7 @@ from typing import Optional, List
 class ExpenseCalculationResponse(BaseModel):
     category_id: uuid.UUID
     category_name: str
+    category_percentage: Decimal
     total_spent: Decimal
     budget_limit: Decimal
     remaining_budget: Decimal

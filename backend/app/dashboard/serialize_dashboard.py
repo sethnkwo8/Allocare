@@ -47,6 +47,7 @@ def serialiaze_dashboard(db_session, session_token):
             schema.ExpenseCalculationResponse(
                 category_id=category.id,
                 category_name=category.name,
+                category_percentage=float(category.percentage_allocation),
                 total_spent=total,
                 budget_limit=category.monthly_limit,
                 remaining_budget=(category.monthly_limit - total)
