@@ -6,7 +6,7 @@ import { Button } from "../ui/button"
 import { ArrowLeft, Save, Loader2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 
-export function Header({ onSave, hasChanges, isSaving }: ProfileSettingsHeaderProps) {
+export function Header({ onSave, hasChanges, isSaving, handleBackNavigation }: ProfileSettingsHeaderProps) {
     // Router constant
     const router = useRouter()
 
@@ -16,7 +16,7 @@ export function Header({ onSave, hasChanges, isSaving }: ProfileSettingsHeaderPr
                 <Button
                     variant="outline"
                     size="icon"
-                    onClick={() => router.push("/dashboard")}
+                    onClick={handleBackNavigation}
                 >
                     <ArrowLeft className="h-5 w-5" />
                 </Button>

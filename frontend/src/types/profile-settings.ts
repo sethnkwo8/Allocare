@@ -3,6 +3,7 @@ export interface ProfileSettingsHeaderProps {
     onSave(): void;
     hasChanges: boolean;
     isSaving: boolean;
+    handleBackNavigation(): void
 }
 
 // Interface for main allocation settings props
