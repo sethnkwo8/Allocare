@@ -92,6 +92,7 @@ export interface SavingsGoal {
 export interface ExpenseCalculationResponse {
     category_id: string
     category_name: string
+    category_percentage: number
     total_spent: number
     budget_limit: number
     remaining_budget: number

@@ -5,8 +5,15 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-// Helper to format keys in category settings
-export const formatLabel = (text: string) => {
-  const result = text.replace(/([A-Z])/g, " $1");
-  return result.charAt(0).toUpperCase() + result.slice(1);
+// Format categories label
+export function formatCategories(breakdown: Record<string, number>, categoriesList: any[]) {
+  return Object.entries(breakdown).map(([id, percentage]) => {
+    const categoryInfo = categoriesList.find(c => c.id === id);
+    return {
+      name: categoryInfo?.label || id,
+      percentage_allocation: percentage,
+      // frontend helper
+      monthly_limit: 0
+    };
+  });
 };

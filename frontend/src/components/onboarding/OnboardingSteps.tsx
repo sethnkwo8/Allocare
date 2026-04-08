@@ -105,10 +105,10 @@ export default function OnboardingSteps() {
                 return needsTotal === 100;
             case 5:
                 const wantsTotal = Object.values(data.wantsBreakdown).reduce((sum, val) => sum + val, 0);
-                return wantsTotal <= 100;
+                return wantsTotal === 100;
             case 6:
                 const savingsTotal = Object.values(data.savingsBreakdown).reduce((sum, val) => sum + val, 0);
-                return savingsTotal <= 100;
+                return savingsTotal === 100;
             default:
                 return false;
         }

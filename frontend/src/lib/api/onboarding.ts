@@ -1,5 +1,6 @@
 import { OnboardingData } from "@/types/onboarding";
 import { needsCategories, wantsCategories, savingsCategories } from "../onboarding/default_categories";
+import { formatCategories } from "../utils";
 
 // Set currency api function
 export async function SetCurrency(currency: string) {
@@ -49,17 +50,6 @@ export async function SetIncomeFrequency(income: string, frequency: string) {
 // Complete onboarding api function
 export async function CompleteOnboarding(data: OnboardingData) {
     const apiURL = process.env.NEXT_PUBLIC_API_URL
-
-    // Function to format categories for backend
-    function formatCategories(breakdown: Record<string, number>, categoriesList: any[]) {
-        return Object.entries(breakdown).map(([id, percentage]) => {
-            const categoryInfo = categoriesList.find(c => c.id === id);
-            return {
-                name: categoryInfo?.label || id,
-                monthly_limit: percentage
-            };
-        });
-    };
 
     // Payload to be sent to backend
     const payload = {
