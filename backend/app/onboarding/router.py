@@ -37,10 +37,18 @@ def complete_onboarding(
     return {"message": "Onboarding complete"}
 
 # PATCH route to update budgets
-@router.patch("/budget/update", status_code=200)
+@router.patch("/budget-update", status_code=200)
 def update_allocations(
     payload: schema.OnboardingRequest,
     session_token: Annotated[Optional[str], Cookie()] = None,
     db_session: Session = Depends(get_session)
 ):
     return service.update_budget_allocations(session_token=session_token, db_session=db_session, buckets_data=payload)
+
+# GET route to get budget configurations
+@router.get("/budget-configuration", response_model=schema.OnboardingRequest)
+def get_config(
+    session_token: Annotated[Optional[str], Cookie()] = None,
+    db_session: Session = Depends(get_session)   
+):
+    return service.get_bucket_configurations(session_token, db_session)
