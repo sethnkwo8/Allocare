@@ -65,7 +65,7 @@ def mark_all_as_read(
     db_session: Session = Depends(get_session),
     session_token: Annotated[Optional[str], Cookie()] = None
 ):
-    message = service.mark_all_notifications(db_session, session_token)
+    message = service.mark_all_notifications_as_read(db_session, session_token)
 
     return schema.MarkAllResponse(
         message=message["message"]

@@ -114,3 +114,23 @@ export async function markAsRead(notificationId: string) {
 
     return await res.json()
 }
+
+// PATCH api call to mark all notifications as read
+export async function markAllAsRead() {
+    const apiURL = process.env.NEXT_PUBLIC_API_URL
+
+    const res = await fetch(`${apiURL}/notifications/read-all`, {
+        method: "PATCH",
+        credentials: "include",
+        headers: {
+            "Content-Type": "application/json",
+        }
+    })
+
+    if (!res.ok) {
+        const errorData = await res.json()
+        throw new Error(errorData.detail[0].msg || "Failed to mark all notifications as read")
+    }
+
+    return await res.json()
+}

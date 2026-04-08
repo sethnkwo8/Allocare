@@ -1,29 +1,27 @@
 // Notification Dialog
 "use client"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "../ui/dialog"
-import { Bell, Loader2 } from "lucide-react"
+import { Bell, Loader2, CheckCheck } from "lucide-react" // Added CheckCheck icon
 import { Button } from "../ui/button"
 import { NotificationDialogProps } from "@/types/dashboard"
 import { NOTIFICATION_STYLES } from "@/lib/notifications/styles"
-import { markAsRead } from "@/lib/api/dashboard"
+import { markAsRead, markAllAsRead } from "@/lib/api/dashboard" // Import both
 import { useState } from "react"
 
 export function NotificationDialog({ data, isNotificationsOpen, setIsNotificationsOpen, refresh }: NotificationDialogProps) {
-
     const { notifications } = data
     const [loadingId, setLoadingId] = useState<string | null>(null)
+    const [isMarkingAll, setIsMarkingAll] = useState(false)
+
+    // Check if there are actually any unread notifications
+    const hasUnread = notifications.some(n => !n.is_read)
 
     async function handleNotificationClick(id: string, isRead: boolean) {
-        if (isRead) return; // Don't call API if already read
-
+        if (isRead) return;
         setLoadingId(id)
         try {
-            // api call
             await markAsRead(id)
-
-            // Refresh
             refresh();
-
         } catch (error) {
             console.error("Failed to mark as read:", error)
         } finally {
@@ -31,14 +29,49 @@ export function NotificationDialog({ data, isNotificationsOpen, setIsNotificatio
         }
     }
 
+    async function handleMarkAll() {
+        if (!hasUnread || isMarkingAll) return;
+
+        setIsMarkingAll(true)
+        try {
+            await markAllAsRead()
+            refresh();
+        } catch (error) {
+            console.error("Failed to mark all as read:", error)
+        } finally {
+            setIsMarkingAll(false)
+        }
+    }
+
     return (
         <Dialog open={isNotificationsOpen} onOpenChange={setIsNotificationsOpen}>
             <DialogContent className="sm:max-w-md">
-                <DialogHeader>
-                    <DialogTitle>Notifications</DialogTitle>
-                    <DialogDescription>
-                        Stay updated with your financial activities.
-                    </DialogDescription>
+                <DialogHeader className="flex flex-row items-center justify-between">
+                    <div className="space-y-1">
+                        <DialogTitle>Notifications</DialogTitle>
+                        <DialogDescription>
+                            Stay updated with your activities.
+                        </DialogDescription>
+                    </div>
+                    {/* Mark All as Read Button */}
+                    {hasUnread && (
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={handleMarkAll}
+                            disabled={isMarkingAll}
+                            className="text-[#2E6B6B] hover:text-[#245252] hover:bg-[#2E6B6B]/10 h-8 px-2 mr-6"
+                        >
+                            {isMarkingAll ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                                <div className="flex items-center gap-1">
+                                    <CheckCheck className="h-4 w-4" />
+                                    <span className="text-xs">Mark all</span>
+                                </div>
+                            )}
+                        </Button>
+                    )}
                 </DialogHeader>
 
                 <div className="space-y-3 max-h-100 overflow-y-auto pr-2">
@@ -49,7 +82,6 @@ export function NotificationDialog({ data, isNotificationsOpen, setIsNotificatio
                         </div>
                     ) : (
                         notifications.map((notification) => {
-                            // Fallback to a default style if the type doesn't match
                             const style = NOTIFICATION_STYLES[notification.type] || {
                                 icon: Bell,
                                 color: "text-gray-600",
@@ -66,7 +98,7 @@ export function NotificationDialog({ data, isNotificationsOpen, setIsNotificatio
                                         ${!notification.is_read
                                             ? 'bg-white shadow-sm border-[#2E6B6B]/10 hover:border-[#2E6B6B]/40'
                                             : 'bg-gray-50/50 border-transparent hover:bg-gray-50'
-                                        } ${isCurrentlyMarking ? 'opacity-60 pointer-events-none' : ''}`}
+                                        } ${isCurrentlyMarking || isMarkingAll ? 'opacity-60 pointer-events-none' : ''}`}
                                 >
                                     <div className="flex items-start gap-4">
                                         <div className={`h-10 w-10 rounded-full flex items-center justify-center shrink-0 ${style.bg}`}>
@@ -85,7 +117,7 @@ export function NotificationDialog({ data, isNotificationsOpen, setIsNotificatio
                                                     <span className="h-2 w-2 rounded-full bg-[#2E6B6B] mt-1.5" />
                                                 )}
                                             </div>
-                                            <div className="text-sm text-muted-foreground mt-1 leading-relaxed">
+                                            <div className="text-sm text-muted-foreground mt-1 leading-relaxed line-clamp-2">
                                                 {notification.message}
                                             </div>
                                             <div className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground mt-3">
