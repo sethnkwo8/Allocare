@@ -8,7 +8,7 @@ export function useGoal() {
     const [errorData, setErrorData] = useState<string | null>(null);
     const apiURL = process.env.NEXT_PUBLIC_API_URL
 
-    // Function to fetch dashboard data from endpoint
+    // Function to fetch goals data from endpoint
     const fetchGoalData = useCallback(async () => {
         setIsLoading(true)
         setErrorData(null)

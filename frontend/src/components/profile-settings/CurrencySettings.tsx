@@ -20,7 +20,7 @@ export function CurrencySettings({ value, onChange }: CurrencyStepProps) {
 
                 <div className="space-y-3">
                     <Label>Currency</Label>
-                    <Select value={value} onValueChange={onChange}>
+                    <Select value={value} onValueChange={(value) => onChange(value)}>
                         <SelectTrigger className="w-full">
                             <SelectValue placeholder="Select a currency" />
                         </SelectTrigger>

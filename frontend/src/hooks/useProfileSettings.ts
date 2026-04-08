@@ -1,25 +1,25 @@
-// useExpense custom hook
-import { ExpenseResponse } from "@/types/expense";
+// Profile settings custom hook
+import { BudgetSettingsData } from "@/types/profile-settings";
 import { useEffect, useState, useCallback } from "react"
 
-export function useExpense() {
-    const [data, setData] = useState<ExpenseResponse[] | null>(null);
+export function useProfileSettings() {
+    const [data, setData] = useState<BudgetSettingsData | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [errorData, setErrorData] = useState<string | null>(null);
     const apiURL = process.env.NEXT_PUBLIC_API_URL
 
-    // Function to fetch expenses data from endpoint
-    const fetchExpensesData = useCallback(async () => {
+    // Function to fetch profile settings from endpoint
+    const fetchProfileSettingsData = useCallback(async () => {
         setIsLoading(true)
         setErrorData(null)
 
         try {
-            const res = await fetch(`${apiURL}/expenses`, {
+            const res = await fetch(`${apiURL}/auth/budget-configuration`, {
                 credentials: "include"
             });
 
             if (!res.ok) {
-                throw new Error("Failed to fetch expenses data");
+                throw new Error("Failed to fetch budget configurations");
             }
 
             const result = await res.json()
@@ -34,8 +34,8 @@ export function useExpense() {
     }, [apiURL])
 
     useEffect(() => {
-        fetchExpensesData()
-    }, [fetchExpensesData])
+        fetchProfileSettingsData()
+    }, [fetchProfileSettingsData])
 
-    return { data, isLoading, errorData, refresh: fetchExpensesData }
+    return { data, isLoading, errorData, refresh: fetchProfileSettingsData }
 }

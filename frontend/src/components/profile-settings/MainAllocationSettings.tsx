@@ -4,19 +4,10 @@
 import { Card } from "../ui/card"
 import { Label } from "../ui/label"
 import { Slider } from "../ui/slider"
-
-// Defining the shape of the data needed
-interface MainAllocationSettingsProps {
-    data: {
-        needs: number;
-        wants: number;
-        savings: number;
-    };
-    onChange: (key: "needs" | "wants" | "savings", value: number) => void;
-}
+import { MainAllocationSettingsProps } from "@/types/profile-settings"
 
 export function MainAllocationSettings({ data, onChange }: MainAllocationSettingsProps) {
-    // Calculate total on the fly for the error message
+    // Calculate total for error message
     const mainTotal = data.needs + data.wants + data.savings;
 
     return (

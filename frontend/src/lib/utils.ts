@@ -17,3 +17,21 @@ export function formatCategories(breakdown: Record<string, number>, categoriesLi
     };
   });
 };
+
+// Function to format settings payload
+export function formatSettingsPayload(breakdown: Record<string, number>) {
+  return Object.entries(breakdown).map(([name, percentage]) => ({
+    name: name,
+    percentage_allocation: percentage,
+    monthly_limit: 0
+  }));
+}
+
+// Format label in category settings
+export function formatLabel(str: string): string {
+  return str
+    .replace(/_/g, ' ')
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}

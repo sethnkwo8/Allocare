@@ -135,12 +135,19 @@ def get_bucket_configurations(session_token, db_session):
     # Get current user
     user = get_current_user(db_session, session_token)
 
+    # Get income data 
+    income_stmt = select(Income).where(Income.user_id == user.id)
+    income = db_session.exec(income_stmt).first()
+
     # Get all buckets belonging to user
     bucket_statement = select(BudgetBucket).where(BudgetBucket.user_id == user.id)
     buckets = db_session.exec(bucket_statement).all()
 
     # 3. Response structure
     config_data = {
+        "currency": user.currency,
+        "income": income.amount if income else 0,
+        "frequency": income.frequency if income else "monthly",
         "buckets": []
     }
 
