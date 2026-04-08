@@ -92,7 +92,7 @@ def get_config(
     return service.get_bucket_configurations(session_token, db_session)
 
 # PATCH route to update budgets
-@router.patch("/budget-update", status_code=200)
+@router.patch("/budget-configuration", status_code=200)
 def update_allocations(
     payload: OnboardingRequest,
     session_token: Annotated[Optional[str], Cookie()] = None,

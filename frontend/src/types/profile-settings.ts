@@ -29,7 +29,7 @@ export interface CategorySettingsProps {
 export interface CategoryConfig {
     name: string;
     percentage_allocation: number;
-    monthly_limit?: number;
+    monthly_limit: string | number; // Handles the string in your JSON
 }
 
 // Interface for bucket config
@@ -42,7 +42,7 @@ export interface BucketConfig {
 // Interface for Budget settings data
 export interface BudgetSettingsData {
     currency: string;
-    income: number;
+    income: string | number;
     frequency: string;
     buckets: BucketConfig[];
 }
