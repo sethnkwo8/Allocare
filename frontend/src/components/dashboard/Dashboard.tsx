@@ -13,6 +13,7 @@ import { ExpenseDialog } from "./ExpenseDialog"
 import { ExpenseForm, GoalForm } from "@/types/dashboard"
 import { GoalDialog } from "./GoalDialog"
 import { AllocationBanner } from "./AllocationBanner"
+import { ErrorSkeleton } from "../error/ErrorSkeleton"
 
 export function Dashboard() {
     // Get data from custom hook
@@ -53,7 +54,16 @@ export function Dashboard() {
             <div className="w-8 h-8 border-4 border-[#2E6B6B] border-t-transparent rounded-full animate-spin"></div>
         </div>
     )
-    if (errorData) return <div>Error: {errorData}</div>
+    if (errorData) {
+        return (
+            <div className="min-h-screen bg-[#d4f1f1]/30 flex items-center justify-center">
+                <ErrorSkeleton
+                    message={errorData}
+                    retry={() => refresh()}
+                />
+            </div>
+        );
+    }
     if (!data) return null
 
     return (

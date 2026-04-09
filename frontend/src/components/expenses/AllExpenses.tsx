@@ -25,6 +25,7 @@ import { ExpenseResponse } from "@/types/expense";
 import { ExpenseDialog } from "../dashboard/ExpenseDialog";
 import { useDashboard } from "@/hooks/useDashboard";
 import { formatWithCommas, getCurrencySymbol } from "@/lib/dashboard/utils";
+import { ErrorSkeleton } from "../error/ErrorSkeleton";
 
 export function AllExpenses() {
     // Custom hook returns
@@ -137,7 +138,16 @@ export function AllExpenses() {
             <div className="w-8 h-8 border-4 border-[#2E6B6B] border-t-transparent rounded-full animate-spin"></div>
         </div>
     )
-    if (errorData) return <div>Error: {errorData}</div>
+    if (errorData) {
+        return (
+            <div className="min-h-screen bg-[#d4f1f1]/30 flex items-center justify-center">
+                <ErrorSkeleton
+                    message={errorData}
+                    retry={() => refresh()}
+                />
+            </div>
+        );
+    }
     if (!data) return null
 
     return (

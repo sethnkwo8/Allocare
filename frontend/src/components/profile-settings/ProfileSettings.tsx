@@ -11,9 +11,10 @@ import { formatSettingsPayload } from "@/lib/utils"
 import { useProfileSettings } from "@/hooks/useProfileSettings"
 import { UpdateBudgetSettings } from "@/lib/api/profile-settings"
 import { useRouter } from "next/navigation"
+import { ErrorSkeleton } from "../error/ErrorSkeleton"
 
 export function ProfileSettings() {
-    const { data, isLoading, refresh } = useProfileSettings()
+    const { data, isLoading, errorData, refresh } = useProfileSettings()
 
     // router constant
     const router = useRouter();
@@ -109,8 +110,6 @@ export function ProfileSettings() {
         setAllocations(prev => ({ ...prev, [key]: value }))
     }
 
-    if (!data) return null;
-
     // User wants to leave to dashboard with unsaved changes
     const handleBackNavigation = () => {
         if (hasChanges) {
@@ -168,6 +167,19 @@ export function ProfileSettings() {
             </div>
         )
     }
+
+    if (errorData) {
+        return (
+            <div className="min-h-screen bg-[#d4f1f1]/30 flex items-center justify-center">
+                <ErrorSkeleton
+                    message={errorData}
+                    retry={() => refresh()}
+                />
+            </div>
+        );
+    }
+
+    if (!data) return null;
 
     return (
         <div className="min-h-screen bg-linear-to-br from-[#d4f1f1] to-[#e6f5f5] p-4 md:p-8">
