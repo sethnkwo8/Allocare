@@ -26,6 +26,13 @@ export interface CategorySettingsProps {
         savings: Record<string, number>;
     };
     onChange: (bucket: "needs" | "wants" | "savings", key: string, value: number) => void;
+    income: string | number;
+    currency: string;
+    allocations: {
+        needs: number;
+        wants: number;
+        savings: number;
+    };
 }
 
 // Interface for category config

@@ -208,6 +208,9 @@ export function ProfileSettings() {
                 <CategorySettings
                     breakdowns={breakdowns}
                     onChange={handleCategoryChange}
+                    income={income}
+                    currency={currency}
+                    allocations={allocations}
                 />
             </div>
         </div>
