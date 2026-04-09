@@ -16,6 +16,10 @@ import { ErrorSkeleton } from "../error/ErrorSkeleton"
 export function ProfileSettings() {
     const { data, isLoading, errorData, refresh } = useProfileSettings()
 
+    // Get monthly income and currency
+    const income = data?.income || 0
+    const currency = data?.currency || "NGN"
+
     // router constant
     const router = useRouter();
 
@@ -197,6 +201,8 @@ export function ProfileSettings() {
                 <MainAllocationSettings
                     data={allocations}
                     onChange={handleMainAllocationChange}
+                    income={income}
+                    currency={currency}
                 />
                 {/* Category breakdown settings */}
                 <CategorySettings

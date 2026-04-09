@@ -14,6 +14,8 @@ export interface MainAllocationSettingsProps {
         savings: number;
     };
     onChange: (key: "needs" | "wants" | "savings", value: number) => void;
+    income: string | number;
+    currency: string;
 }
 
 // Interface for category settings props
