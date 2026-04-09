@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from models.expense import Expense
     from models.goal import Goal
     from models.notification import Notification
+    from models.rollover import Rollover
 
 # User model
 class User(SQLModel, table=True):
@@ -25,6 +26,7 @@ class User(SQLModel, table=True):
     goals: List["Goal"] = Relationship(back_populates="user")
     budget_buckets: List["BudgetBucket"] = Relationship(back_populates="user")
     notifications: List["Notification"] = Relationship(back_populates="user")
+    rollovers: List["Rollover"] = Relationship(back_populates="user")
     created_at: datetime = Field(
     sa_column=Column(TIMESTAMP(timezone=True), server_default=text("CURRENT_TIMESTAMP"))
 )

@@ -19,5 +19,6 @@ class Expense(SQLModel, table=True):
     date: datetime = Field(
         default_factory=lambda: datetime.now(timezone.utc), index=True
     )
+    is_surplus: bool = Field(default=False)
     user_id: uuid.UUID = Field(foreign_key="user.id", index=True)
     user: "User" = Relationship(back_populates="expenses")
