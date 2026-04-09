@@ -24,7 +24,8 @@ def get_category_spending(db_session, user):
             and_(
                 Expense.category_id == BudgetCategory.id,
                 Expense.date >= start_of_month,
-                Expense.date < start_of_next_month
+                Expense.date < start_of_next_month,
+                Expense.is_surplus == False
             ), 
             isouter=True
         )
@@ -50,7 +51,8 @@ def get_total_buckets_spending(db_session, user):
     ).where(
         Expense.user_id == user.id,
         Expense.date >= start_of_month,
-        Expense.date < start_of_next_month
+        Expense.date < start_of_next_month,
+        Expense.is_surplus == False
     ).group_by(Expense.category_id).subquery()
 
     # Now join the Bucket to Categories and the Subquery
