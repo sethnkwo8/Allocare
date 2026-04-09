@@ -34,7 +34,7 @@ def get_dashboard_data(db_session, session_token):
     rollover_amount = db_session.exec(rollover_stmt).one() or Decimal("0.00")
 
     # Total income
-    total_income = base_income + rollover_amount
+    total_income = Decimal(str(base_income)) + rollover_amount
     income_frequency = income_record.frequency if income_record else "monthly"
 
     # total spent for month
