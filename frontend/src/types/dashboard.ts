@@ -55,6 +55,8 @@ export interface GoalSectionProps {
 // Financial overview
 export interface FinancialOverview {
     total_income: number
+    base_income: number;
+    rollover_amount: number;
     income_frequency: string
     total_spent: number
     remaining_balance: number

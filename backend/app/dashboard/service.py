@@ -1,4 +1,4 @@
-from app.models.base import Income,Expense, Goal, BudgetBucket, BudgetCategory, Notification
+from app.models.base import Income,Expense, Goal, BudgetBucket, BudgetCategory, Notification, Rollover
 from app.notifications.service import get_user_and_unread_count
 from sqlmodel import select, func, desc
 from app.analytics.service import get_category_spending, get_total_buckets_spending
@@ -23,16 +23,26 @@ def get_dashboard_data(db_session, session_token):
     # Income record
     income_stmt = select(Income).where(Income.user_id == user.id)
     income_record = db_session.exec(income_stmt).first()
+    base_income = income_record.amount if income_record else Decimal("0.00")
+
+    # Bonus from previous month
+    rollover_stmt = select(func.sum(Rollover.amount)).where(
+        Rollover.user_id == user.id,
+        Rollover.month == start_of_month.month,
+        Rollover.year == start_of_month.year
+    )
+    rollover_amount = db_session.exec(rollover_stmt).one() or Decimal("0.00")
 
     # Total income
-    total_income = income_record.amount if income_record else Decimal("0.00")
+    total_income = base_income + rollover_amount
     income_frequency = income_record.frequency if income_record else "monthly"
 
     # total spent for month
     expense_stmt = select(func.sum(Expense.amount)).where(
         Expense.user_id == user.id,
         Expense.date >= start_of_month,
-        Expense.date < start_of_next_month
+        Expense.date < start_of_next_month,
+        Expense.is_surplus == False
         )
     raw_spent = db_session.exec(expense_stmt).one()
     total_spent = Decimal(str(raw_spent or 0))
@@ -86,7 +96,7 @@ def get_dashboard_data(db_session, session_token):
     )
     recent_notifications = db_session.exec(notification_stmt).all()
 
-    return total_income, income_frequency, total_spent, remaining_balance, recent_expenses, unread_count, recent_notifications, goals, bucket_results, category_results, currency_code, user_name, needs_savings_init
+    return base_income, total_income, rollover_amount, income_frequency, total_spent, remaining_balance, recent_expenses, unread_count, recent_notifications, goals, bucket_results, category_results, currency_code, user_name, needs_savings_init
 
 # Function to initialize savings allocation automatically
 def initialize_monthly_allocation(db_session, user):
