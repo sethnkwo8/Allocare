@@ -9,8 +9,9 @@ import { Textarea } from "../ui/textarea";
 import { ExpenseDialogProps, ExpenseForm } from "@/types/dashboard";
 import { createExpense } from "@/lib/api/dashboard";
 import { useState } from "react";
-import { Loader2 } from "lucide-react";
+import { Loader2, AlertTriangle, ArrowRight } from "lucide-react";
 import { updateExpense } from "@/lib/api/expenses";
+import Link from "next/link";
 
 export function ExpenseDialog({
     categories,
@@ -22,6 +23,19 @@ export function ExpenseDialog({
     mode = "add", // add as default
     expenseId = null // expense id if editing
 }: ExpenseDialogProps & { mode?: "add" | "edit", expenseId?: string | null }) {
+
+    // Get the selected category details
+    const selectedCategoryData = categories.find(c => c.category_id === expenseForm.category);
+
+    // Calculation Logic
+    const inputAmount = Number(expenseForm.amount) || 0;
+    const currentSpent = parseFloat(String(selectedCategoryData?.total_spent)) || 0;
+    const limit = parseFloat(String(selectedCategoryData?.budget_limit)) || 0;
+
+    const isOverLimit = selectedCategoryData && (currentSpent + inputAmount) > limit;
+    const amountOver = (currentSpent + inputAmount) - limit;
+
+    console.log({ inputAmount, currentSpent, limit, isOver: (currentSpent + inputAmount) > limit });
 
     // Loading state for submission
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
@@ -72,6 +86,27 @@ export function ExpenseDialog({
                 </DialogHeader>
 
                 <div className="space-y-4">
+                    {/* Warning Box */}
+                    {isOverLimit && (
+                        <div className="p-3 rounded-xl bg-amber-50 border border-amber-100 animate-in fade-in slide-in-from-top-1 duration-300">
+                            <div className="flex gap-3">
+                                <div className="h-8 w-8 rounded-full bg-amber-100 flex items-center justify-center shrink-0">
+                                    <AlertTriangle className="h-4 w-4 text-amber-600" />
+                                </div>
+                                <div className="space-y-1">
+                                    <p className="text-sm text-amber-900 leading-tight">
+                                        This puts you <span className="font-bold">{amountOver.toLocaleString()}</span> over your <strong>{selectedCategoryData.category_name}</strong> limit.
+                                    </p>
+                                    <Link
+                                        href="/profile-settings"
+                                        className="text-xs font-bold text-[#2E6B6B] hover:underline flex items-center gap-1"
+                                    >
+                                        Adjust your allocations <ArrowRight className="h-3 w-3" />
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                     <div className="space-y-2">
                         <Label htmlFor="title">Title</Label>
                         <Input
