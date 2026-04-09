@@ -55,7 +55,6 @@ export function CategorySettings({ breakdowns, onChange }: CategorySettingsProps
                                     {Object.entries(sectionData).map(([key, value]) => (
                                         <div key={key} className="space-y-3">
                                             <div className="flex items-center justify-between">
-                                                {/* Use your formatLabel helper here */}
                                                 <Label className="text-xs text-muted-foreground">{formatLabel(key)}</Label>
                                                 <span className="text-sm font-semibold">{value}%</span>
                                             </div>

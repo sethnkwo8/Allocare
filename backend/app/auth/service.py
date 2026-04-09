@@ -9,7 +9,7 @@ from app.utils.create_notification import create_notification
 from app.utils.convert_to_monthly import convert_to_monthly
 from app.models.notification import NotificationType
 from app.onboarding.exceptions import CategoryAllocationError, BucketAllocationError
-from app.onboarding.schema import OnboardingRequest
+from app.onboarding.schema import OnboardingUpdateRequest
 
 
 now = datetime.now(timezone.utc)
@@ -172,7 +172,7 @@ def get_bucket_configurations(session_token, db_session):
     return config_data
 
 # Function to update budget allocations
-def update_budget_allocations(session_token, db_session, buckets_data: OnboardingRequest):
+def update_budget_allocations(session_token, db_session, buckets_data: OnboardingUpdateRequest):
     user = get_current_user(db_session, session_token)
     
     # Get current income to recalculate limits
