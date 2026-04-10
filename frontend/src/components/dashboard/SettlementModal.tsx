@@ -9,7 +9,7 @@ import { formatWithCommas, getCurrencySymbol } from "@/lib/dashboard/utils"
 import { TrendingUp, Target } from "lucide-react"
 import { SettlementModalProps } from "@/types/dashboard"
 
-export function SettlementModal({ isOpen, onClose, balance, currencyCode, goals, onConfirm }: SettlementModalProps) {
+export function SettlementModal({ isOpen, onClose, balance, currencyCode, goals, onConfirm, refresh }: SettlementModalProps) {
     const [action, setAction] = useState<"rollover" | "goal">("rollover")
     const [selectedGoal, setSelectedGoal] = useState<string>("")
     const [loading, setLoading] = useState(false)
@@ -20,7 +20,7 @@ export function SettlementModal({ isOpen, onClose, balance, currencyCode, goals,
         try {
             await onConfirm(action, balance, action === "goal" ? selectedGoal : undefined)
             onClose()
-
+            refresh()
         } catch (error) {
             console.error("Settlement failed", error)
         } finally {

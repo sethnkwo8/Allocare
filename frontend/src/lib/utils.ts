@@ -38,8 +38,7 @@ export function formatLabel(str: string): string {
 
 // Function to determine if it is end of month
 export const isEndOfMonth = () => {
-  return true;
-  // const today = new Date();
-  // const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
-  // return (lastDay - today.getDate()) <= 3; // True during the last 3 days
+  const today = new Date();
+  const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+  return (lastDay - today.getDate()) <= 3; // True during the last 3 days
 };
