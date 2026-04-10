@@ -8,6 +8,9 @@ from app.models.budget_bucket import BudgetBucket
 from app.models.budget_category import BudgetCategory
 from . import exceptions
 from sqlmodel import select, func, String, cast
+from app.utils.create_notification import create_notification
+from app.models.notification import NotificationType
+from app.utils.milestone_check import check_goal_milestone
 
 # Function to apply remaining balance as bonus income for next month
 def handle_monthly_rollover(db_session, user_id: uuid.UUID, amount: Decimal):
@@ -64,6 +67,14 @@ def handle_surplus_sweep(db_session, user_id: uuid.UUID, goal_id: uuid.UUID, amo
     if not category:
         raise exceptions.FinacialGoalsNotFound()
 
+    # Get Goal and track old state
+    goal = db_session.get(Goal, goal_id)
+    if not goal:
+        raise exceptions.GoalNotFound()
+    
+    was_completed = goal.is_completed
+    old_amount = goal.current_amount
+
     # Create the 'Surplus' Expense
     sweep_expense = Expense(
         title="Surplus Sweep",
@@ -74,12 +85,38 @@ def handle_surplus_sweep(db_session, user_id: uuid.UUID, goal_id: uuid.UUID, amo
         notes=f"End of month surplus sweep into goal"
     )
 
-    # Update the Goal Balance
-    goal = db_session.get(Goal, goal_id)
-    if goal:
-        goal.current_amount += amount
-    else:
-        raise exceptions.GoalNotFound()
+    # Update goal balance and check if complete
+    goal.current_amount += amount
+    goal.is_completed = goal.current_amount >= goal.target_amount
+
+    # Milestone & notification Logic
+    milestone = check_goal_milestone(
+        old_current=old_amount, 
+        new_current=goal.current_amount, 
+        target=goal.target_amount
+    )
+
+    # Trigger Milestone Notification
+    if milestone and not goal.is_completed:
+        create_notification(
+            title="📈 Goal Milestone",
+            notification_type=NotificationType.GOAL_MILESTONE,
+            message=f"Surplus sweep pushed you to {milestone}% of your {goal.name} goal! 🎉",
+            user_id=user_id,
+            reference_id=goal.id,
+            db_session=db_session
+        )
+
+    # Trigger Completion Notification
+    if not was_completed and goal.is_completed:
+        create_notification(
+            title="🎉 Goal Completed",
+            message=f"End-of-month surplus completed your {goal.name} goal!",
+            notification_type=NotificationType.GOAL_COMPLETED,
+            user_id=user_id,
+            reference_id=goal.id,
+            db_session=db_session
+        )
 
     db_session.add(sweep_expense)
     db_session.add(goal)
