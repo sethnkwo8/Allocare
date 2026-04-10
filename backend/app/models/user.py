@@ -11,6 +11,7 @@ if TYPE_CHECKING:
     from models.goal import Goal
     from models.notification import Notification
     from models.rollover import Rollover
+    from models.user_insights import UserInsights
 
 # User model
 class User(SQLModel, table=True):
@@ -27,6 +28,7 @@ class User(SQLModel, table=True):
     budget_buckets: List["BudgetBucket"] = Relationship(back_populates="user")
     notifications: List["Notification"] = Relationship(back_populates="user")
     rollovers: List["Rollover"] = Relationship(back_populates="user")
+    user_insights: List["UserInsights"] = Relationship(back_populates="user")
     created_at: datetime = Field(
     sa_column=Column(TIMESTAMP(timezone=True), server_default=text("CURRENT_TIMESTAMP"))
 )

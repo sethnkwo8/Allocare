@@ -10,6 +10,7 @@ from app.models.session import Session
 from app.models.user import User
 from app.models.notification import Notification
 from app.models.rollover import Rollover
+from app.models.user_insights import UserInsights
 
 # Export metadata
 target_metadata = SQLModel.metadata
