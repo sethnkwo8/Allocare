@@ -14,6 +14,11 @@ import { ExpenseForm, GoalForm } from "@/types/dashboard"
 import { GoalDialog } from "./GoalDialog"
 import { AllocationBanner } from "./AllocationBanner"
 import { ErrorSkeleton } from "../error/ErrorSkeleton"
+import { SettlementBanner } from "./SettlementBanner"
+import { SettlementModal } from "./SettlementModal"
+import { isEndOfMonth } from "@/lib/utils"
+import { getCurrencySymbol } from "@/lib/dashboard/utils"
+import { handleSettlementConfirm } from "@/lib/api/dashboard"
 
 export function Dashboard() {
     // Get data from custom hook
@@ -24,6 +29,18 @@ export function Dashboard() {
 
     // Goal Dialog state
     const [isGoalDialogOpen, setIsGoalDialogOpen] = useState<boolean>(false)
+
+    // Settlement State
+    const [isSettlementOpen, setIsSettlementOpen] = useState(false);
+
+    // State for if settlement banner is dismissed
+    const [bannerDismissed, setBannerDismissed] = useState(false);
+
+    // Get remaining balance
+    const remaining = data?.financial_overview.remaining_balance ?? 0;
+
+    // Logic for showing settlement
+    const showSettlementUI = isEndOfMonth() && remaining > 0;
 
     // Inside your Dashboard component
     const savingsBucket = data?.bucket_spendings.find(b => b.bucket_name.toLowerCase() === "savings");
@@ -79,6 +96,14 @@ export function Dashboard() {
                         onRefresh={refresh}
                     />
                 )}
+                {/* Settlement Banner */}
+                {showSettlementUI && !bannerDismissed && (
+                    <SettlementBanner
+                        balance={remaining}
+                        currencySymbol={getCurrencySymbol(data?.financial_overview.currency_code)}
+                        onSettle={() => setIsSettlementOpen(true)}
+                    />
+                )}
                 {/* Overview Cards */}
                 <OverviewCards data={data} />
                 {/* Charts Section */}
@@ -105,6 +130,19 @@ export function Dashboard() {
                     expenseForm={expenseForm}
                     setExpenseForm={setExpenseForm}
                     onRefresh={refresh}
+                />
+                {/* Setllement modal */}
+                <SettlementModal
+                    isOpen={isSettlementOpen}
+                    onClose={() => {
+                        setIsSettlementOpen(false);
+                        setBannerDismissed(true);
+                    }}
+                    balance={remaining}
+                    currencyCode={data.financial_overview.currency_code}
+                    goals={data.goal_savings.map(g => ({ id: g.id, name: g.name }))}
+                    onConfirm={handleSettlementConfirm}
+                    refresh={refresh}
                 />
             </div>
         </div>

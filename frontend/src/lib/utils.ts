@@ -35,3 +35,11 @@ export function formatLabel(str: string): string {
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
 }
+
+// Function to determine if it is end of month
+export const isEndOfMonth = () => {
+  return true;
+  // const today = new Date();
+  // const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+  // return (lastDay - today.getDate()) <= 3; // True during the last 3 days
+};

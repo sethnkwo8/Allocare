@@ -7,7 +7,7 @@ from app.models.goal import Goal
 from app.models.budget_bucket import BudgetBucket
 from app.models.budget_category import BudgetCategory
 from . import exceptions
-from sqlmodel import select
+from sqlmodel import select, func, String, cast
 
 # Function to apply remaining balance as bonus income for next month
 def handle_monthly_rollover(db_session, user_id: uuid.UUID, amount: Decimal):
@@ -55,8 +55,8 @@ def handle_surplus_sweep(db_session, user_id: uuid.UUID, goal_id: uuid.UUID, amo
         .join(BudgetBucket)
         .where(
             BudgetBucket.user_id == user_id,
-            BudgetBucket.name.ilike("savings"),
-            BudgetCategory.name.ilike("financial goals")
+            func.lower(cast(BudgetBucket.name, String)) == "savings",
+            func.lower(cast(BudgetCategory.name, String)) == "financial goals"
         )
     )
     category = db_session.exec(stmt).first()

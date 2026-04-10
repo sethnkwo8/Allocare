@@ -7,7 +7,7 @@ from app.auth.service import get_current_user
 from typing import Annotated, Optional
 from app.database import get_session
 
-router = APIRouter(prefix="/rollover", tags=["Rollover"])
+router = APIRouter(prefix="/rollover")
 
 @router.post("/settle")
 def settle_month_surplus(

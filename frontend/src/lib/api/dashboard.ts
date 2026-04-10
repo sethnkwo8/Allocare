@@ -134,3 +134,28 @@ export async function markAllAsRead() {
 
     return await res.json()
 }
+
+// POST route for rollover action at end of month
+export async function handleSettlementConfirm(action: "rollover" | "goal", remaining: number, goalId?: string) {
+    const apiURL = process.env.NEXT_PUBLIC_API_URL
+
+    const res = await fetch(`${apiURL}/rollover/settle`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            action,
+            amount: remaining,
+            goal_id: goalId
+        }),
+    })
+
+    if (!res.ok) {
+        const errorData = await res.json()
+        throw new Error(errorData.detail[0].msg || "Failed to settle surplus")
+    }
+
+    return await res.json()
+}

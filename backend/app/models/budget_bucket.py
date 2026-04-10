@@ -13,8 +13,6 @@ class AllocationName(str, Enum):
     WANTS = 'wants'
     SAVINGS = 'savings'
 
-
-
 # BudgetBucket model
 class BudgetBucket(SQLModel, table=True):
     __tablename__ = 'budget_buckets'

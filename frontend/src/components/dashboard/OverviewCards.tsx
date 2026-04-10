@@ -4,7 +4,7 @@ import { Wallet, ArrowDownRight, ArrowUpRight, PiggyBank, TrendingUp } from "luc
 import { getCurrencySymbol, formatWithCommas } from "@/lib/dashboard/utils"
 
 export function OverviewCards({ data }: { data: DashboardResponse }) {
-    const { currency_code, total_income, total_spent } = data.financial_overview
+    const { currency_code, total_income, total_spent, rollover_amount } = data.financial_overview
     const { bucket_spendings } = data
     const currencySymbol = getCurrencySymbol(currency_code)
 
@@ -14,12 +14,22 @@ export function OverviewCards({ data }: { data: DashboardResponse }) {
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <Card className="p-6 bg-white">
+            <Card className="p-6 bg-white relative overflow-hidden">
                 <div className="flex items-center justify-between">
                     <div>
                         <p className="text-sm text-muted-foreground">Total Income</p>
-                        <h3 className="text-2xl mt-1">{currencySymbol}{formatWithCommas(total_income.toFixed(2))}</h3>
-                        <p className="text-xs text-muted-foreground mt-1 capitalize">Monthly</p>
+                        <h3 className="text-2xl mt-1">
+                            {currencySymbol}{formatWithCommas(total_income.toFixed(2))}
+                        </h3>
+
+                        {rollover_amount > 0 ? (
+                            <p className="text-xs text-emerald-600 mt-1 font-medium flex items-center gap-1">
+                                <TrendingUp className="h-3 w-3" />
+                                Includes {currencySymbol}{formatWithCommas(rollover_amount.toFixed(0))} rollover
+                            </p>
+                        ) : (
+                            <p className="text-xs text-muted-foreground mt-1 capitalize">Monthly</p>
+                        )}
                     </div>
                     <div className="h-12 w-12 bg-primary/10 rounded-full flex items-center justify-center">
                         <Wallet className="h-6 w-6 text-primary" />

@@ -176,3 +176,14 @@ export interface NotificationDialogProps {
     setIsNotificationsOpen(value: boolean): void
     refresh(): void
 }
+
+// Interface for settlement modal props
+export interface SettlementModalProps {
+    isOpen: boolean
+    onClose: () => void
+    balance: number
+    currencyCode: string
+    goals: { id: string; name: string }[]
+    onConfirm: (action: "rollover" | "goal", amount: number, goalId?: string) => Promise<void>
+    refresh(): void
+}
