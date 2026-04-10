@@ -41,6 +41,21 @@ export function AllExpenses() {
     // Get currency symbol
     const currencySymbol = getCurrencySymbol(currencyCode) || "₦";
 
+    // Current date
+    const [viewDate, setViewDate] = useState(new Date());
+
+    // Navigation handlers
+    const handlePrevMonth = () => {
+        setViewDate(prev => new Date(prev.getFullYear(), prev.getMonth() - 1, 1));
+    };
+
+    const handleNextMonth = () => {
+        setViewDate(prev => new Date(prev.getFullYear(), prev.getMonth() + 1, 1));
+    };
+
+    // Format month for display
+    const monthDisplay = viewDate.toLocaleString('default', { month: 'long', year: 'numeric' });
+
     // Router for navigation
     const router = useRouter()
 
@@ -74,13 +89,22 @@ export function AllExpenses() {
 
     // Filter expenses based on search query
     const filteredExpenses = (data || []).filter((expense) => {
+        const expenseDate = new Date(expense.date);
         const searchLower = searchQuery.toLowerCase();
-        return (
+
+        // 1. Check if it matches the current View Month & Year
+        const matchesMonth =
+            expenseDate.getMonth() === viewDate.getMonth() &&
+            expenseDate.getFullYear() === viewDate.getFullYear();
+
+        // 2. Check if it matches the Search Query
+        const matchesSearch =
             expense.title.toLowerCase().includes(searchLower) ||
-            expense.category_name.toLowerCase().includes(searchLower) || // ADD THIS
+            expense.category_name.toLowerCase().includes(searchLower) ||
             expense.notes?.toLowerCase().includes(searchLower) ||
-            expense.amount.toString().includes(searchLower)
-        );
+            expense.amount.toString().includes(searchLower);
+
+        return matchesMonth && matchesSearch;
     });
 
     // Calculate pagination
@@ -154,28 +178,54 @@ export function AllExpenses() {
         <div className="min-h-screen bg-linear-to-br from-[#d4f1f1] to-[#e6f5f5] p-4 md:p-8">
             <div className="max-w-7xl mx-auto space-y-6">
                 {/* Header */}
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                     <div className="flex items-center gap-4">
                         <Button
                             variant="outline"
                             size="icon"
                             onClick={() => router.push("/dashboard")}
+                            className="hover:border-[#2E6B6B] hover:text-[#2E6B6B]"
                         >
                             <ArrowLeft className="h-5 w-5" />
                         </Button>
                         <div>
                             <h1 className="font-semibold text-3xl text-[#2E6B6B]">All Expenses</h1>
-                            <p className="text-muted-foreground">View and manage all your expenses</p>
+                            <p className="text-muted-foreground">Managing {monthDisplay}</p>
                         </div>
                     </div>
+
+                    {/* Navigation Buttons */}
+                    <div className="flex items-center gap-1 bg-white p-1 rounded-xl border shadow-sm ring-1 ring-slate-200">
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={handlePrevMonth}
+                            className="h-9 w-9 p-0 text-[#2E6B6B] hover:bg-[#d4f1f1]"
+                        >
+                            <ChevronLeft className="h-5 w-5" />
+                        </Button>
+
+                        <div className="px-4 py-1 text-sm font-semibold text-[#2E6B6B] min-w-35 text-center">
+                            {monthDisplay}
+                        </div>
+
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={handleNextMonth}
+                            className="h-9 w-9 p-0 text-[#2E6B6B] hover:bg-[#d4f1f1]"
+                            // Prevent going into the future if you want
+                            disabled={viewDate > new Date()}
+                        >
+                            <ChevronRight className="h-5 w-5" />
+                        </Button>
+                    </div>
+
                     <Button
-                        className="bg-[#2E6B6B] hover:bg-[#2E6B6B]/90 text-white"
+                        className="bg-[#2E6B6B] hover:bg-[#2E6B6B]/90 text-white shadow-md"
                         onClick={() => {
-                            // Not in edit mode
                             setEditId(null);
-                            // Clear form
                             setExpenseForm({ title: "", amount: "", category: "", description: "" });
-                            // Open dialog
                             setIsExpenseDialogOpen(true);
                         }}
                     >
@@ -263,7 +313,7 @@ export function AllExpenses() {
                                         <TableCell colSpan={4} className="text-center py-12 text-muted-foreground">
                                             <div className="flex flex-col items-center gap-2">
                                                 <Search className="h-8 w-8 opacity-20" />
-                                                <p>No expenses found matching "{searchQuery}"</p>
+                                                <p>No expenses recorded for {monthDisplay}</p>
                                                 <Button
                                                     variant="link"
                                                     onClick={() => setSearchQuery("")}
