@@ -10,6 +10,7 @@ from app.goals.router import router as goals_router
 from app.notifications.router import router as notifications_router
 from app.onboarding.router import router as onboarding_router
 from app.rollover.router import router as rollover_router
+from app.insights.router import router as insights_router
 
 app = FastAPI()
 
@@ -22,6 +23,7 @@ app.include_router(goals_router, tags=["Goals"])
 app.include_router(notifications_router, tags=["Notifications"])
 app.include_router(onboarding_router, tags=["Onboarding"])
 app.include_router(rollover_router, tags=["Rollover"])
+app.include_router(insights_router, tags=["Insights"])
 
 # Frontend origin
 origins = [
