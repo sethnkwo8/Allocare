@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, Cookie
 from . import schema
 from . import service
-from typing import Annotated, Optional, List
+from typing import Annotated, Optional
 from sqlmodel import Session
 from app.database import get_session
 from .serialize_dashboard import serialiaze_dashboard
