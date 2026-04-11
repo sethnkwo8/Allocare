@@ -9,6 +9,7 @@ if TYPE_CHECKING:
     from models.user import User
 
 class UserInsights(SQLModel, table=True):
+    __tablename__ = 'user_insights'
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True, index=True)
     content: str
     month: int
@@ -17,4 +18,4 @@ class UserInsights(SQLModel, table=True):
         default_factory=lambda: datetime.now(timezone.utc)
     )
     user_id: uuid.UUID = Field(foreign_key="user.id", index=True)
-    user: "User" = Relationship(back_populates="insights")
+    user: "User" = Relationship(back_populates="user_insights")
