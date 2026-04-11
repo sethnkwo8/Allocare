@@ -19,10 +19,14 @@ import { SettlementModal } from "./SettlementModal"
 import { isEndOfMonth } from "@/lib/utils"
 import { getCurrencySymbol } from "@/lib/dashboard/utils"
 import { handleSettlementConfirm } from "@/lib/api/dashboard"
+import { useAiInsight } from "@/hooks/useAiInsight"
+import { AIInsightsCard } from "./AIInsightsCard"
 
 export function Dashboard() {
     // Get data from custom hook
     const { data, isLoading, errorData, refresh } = useDashboard()
+
+    const { insight, isLoading: insightIsLoading, error } = useAiInsight()
 
     // Expense Dialog state
     const [isExpenseDialogOpen, setIsExpenseDialogOpen] = useState<boolean>(false)
@@ -88,6 +92,8 @@ export function Dashboard() {
             <div className="max-w-7xl mx-auto space-y-6">
                 {/* Header */}
                 <Header data={data} onRefresh={refresh} />
+                {/* AI Insights Card */}
+                <AIInsightsCard insight={insight} isLoading={insightIsLoading} />
                 {/* Initialize Savings Banner */}
                 {data.needs_savings_init && (
                     <AllocationBanner
