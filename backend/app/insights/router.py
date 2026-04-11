@@ -36,4 +36,4 @@ def get_monthly_financial_insight(
     except Exception as e:
         # Log error
         print(f"AI Insight Error: {e}")
-        return {"insight": "Keep tracking your expenses to see personalized AI insights here!"}
+        return {"insight": "AI Financial Insights are coming soon to your dashboard!"}
