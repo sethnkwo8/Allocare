@@ -24,6 +24,7 @@ class Notification(SQLModel, table=True):
         default_factory=lambda: datetime.now(timezone.utc), index=True
     )
     is_read: bool = Field(default=False, index=True)
+    is_toasted: bool = Field(default=False, index=True)
     reference_id: Optional[uuid.UUID]
     user_id: uuid.UUID = Field(foreign_key="user.id", index=True)
     user: "User" = Relationship(back_populates='notifications')
