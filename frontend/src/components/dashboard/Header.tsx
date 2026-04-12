@@ -29,7 +29,7 @@ export function Header({ data, onRefresh }: HeaderProps) {
     const [isNotificationsOpen, setIsNotificationsOpen] = useState<boolean>(false)
 
     return (
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex flex-col gap-6">
             <div>
                 <h1 className="text-3xl font-semibold text-[#2E6B6B]">Welcome back, {name}!</h1>
                 <p className="text-muted-foreground">
@@ -37,55 +37,61 @@ export function Header({ data, onRefresh }: HeaderProps) {
                 </p>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-3">
                 <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={onRefresh}
-                    className="hover:text-[#2E6B6B] hover:border-[#2E6B6B]"
-                    title="Refresh Data"
-                >
-                    <RefreshCw className="h-5 w-5" />
-                </Button>
-
-                <Button
-                    className="bg-[#2E6B6B] hover:bg-[#2E6B6B]/90 text-white"
+                    className="flex-1 md:flex-none bg-[#2E6B6B] hover:bg-[#2E6B6B]/90 text-white h-11"
                     onClick={() => setIsIncomeDialogOpen(true)}
                 >
                     <Wallet className="h-4 w-4 mr-2" />
                     Edit Income
                 </Button>
 
-                <Button variant="outline" size="icon" className="relative" onClick={() => setIsNotificationsOpen(true)}>
-                    <Bell className="h-5 w-5" />
-                    {unread_count.unread_count > 0 && (
-                        <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#2E6B6B] text-[10px] font-bold text-white ring-2 ring-white">
-                            {unread_count.unread_count > 9 ? '9+' : unread_count.unread_count}
-                        </span>
-                    )}
-                </Button>
+                <div className="flex items-center gap-2">
+                    <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={onRefresh}
+                        className="h-11 w-11 hover:text-[#2E6B6B] hover:border-[#2E6B6B]"
+                        title="Refresh Data"
+                    >
+                        <RefreshCw className="h-5 w-5" />
+                    </Button>
 
-                <SettingsDropdown />
+                    <Button
+                        variant="outline"
+                        size="icon"
+                        className="relative h-11 w-11"
+                        onClick={() => setIsNotificationsOpen(true)}
+                    >
+                        <Bell className="h-5 w-5" />
+                        {unread_count.unread_count > 0 && (
+                            <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-[#2E6B6B] text-[10px] font-bold text-white ring-2 ring-white">
+                                {unread_count.unread_count > 9 ? '9+' : unread_count.unread_count}
+                            </span>
+                        )}
+                    </Button>
 
-                {/* Income dialog */}
-                <UpdateIncomeDialog
-                    isOpen={isIncomeDialogOpen}
-                    onClose={() => setIsIncomeDialogOpen(false)}
-                    onRefresh={onRefresh}
-                    currentIncome={currentIncome}
-                    currentFrequency={currentFrequency}
-                    currencySymbol={currencySymbol}
-                />
-
-                {/* Notifications dialog */}
-                <NotificationDialog
-                    data={data}
-                    isNotificationsOpen={isNotificationsOpen}
-                    setIsNotificationsOpen={setIsNotificationsOpen}
-                    refresh={onRefresh}
-                />
-
+                    <SettingsDropdown />
+                </div>
             </div>
+
+            {/* Income dialog */}
+            <UpdateIncomeDialog
+                isOpen={isIncomeDialogOpen}
+                onClose={() => setIsIncomeDialogOpen(false)}
+                onRefresh={onRefresh}
+                currentIncome={currentIncome}
+                currentFrequency={currentFrequency}
+                currencySymbol={currencySymbol}
+            />
+
+            {/* Notifications dialog */}
+            <NotificationDialog
+                data={data}
+                isNotificationsOpen={isNotificationsOpen}
+                setIsNotificationsOpen={setIsNotificationsOpen}
+                refresh={onRefresh}
+            />
         </div>
     )
 }
