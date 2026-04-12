@@ -27,7 +27,8 @@ app.include_router(insights_router, tags=["Insights"])
 
 # Frontend origin
 origins = [
-    "http://localhost:3000"
+    "http://localhost:3000",
+    "https://allocare.vercel.app"
 ]
 
 # CORS Middleware setup
