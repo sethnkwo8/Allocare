@@ -27,8 +27,9 @@ app.include_router(insights_router, tags=["Insights"])
 
 # Frontend origin
 origins = [
-    "http://localhost:3000",
-    "https://allocare.vercel.app"
+    "https://www.allocare.online",
+    "https://allocare.online",
+    "http://localhost:3000"
 ]
 
 # CORS Middleware setup
@@ -36,8 +37,8 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],  # Allows all standard methods (GET, POST, PUT, etc.)
-    allow_headers=["*"],  # Allows all headers
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["Content-Type", "Set-Cookie", "Authorization", "Access-Control-Allow-Credentials"],
 )
 
 @app.exception_handler(AuthError)
