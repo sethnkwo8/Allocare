@@ -7,7 +7,7 @@ from app.models.goal import Goal
 from app.models.budget_bucket import BudgetBucket
 from app.models.budget_category import BudgetCategory
 from . import exceptions
-from sqlmodel import select, func, String, cast
+from sqlmodel import select, func, String, cast, extract
 from app.utils.create_notification import create_notification
 from app.models.notification import NotificationType
 from app.utils.milestone_check import check_goal_milestone
@@ -75,6 +75,18 @@ def handle_surplus_sweep(db_session, user_id: uuid.UUID, goal_id: uuid.UUID, amo
     was_completed = goal.is_completed
     old_amount = goal.current_amount
 
+    # Check if sweep exists already
+    existing_sweep = db_session.exec(
+        select(Expense).where(
+            Expense.user_id == user_id,
+            Expense.title == "Surplus Sweep",
+            extract('month', Expense.date) == datetime.now().month
+        )
+    ).first()
+
+    if existing_sweep:
+        return existing_sweep # Skip if already done
+    
     # Create the 'Surplus' Expense
     sweep_expense = Expense(
         title="Surplus Sweep",
