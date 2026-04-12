@@ -4,6 +4,8 @@ from app.models.base import Income, BudgetBucket, BudgetCategory
 from sqlmodel import select
 from .exceptions import BucketAccessDenied, BucketAllocationError, OnboardingAlreadyComplete, IncorrectBucketCount
 from app.utils.convert_to_monthly import convert_to_monthly
+from app.utils.create_notification import create_notification
+from app.models.notification import NotificationType
 
 # Function to set user currency
 def set_user_currency(currency_data: CurrencyRequest, db_session, session_token):
@@ -115,6 +117,18 @@ def complete_onboarding(session_token, db_session, buckets: OnboardingRequest ):
         
         # Set onboarding to true for completion
         user.onboarding = True
+        db_session.commit()
+
+        # Create notification
+        title = "🎉 Welcome to Allocare"
+        message = f"Welcome to Allocare, {user.name}! Start by creating your first budget bucket"
+        create_notification(
+            title=title,
+            notification_type=NotificationType.WELCOME,
+            message=message,
+            user_id=user.id,
+            db_session=db_session
+        )
         db_session.commit()
     # Undo everything if anything fails 
     except Exception as e:
