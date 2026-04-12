@@ -12,6 +12,8 @@ import { useState } from "react";
 import { Loader2, AlertTriangle, ArrowRight } from "lucide-react";
 import { updateExpense } from "@/lib/api/expenses";
 import Link from "next/link";
+import { toast } from "sonner";
+import { getCurrencySymbol } from "@/lib/dashboard/utils";
 
 export function ExpenseDialog({
     categories,
@@ -21,8 +23,11 @@ export function ExpenseDialog({
     setExpenseForm,
     onRefresh,
     mode = "add", // add as default
-    expenseId = null // expense id if editing
-}: ExpenseDialogProps & { mode?: "add" | "edit", expenseId?: string | null }) {
+    expenseId = null,
+    currencyCode // expense id if editing
+}: ExpenseDialogProps & { mode?: "add" | "edit", expenseId?: string | null, currencyCode: string }) {
+    // Get currency symbol
+    const currencySymbol = getCurrencySymbol(currencyCode)
 
     // Get the selected category details
     const selectedCategoryData = categories.find(c => c.category_id === expenseForm.category);
@@ -62,12 +67,19 @@ export function ExpenseDialog({
 
             // Close dialog
             setIsExpenseDialogOpen(false)
+            // Expense recorded popup
+            toast.success("Expense Recorded", {
+                description: `${expenseForm.title} — ${currencySymbol}${expenseForm.amount}`,
+                icon: <div className="h-2 w-2 rounded-full bg-red-500" />,
+            });
             // Reset form
             setExpenseForm({ title: "", amount: "", category: "", description: "" });
             // Refresh page
             onRefresh()
         } catch (error: any) {
-            alert(error.message)
+            toast.error("Something went wrong", {
+                description: error.message || "Could not save expense."
+            });
         } finally {
             setIsSubmitting(false)
         }

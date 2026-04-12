@@ -12,6 +12,7 @@ import { useProfileSettings } from "@/hooks/useProfileSettings"
 import { UpdateBudgetSettings } from "@/lib/api/profile-settings"
 import { useRouter } from "next/navigation"
 import { ErrorSkeleton } from "../error/ErrorSkeleton"
+import { toast } from "sonner"
 
 export function ProfileSettings() {
     const { data, isLoading, errorData, refresh } = useProfileSettings()
@@ -130,7 +131,9 @@ export function ProfileSettings() {
     async function handleGlobalSave() {
         // Alert if main allocation doesn't equal 100
         if (!isValid) {
-            alert("Total allocation must equal 100% before saving.");
+            toast.error("Allocation Error", {
+                description: "Total allocation must equal 100% before saving. Please adjust your bucket percentages.",
+            });
             return;
         }
 
@@ -156,9 +159,14 @@ export function ProfileSettings() {
             }
 
             await refresh(); // Refresh data
-            alert("Settings updated successfully!");
+            // Success Feedback
+            toast.success("Settings Saved", {
+                description: "Your budget structure and currency preferences have been updated.",
+            });
         } catch (error: any) {
-            alert(error.message || "Failed to save settings");
+            toast.error("Save Failed", {
+                description: error.message || "We couldn't update your settings. Please check your inputs.",
+            });
         } finally {
             setIsSaving(false);
         }

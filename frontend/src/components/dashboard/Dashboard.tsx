@@ -136,6 +136,7 @@ export function Dashboard() {
                     expenseForm={expenseForm}
                     setExpenseForm={setExpenseForm}
                     onRefresh={refresh}
+                    currencyCode={data.financial_overview.currency_code}
                 />
                 {/* Setllement modal */}
                 <SettlementModal

@@ -26,6 +26,7 @@ import { ExpenseDialog } from "../dashboard/ExpenseDialog";
 import { useDashboard } from "@/hooks/useDashboard";
 import { formatWithCommas, getCurrencySymbol } from "@/lib/dashboard/utils";
 import { ErrorSkeleton } from "../error/ErrorSkeleton";
+import { toast } from "sonner";
 
 export function AllExpenses() {
     // Custom hook returns
@@ -128,10 +129,16 @@ export function AllExpenses() {
         try {
             // Delete call
             await deleteExpense(id)
+            // Success toast popup
+            toast.success("Expense Deleted", {
+                description: "Your balance and category totals have been updated."
+            });
             // Refresh page
             refresh()
         } catch (error: any) {
-            alert(error.message)
+            toast.error("Delete Failed", {
+                description: error.message || "We couldn't remove that expense. Please try again."
+            });
             console.error(error)
         }
     }
@@ -438,6 +445,7 @@ export function AllExpenses() {
                 onRefresh={refresh}
                 mode={editId ? "edit" : "add"}
                 expenseId={editId}
+                currencyCode={currencyCode}
             />
         </div>
     )

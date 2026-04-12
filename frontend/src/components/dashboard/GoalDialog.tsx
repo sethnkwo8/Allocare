@@ -10,6 +10,7 @@ import { Loader2 } from "lucide-react";
 import { GoalDialogProps, GoalForm } from "@/types/dashboard";
 import { createGoal } from "@/lib/api/dashboard";
 import { updateGoal } from "@/lib/api/goals";
+import { toast } from "sonner";
 
 export function GoalDialog({
     isGoalDialogOpen,
@@ -55,12 +56,20 @@ export function GoalDialog({
 
             // Close dialog
             setIsGoalDialogOpen(false)
+            // Success toast
+            toast.success(mode === "edit" ? "Goal Updated" : "Goal Created! 🎯", {
+                description: mode === "edit"
+                    ? `Changes to "${goalForm.name}" have been saved.`
+                    : `Time to start saving for ${goalForm.name}. You've got this!`,
+            });
             // Reset Goal Form
             setGoalForm({ name: "", target_amount: "", target_date: "", description: "" });
             // Refresh
             onRefresh()
         } catch (error: any) {
-            alert(error.message)
+            toast.error("Goal Error", {
+                description: error.message || "We couldn't save your goal. Please try again."
+            });
         } finally {
             setIsSubmitting(false)
         }

@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { formatWithCommas, getCurrencySymbol } from "@/lib/dashboard/utils"
 import { TrendingUp, Target } from "lucide-react"
 import { SettlementModalProps } from "@/types/dashboard"
+import { toast } from "sonner"
 
 export function SettlementModal({ isOpen, onClose, balance, currencyCode, goals, onConfirm, refresh }: SettlementModalProps) {
     const [action, setAction] = useState<"rollover" | "goal">("rollover")
@@ -19,10 +20,23 @@ export function SettlementModal({ isOpen, onClose, balance, currencyCode, goals,
         setLoading(true)
         try {
             await onConfirm(action, balance, action === "goal" ? selectedGoal : undefined)
+            // Success toast
+            const selectedGoalName = action === "goal" ? goals.find(g => g.id === selectedGoal)?.name : undefined;
+            const successMessage = action === "goal"
+                ? `Settled to ${selectedGoalName}`
+                : `Balance moved to ${action}`;
+
+            toast.success("Settlement Complete", {
+                description: `${successMessage} — ${symbol}${balance.toLocaleString()}`,
+            });
+
             onClose()
             refresh()
         } catch (error) {
             console.error("Settlement failed", error)
+            toast.error("Settlement Failed", {
+                description: "We couldn't process this transaction. Please try again."
+            });
         } finally {
             setLoading(false)
         }

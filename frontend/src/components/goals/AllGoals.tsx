@@ -14,6 +14,7 @@ import { useGoal } from "@/hooks/useGoal"
 import { GoalDepositDialog } from "../dashboard/GoalDepositDialog"
 import { getCurrencySymbol } from "@/lib/dashboard/utils"
 import { ErrorSkeleton } from "../error/ErrorSkeleton"
+import { toast } from "sonner"
 
 export function AllGoals() {
     // Get dashboard data
@@ -54,10 +55,16 @@ export function AllGoals() {
         try {
             // Delete call
             await deleteGoal(id)
+            // Toast success popup
+            toast.success("Goal Removed", {
+                description: "The goal and its history have been deleted.",
+            });
             // Refresh page
             refresh()
         } catch (error: any) {
-            alert(error.message)
+            toast.error("Delete Failed", {
+                description: error.message || "We couldn't remove this goal. Please try again."
+            });
             console.error(error)
         }
     }

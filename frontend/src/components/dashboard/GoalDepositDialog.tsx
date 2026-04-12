@@ -8,6 +8,7 @@ import { Button } from "../ui/button"
 import { useState } from "react"
 import { DepositDialogProps } from "@/types/dashboard"
 import { depositForGoal } from "@/lib/api/dashboard"
+import { toast } from "sonner"
 
 export function GoalDepositDialog({ goal, isOpen, onClose, onRefresh, currencySymbol }: DepositDialogProps) {
     // Amount state
@@ -23,14 +24,20 @@ export function GoalDepositDialog({ goal, isOpen, onClose, onRefresh, currencySy
         try {
             // Call api
             await depositForGoal(amount, goal.id)
-            // Refresh page
-            onRefresh()
+            // Success Popup!
+            toast.success(`Successfully deposited ${currencySymbol}${amount} to ${goal.name}!`, {
+                description: "Your goal progress has been updated.",
+            });
             // Close dialog
             onClose()
+            // Refresh page
+            onRefresh()
             // Reset input
             setAmount("")
         } catch (error: any) {
-            alert("We couldn't complete your deposit at this time")
+            toast.error("Deposit Failed", {
+                description: "We couldn't complete your deposit at this time. Please try again."
+            });
         } finally {
             setIsSubmitting(false)
         }

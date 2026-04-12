@@ -9,6 +9,7 @@ import { Button } from "../ui/button"
 import { useState, useEffect } from "react"
 import { UpdateIncomeDialogProps } from "@/types/dashboard"
 import { SetIncomeFrequency } from "@/lib/api/onboarding"
+import { toast } from "sonner"
 
 export function UpdateIncomeDialog({ isOpen, onClose, onRefresh, currentIncome, currentFrequency, currencySymbol }: UpdateIncomeDialogProps) {
     // Amount state
@@ -39,13 +40,19 @@ export function UpdateIncomeDialog({ isOpen, onClose, onRefresh, currentIncome, 
         try {
             // API call
             await SetIncomeFrequency(amount, frequency)
+            // Success toast
+            toast.success("Income Updated", {
+                description: `Your ${frequency} budget has been recalibrated to ${currencySymbol}${amount}.`,
+            });
             // Refresh page
             onRefresh()
             // Close dialog
             onClose()
         } catch (error: any) {
             console.error(error)
-            alert("Could not update income. Please try again.")
+            toast.error("Update Failed", {
+                description: "We couldn't update your income settings. Please try again."
+            });
         } finally {
             setIsSubmitting(false)
         }

@@ -5,6 +5,7 @@ import { PiggyBank, Sparkles, Loader2, X } from "lucide-react";
 import { formatWithCommas, getCurrencySymbol } from "@/lib/dashboard/utils";
 import { useState } from "react";
 import { initializeSavings } from "@/lib/api/dashboard";
+import { toast } from "sonner";
 
 export function AllocationBanner({ data, plannedSavings, onRefresh }: AllocationBannerProps) {
     // Get currency code
@@ -33,6 +34,11 @@ export function AllocationBanner({ data, plannedSavings, onRefresh }: Allocation
             // API function
             await initializeSavings()
 
+            // Success toast popup
+            toast.success("Savings Initialized! 💰", {
+                description: "Your monthly allocations have been moved to their respective buckets.",
+            });
+
             // Set success state to true
             setIsSuccess(true)
 
@@ -41,7 +47,9 @@ export function AllocationBanner({ data, plannedSavings, onRefresh }: Allocation
                 onRefresh()
             }, 800)
         } catch (error: any) {
-            alert("Sorry, we couldn't move your savings. Please try again.")
+            toast.error("Allocation Failed", {
+                description: "We couldn't move your savings. Please try again."
+            });
             console.error("Allocation failed", error)
         } finally {
             setIsSubmitting(false)
