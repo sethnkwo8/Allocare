@@ -1,10 +1,11 @@
 from fastapi import APIRouter, Depends, Cookie
-from typing import Optional, Annotated
+from typing import Optional, Annotated, List
 from . import schema
 from . import service
 from sqlmodel import Session
 from app.database import get_session
 import uuid
+from app.auth.service import get_current_user
 
 router = APIRouter(prefix='/notifications')
 
@@ -87,3 +88,17 @@ def delete_user_notifications(
     session_token: Annotated[Optional[str], Cookie()] = None
 ):
     service.delete_all_notifications(db_session, session_token)
+
+# GET route to get pending toasts
+@router.get("/pending-toasts", response_model=List[schema.PendingToastResponse], status_code=200)
+def get_toasts(
+    db_session: Session = Depends(get_session),
+    session_token: Annotated[Optional[str], Cookie()] = None
+):
+    # Get current user
+    user = get_current_user(db_session, session_token)
+
+    # Fetch and mark as toasted
+    results = service.get_pending_toasts(db_session, user.id)
+
+    return results

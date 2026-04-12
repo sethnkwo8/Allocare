@@ -3,6 +3,7 @@ from app.models.notification import Notification
 from sqlmodel import select, func, desc, update, delete
 import math
 from . import exceptions
+import uuid
 
 # Function to get count of all unread notifications
 def get_user_and_unread_count(session_token, db_session):
@@ -112,3 +113,20 @@ def delete_all_notifications(db_session, session_token):
 
     db_session.exec(statement)
     db_session.commit()
+
+# Function to fetch notifications that haven't been toasted
+def get_pending_toasts(db_session, user_id: uuid.UUID):
+    # Fetch notifications that haven't been toasted
+    statement = select(Notification).where(
+        Notification.user_id == user_id,
+        Notification.is_toasted == False
+    )
+    results = db_session.exec(statement).all()
+    
+    # Mark as toasted so they don't pop up again
+    for note in results:
+        note.is_toasted = True
+        db_session.add(note)
+    
+    db_session.commit()
+    return results

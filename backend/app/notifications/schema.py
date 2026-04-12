@@ -26,3 +26,15 @@ class NotificationPaginationResponse(BaseModel):
 # Schema for mark all response
 class MarkAllResponse(BaseModel):
     message: str
+
+# Schema for pending toasts response
+class PendingToastResponse(BaseModel):
+    id: uuid.UUID
+    title: str
+    message: str
+    type: str
+    created_at: datetime
+    reference_id: Optional[uuid.UUID] = None
+
+    class Config:
+        from_attributes = True
