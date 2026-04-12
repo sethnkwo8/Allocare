@@ -185,7 +185,7 @@ export function AllExpenses() {
         <div className="min-h-screen bg-linear-to-br from-[#d4f1f1] to-[#e6f5f5] p-4 md:p-8">
             <div className="max-w-7xl mx-auto space-y-6">
                 {/* Header */}
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div className="flex flex-col gap-6">
                     <div className="flex items-center gap-4">
                         <Button
                             variant="outline"
@@ -202,43 +202,44 @@ export function AllExpenses() {
                     </div>
 
                     {/* Navigation Buttons */}
-                    <div className="flex items-center gap-1 bg-white p-1 rounded-xl border shadow-sm ring-1 ring-slate-200">
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={handlePrevMonth}
-                            className="h-9 w-9 p-0 text-[#2E6B6B] hover:bg-[#d4f1f1]"
-                        >
-                            <ChevronLeft className="h-5 w-5" />
-                        </Button>
+                    <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div className="flex items-center gap-1 bg-white p-1 rounded-xl border shadow-sm ring-1 ring-slate-200 w-full sm:w-auto justify-between sm:justify-start">
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={handlePrevMonth}
+                                className="h-9 w-9 p-0 text-[#2E6B6B] hover:bg-[#d4f1f1]"
+                            >
+                                <ChevronLeft className="h-5 w-5" />
+                            </Button>
 
-                        <div className="px-4 py-1 text-sm font-semibold text-[#2E6B6B] min-w-35 text-center">
-                            {monthDisplay}
+                            <div className="px-4 py-1 text-sm font-semibold text-[#2E6B6B] min-w-35 text-center">
+                                {monthDisplay}
+                            </div>
+
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={handleNextMonth}
+                                className="h-9 w-9 p-0 text-[#2E6B6B] hover:bg-[#d4f1f1]"
+                                disabled={viewDate > new Date()}
+                            >
+                                <ChevronRight className="h-5 w-5" />
+                            </Button>
                         </div>
 
                         <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={handleNextMonth}
-                            className="h-9 w-9 p-0 text-[#2E6B6B] hover:bg-[#d4f1f1]"
-                            // Prevent going into the future if you want
-                            disabled={viewDate > new Date()}
+                            className="w-full sm:w-auto bg-[#2E6B6B] hover:bg-[#2E6B6B]/90 text-white shadow-md h-11"
+                            onClick={() => {
+                                setEditId(null);
+                                setExpenseForm({ title: "", amount: "", category: "", description: "" });
+                                setIsExpenseDialogOpen(true);
+                            }}
                         >
-                            <ChevronRight className="h-5 w-5" />
+                            <Plus className="h-4 w-4 mr-2" />
+                            Add Expense
                         </Button>
                     </div>
-
-                    <Button
-                        className="bg-[#2E6B6B] hover:bg-[#2E6B6B]/90 text-white shadow-md"
-                        onClick={() => {
-                            setEditId(null);
-                            setExpenseForm({ title: "", amount: "", category: "", description: "" });
-                            setIsExpenseDialogOpen(true);
-                        }}
-                    >
-                        <Plus className="h-4 w-4 mr-2" />
-                        Add Expense
-                    </Button>
                 </div>
 
                 {/* Search Bar */}
