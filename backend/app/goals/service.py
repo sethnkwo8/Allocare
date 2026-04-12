@@ -6,7 +6,7 @@ from .exceptions import GoalAlreadyCompleted, GoalDoesNotExist
 from app.utils.milestone_check import check_goal_milestone
 from app.utils.calculate_goal_metrics import calculate_goal_metrics
 from app.utils.create_notification import create_notification
-from sqlmodel import select
+from sqlmodel import select, func
 import uuid
 
 # Function to create a goal
@@ -68,18 +68,19 @@ def deposit_for_goal(goal_id: uuid.UUID, deposit_data: DepositRequest, db_sessio
     # Adding deposit amount
     goal.current_amount += deposit_data.amount
 
-    category_stmt = select(BudgetCategory).where(BudgetCategory.name == "Financial Goals")
+    category_stmt = select(BudgetCategory).where(func.lower(BudgetCategory.name) == "financial goals")
     goal_category = db_session.exec(category_stmt).first()
 
     # Create goal expense
     if goal_category:
         db_session.add(Expense(
-            title=f"Goal Deposit: {goal.name}",
-            amount=deposit_data.amount,
-            category_id=goal_category.id,
-            user_id=goal.user_id,
-            notes=f"Funds moved to {goal.name}"
-        ))
+        title=f"Goal Deposit: {goal.name}",
+        amount=deposit_data.amount,
+        category_id=goal_category.id,
+        user_id=goal.user_id,
+        is_surplus=False,
+        notes=f"Funds moved to {goal.name}"
+    ))
 
     # Automatic completion check
     goal.is_completed = goal.current_amount >= goal.target_amount

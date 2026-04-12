@@ -42,7 +42,7 @@ def get_dashboard_data(db_session, session_token):
         Expense.user_id == user.id,
         Expense.date >= start_of_month,
         Expense.date < start_of_next_month,
-        Expense.is_surplus == False
+        # Expense.is_surplus == False
         )
     raw_spent = db_session.exec(expense_stmt).one()
     total_spent = Decimal(str(raw_spent or 0))
