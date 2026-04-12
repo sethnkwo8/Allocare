@@ -79,6 +79,7 @@ def get_user(
     db_session: Session = Depends(get_session)
 ):
     # Use get current user function
+    print(f"DEBUG: session_token received: {session_token}")
     user = service.get_current_user(db_session, session_token)
 
     return schema.UserResponse(id=user.id, name=user.name, email=user.email, currency=user.currency, onboarding=user.onboarding)
