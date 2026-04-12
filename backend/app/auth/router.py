@@ -50,9 +50,11 @@ def login(
     response.set_cookie(key="session_token",
                         value=session_token,
                         httponly=True,
-                        samesite="none", # CSRF protection
+                        samesite="lax", # CSRF protection
                         secure=True, # Forces HTTPS, False for development
-                        max_age=604800 # 7 days
+                        max_age=604800, # 7 days
+                        domain=".allocare.online",
+                        path="/"
                         )
     
     return schema.LoginResponse(email=user.email, id=user.id, onboarding=user.onboarding, created_at=user.created_at)
