@@ -50,8 +50,8 @@ def login(
     response.set_cookie(key="session_token",
                         value=session_token,
                         httponly=True,
-                        samesite="lax", # CSRF protection
-                        secure=False, # Forces HTTPS, False for development
+                        samesite="none", # CSRF protection
+                        secure=True, # Forces HTTPS, False for development
                         max_age=604800 # 7 days
                         )
     
