@@ -29,7 +29,6 @@ app.include_router(insights_router, tags=["Insights"])
 origins = [
     "https://www.allocare.online",
     "https://allocare.online",
-    "http://localhost:3000"
 ]
 
 # CORS Middleware setup
