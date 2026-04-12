@@ -8,7 +8,7 @@ import re
 class RegisterRequest(BaseModel):
     name: str = Field(max_length=255)
     email: EmailStr = Field(max_length=255)
-    password: SecretStr = Field(min_length=8, max_length=64)
+    password: SecretStr = Field(min_length=8, max_length=128)
 
     @field_validator("email")
     @classmethod
@@ -18,7 +18,6 @@ class RegisterRequest(BaseModel):
     @field_validator('password', mode='after')
     @classmethod
     def password_complexity(cls, v: SecretStr) -> SecretStr:
-        # Extract the actual string for validation
         password_val = v.get_secret_value()
         
         if len(password_val) < 8:
@@ -29,8 +28,8 @@ class RegisterRequest(BaseModel):
             raise ValueError('Password must contain at least one lowercase letter')
         if not re.search(r'\d', password_val):
             raise ValueError('Password must contain at least one number')
-        if not re.search(r'[@$!%*?&]', password_val):
-            raise ValueError('Password must contain at least one special character (@$!%*?&)')
+        if not re.search(r'[!@#$%^&*(),.?":{}|<>_-]', password_val):
+            raise ValueError('Password must contain at least one special character')
             
         return v # Return the original SecretStr object
 
