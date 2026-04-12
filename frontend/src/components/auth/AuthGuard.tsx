@@ -14,6 +14,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
         async function checkUser() {
             try {
                 const res = await fetch(`${apiURL}/auth/me`, {
+                    method: "GET",
                     credentials: "include"
                 });
 
