@@ -1,4 +1,5 @@
 import { ExpenseForm, GoalForm } from "@/types/dashboard";
+import { PendingToastResponse } from "@/types/notifications";
 
 // API call to create an expense
 export async function createExpense(data: ExpenseForm) {
@@ -158,4 +159,20 @@ export async function handleSettlementConfirm(action: "rollover" | "goal", remai
     }
 
     return await res.json()
+}
+
+// GET route to get pending toasts
+export async function getPendingToasts(): Promise<PendingToastResponse[]> {
+    const apiURL = process.env.NEXT_PUBLIC_API_URL
+
+    const res = await fetch(`${apiURL}/notifications/pending-toasts`, {
+        method: "GET",
+        credentials: "include",
+        headers: {
+            "Content-Type": "application/json",
+        }
+    })
+
+    if (!res.ok) return [];
+    return await res.json();
 }

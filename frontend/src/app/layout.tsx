@@ -4,6 +4,7 @@ import "./globals.css";
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { Toaster } from "sonner";
+import NotificationManager from "@/components/notifications/NotificationManager";
 
 const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -28,9 +29,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={cn("font-sans", geist.variable)}>
       <body>
-        {children}
         {/* Toaster notification */}
         <Toaster position="top-center" richColors />
+        <NotificationManager />
+        {children}
       </body>
     </html>
   );

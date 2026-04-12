@@ -28,50 +28,48 @@ export function GoalDialog({
     // Handle goal submit
     async function handleGoalSubmit(goalForm: GoalForm) {
         if (!goalForm.name || !goalForm.target_amount || !goalForm.target_date) {
-            alert("Please fill in all required fields, including the target date.");
+            toast.error("Missing Information", {
+                description: "Please fill in all required fields, including the target date."
+            });
             return;
         }
 
-        // Target date has to be in future
         const selectedDate = new Date(goalForm.target_date);
         const today = new Date();
-        today.setHours(0, 0, 0, 0); // Reset time to compare only dates
+        today.setHours(0, 0, 0, 0);
 
         if (selectedDate < today) {
-            alert("Wait! The target date cannot be in the past. Please pick a future date.");
+            toast.error("Invalid Date", {
+                description: "Wait! The target date cannot be in the past. Please pick a future date."
+            });
             return;
         }
 
-        setIsSubmitting(true)
+        setIsSubmitting(true);
 
         try {
-            // API call
             if (mode === "edit" && goalId) {
-                // If mode is edit call update api cal;
-                await updateGoal(goalId, goalForm)
+                await updateGoal(goalId, goalForm);
             } else {
-                // If mode is add call create call
-                await createGoal(goalForm)
+                await createGoal(goalForm);
             }
 
-            // Close dialog
-            setIsGoalDialogOpen(false)
-            // Success toast
+            setIsGoalDialogOpen(false);
+
             toast.success(mode === "edit" ? "Goal Updated" : "Goal Created! 🎯", {
                 description: mode === "edit"
                     ? `Changes to "${goalForm.name}" have been saved.`
                     : `Time to start saving for ${goalForm.name}. You've got this!`,
             });
-            // Reset Goal Form
+
             setGoalForm({ name: "", target_amount: "", target_date: "", description: "" });
-            // Refresh
-            onRefresh()
+            onRefresh();
         } catch (error: any) {
             toast.error("Goal Error", {
-                description: error.message || "We couldn't save your goal. Please try again."
+                description: error.message || "We couldn't save your goal."
             });
         } finally {
-            setIsSubmitting(false)
+            setIsSubmitting(false);
         }
     }
 
