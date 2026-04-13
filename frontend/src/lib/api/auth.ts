@@ -62,3 +62,46 @@ export async function logoutUser() {
 
     return await res.json()
 }
+
+// Forgot password function
+export async function forgotPassword(email: string) {
+    const apiURL = process.env.NEXT_PUBLIC_API_URL
+
+    const res = await fetch(`${apiURL}/auth/forgot-password`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email })
+    })
+
+    if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || "Forgot Password Failed")
+    }
+
+    return await res.json()
+}
+
+// Reset password function
+export async function resetPassword(token: string, password: string) {
+    const apiURL = process.env.NEXT_PUBLIC_API_URL
+
+    const res = await fetch(`${apiURL}/auth/reset-password-confirm`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            token,
+            new_password: password
+        })
+    })
+
+    if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || "Failed to reset password");
+    }
+
+    return await res.json()
+}
