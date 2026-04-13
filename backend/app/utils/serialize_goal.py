@@ -12,7 +12,7 @@ def serialize_goal(goal: Goal):
     return GoalResponse(
         id=goal.id,
         name=goal.name,
-        description=goal.description,
+        description=goal.description or "",
         target_amount=goal.target_amount,
         current_amount=goal.current_amount,
         progress_percentage=round(progress, 1),

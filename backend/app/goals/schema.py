@@ -57,7 +57,7 @@ class DepositResponse(BaseModel):
 class GoalResponse(BaseModel):
     id: uuid.UUID
     name: str
-    description: str
+    description: Optional[str]
     target_amount: Decimal
     current_amount: Decimal
     progress_percentage: Decimal
