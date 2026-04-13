@@ -26,7 +26,7 @@ export function Dashboard() {
     // Get data from custom hook
     const { data, isLoading, errorData, refresh } = useDashboard()
 
-    const { insight, isLoading: insightIsLoading, error } = useAiInsight()
+    const { insight, isLoading: insightIsLoading } = useAiInsight()
 
     // Expense Dialog state
     const [isExpenseDialogOpen, setIsExpenseDialogOpen] = useState<boolean>(false)
