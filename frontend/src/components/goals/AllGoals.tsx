@@ -136,6 +136,7 @@ export function AllGoals() {
                 onClose={() => setSelectedGoal(null)}
                 onRefresh={refresh}
                 currencySymbol={currencySymbol}
+                categories={dashboardData?.category_spendings ?? []}
             />}
 
         </div>
