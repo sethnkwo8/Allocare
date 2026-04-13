@@ -14,7 +14,7 @@ export function useGoal() {
         setErrorData(null)
 
         try {
-            const res = await fetch(`${apiURL}/goals`, {
+            const res = await fetch(`${apiURL}/goals/`, {
                 credentials: "include"
             });
 
