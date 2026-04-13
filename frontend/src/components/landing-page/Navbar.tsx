@@ -14,28 +14,39 @@ export function Navbar() {
                             alt="Allocare Logo"
                             width={262}
                             height={109}
-                            priority // logo loads instantly
+                            priority
                             className="h-10 md:h-12 w-auto object-contain"
                         />
                     </Link>
                 </div>
+
                 <nav className="hidden md:flex items-center gap-8 text-sm text-gray-500">
                     <ScrollLink href="#features" className="hover:text-gray-900 transition-colors">Features</ScrollLink>
                     <ScrollLink href="#how-it-works" className="hover:text-gray-900 transition-colors">How it works</ScrollLink>
                     <ScrollLink href="#faq" className="hover:text-gray-900 transition-colors">FAQ</ScrollLink>
                 </nav>
+
                 <div className="flex items-center gap-3">
                     <Link
                         href="/login"
-                        className="hidden sm:block text-sm text-gray-500 hover:text-gray-900 transition-colors px-3 py-2"
+                        className="hidden md:block text-sm text-gray-500 hover:text-gray-900 transition-colors px-3 py-2"
                     >
                         Log in
                     </Link>
+
                     <Link
                         href="/register"
-                        className="text-white text-sm px-4 py-2 rounded-lg transition-colors font-medium bg-[#2E6B6B] hover:bg-[#245858]"
+                        className="hidden sm:block text-white text-sm px-4 py-2 rounded-lg transition-colors font-medium bg-[#2E6B6B] hover:bg-[#245858]"
                     >
                         Get started free
+                    </Link>
+
+                    {/* Mobile Only: Prominent Log in button */}
+                    <Link
+                        href="/login"
+                        className="sm:hidden text-white text-sm px-4 py-2 rounded-lg transition-colors font-medium bg-[#2E6B6B] hover:bg-[#245858]"
+                    >
+                        Log in
                     </Link>
                 </div>
             </div>
