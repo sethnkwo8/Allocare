@@ -14,7 +14,7 @@ export function useExpense() {
         setErrorData(null)
 
         try {
-            const res = await fetch(`${apiURL}/expenses`, {
+            const res = await fetch(`${apiURL}/expenses/`, {
                 credentials: "include"
             });
 
