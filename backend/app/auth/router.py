@@ -144,7 +144,7 @@ def confirm_password_reset(
         raise exceptions.UserNotFoundError()
     
     # Update password
-    user.hashed_password = pwd_context.hash(payload.new_password)
+    user.hashed_password = pwd_context.hash(payload.new_password.get_secret_value())
     db_session.add(user)
     db_session.commit()
     
