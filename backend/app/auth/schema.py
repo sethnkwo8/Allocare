@@ -71,3 +71,12 @@ class UserResponse(BaseModel):
     email: EmailStr
     currency: str
     onboarding: bool
+
+# Schema for forget password request
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+
+# Schema for reset password confirm request
+class ResetPasswordConfirmRequest(BaseModel):
+    token: str
+    new_password: SecretStr = Field(min_length=8, max_length=64)

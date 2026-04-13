@@ -30,3 +30,27 @@ class UnauthorizedError(AuthError):
             code="UNAUTHORIZED"
         )
 
+class ExpiredResetLinkError(AuthError):
+    def __init__(self):
+        super().__init__(
+            message="Reset link has expired",
+            status_code=400,
+            code="EXPIRED_RESET_LINK"
+        )
+
+class InvalidResetLinkError(AuthError):
+    def __init__(self):
+        super().__init__(
+            message="Invalid reset link",
+            status_code=400,
+            code="INVALID_RESET_LINK"
+        )
+
+class UserNotFoundError(AuthError):
+    def __init__(self):
+        super().__init__(
+            message="User Not Found",
+            status_code=400,
+            code="USER_NOT_FOUND"
+        )
+

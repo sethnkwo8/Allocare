@@ -10,9 +10,17 @@ from app.utils.convert_to_monthly import convert_to_monthly
 from app.models.notification import NotificationType
 from app.onboarding.exceptions import CategoryAllocationError, BucketAllocationError
 from app.onboarding.schema import OnboardingUpdateRequest
+import os
+from dotenv import load_dotenv
+from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadTimeSignature
 
+load_dotenv()
 
 now = datetime.now(timezone.utc)
+
+SECRET_KEY = os.getenv("SECRET_KEY", "your-fallback-secret")
+serializer = URLSafeTimedSerializer(SECRET_KEY)
+RESET_SALT = "password-reset-salt"
 
 # Function for user creation
 def create_user(user_data: schema.RegisterRequest, db_session):
@@ -220,4 +228,29 @@ def update_budget_allocations(session_token, db_session, buckets_data: Onboardin
         db_session.rollback()
         raise e
     return {"message": "Allocations updated successfully"}
+
+# Function to create reset token
+def create_reset_token(email: str) -> str:
+    return serializer.dumps(email, salt=RESET_SALT)
+
+# Function to verify reset token
+def verify_reset_token(token: str) -> str:
+    try:
+        # Token expires in 3600 seconds (1 hour)
+        email = serializer.loads(token, salt=RESET_SALT, max_age=3600)
+        return email
+    except SignatureExpired:
+        raise exceptions.ExpiredResetLinkError()
+    except BadTimeSignature:
+        raise exceptions.InvalidResetLinkError()
+
+# Function for handle forgot password
+def handle_forgot_password(email: str, db_session):
+    user = db_session.exec(select(User).where(User.email == email)).first()
+    if not user:
+        return None
+    
+    token = create_reset_token(user.email)
+    reset_link = f"https://www.allocare.online/reset-password?token={token}"
+    return {"link": reset_link, "name": user.name, "email": user.email}
 

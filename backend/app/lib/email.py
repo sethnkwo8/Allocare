@@ -6,6 +6,7 @@ load_dotenv()
 
 resend.api_key = os.getenv("RESEND_API_KEY")
 
+# Welcome email
 def send_welcome_email(to_email: str, user_name: str):
     params = {
         "from": "Allocare <welcome@allocare.online>",
@@ -36,3 +37,31 @@ def send_welcome_email(to_email: str, user_name: str):
         resend.Emails.send(params)
     except Exception as e:
         print(f"Failed to send email: {e}")
+
+# Email for password reset
+def send_reset_password_email(to_email: str, reset_link: str):
+    params = {
+        "from": "Allocare <auth@allocare.online>",
+        "to": [to_email],
+        "subject": "Reset your Allocare Password 🔐",
+        "html": f"""
+            <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px;">
+                <h2 style="color: #2E6B6B;">Password Reset Request</h2>
+                <p>We received a request to reset your password. Click the button below to choose a new one. <strong>This link expires in 1 hour.</strong></p>
+                
+                <a href="{reset_link}" 
+                   style="display: inline-block; background-color: #2E6B6B; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold; margin-top: 16px;">
+                   Reset Password
+                </a>
+                
+                <p style="margin-top: 32px; font-size: 12px; color: #64748b;">
+                    If you didn't request this, you can safely ignore this email. Your password will remain unchanged.
+                </p>
+            </div>
+        """,
+    }
+
+    try:
+        resend.Emails.send(params)
+    except Exception as e:
+        print(f"Failed to send reset email: {e}")

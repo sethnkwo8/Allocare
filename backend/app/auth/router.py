@@ -1,11 +1,14 @@
 from . import schema
 from . import service
+from . import exceptions
 from app.onboarding.schema import OnboardingUpdateRequest
 from fastapi import APIRouter, Depends, Response, Cookie, BackgroundTasks
 from typing import Annotated, Optional
 from app.database import get_session
-from sqlmodel import Session
-from app.lib.email import send_welcome_email
+from sqlmodel import Session, select
+from app.lib.email import send_welcome_email, send_reset_password_email
+from app.models.user import User
+from app.utils.security import pwd_context
 
 router = APIRouter(prefix="/auth")
 
@@ -107,4 +110,43 @@ def update_allocations(
     db_session: Session = Depends(get_session)
 ):
     return service.update_budget_allocations(session_token=session_token, db_session=db_session, buckets_data=payload)
+
+# POST route for forgot password
+@router.post("/forgot-password")
+def request_password_reset(
+    payload: schema.ForgotPasswordRequest,
+    background_tasks: BackgroundTasks,
+    db_session: Session = Depends(get_session)
+):
+    reset_data = service.handle_forgot_password(payload.email, db_session)
+    
+    if reset_data:
+        background_tasks.add_task(
+            send_reset_password_email, 
+            reset_data["email"], 
+            reset_data["link"]
+        )
+    
+    return {"message": "If an account with that email exists, a reset link has been sent."}
+
+# POST route to confirm reset password
+@router.post("/reset-password-confirm")
+def confirm_password_reset(
+    payload: schema.ResetPasswordConfirmRequest, # Contains token and new_password
+    db_session: Session = Depends(get_session)
+):
+    # Verify token and get email
+    email = service.verify_reset_token(payload.token)
+    
+    # Find user
+    user = db_session.exec(select(User).where(User.email == email)).first()
+    if not user:
+        raise exceptions.UserNotFoundError()
+    
+    # Update password
+    user.hashed_password = pwd_context.hash(payload.new_password)
+    db_session.add(user)
+    db_session.commit()
+    
+    return {"message": "Password updated successfully. You can now log in."}
 
