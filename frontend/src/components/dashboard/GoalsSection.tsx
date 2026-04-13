@@ -119,6 +119,7 @@ export function GoalsSection({ data, setIsGoalDialogOpen, onRefresh }: GoalSecti
                     onClose={() => setSelectedGoal(null)}
                     onRefresh={onRefresh}
                     currencySymbol={currencySymbol}
+                    categories={data.category_spendings}
                 />
             )}
         </Card>

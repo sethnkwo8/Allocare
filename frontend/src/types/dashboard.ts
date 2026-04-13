@@ -157,6 +157,7 @@ export interface DepositDialogProps {
     onClose(): void;
     onRefresh(): void;
     currencySymbol: string
+    categories: ExpenseCalculationResponse[]
 }
 
 // Update income dialog props
