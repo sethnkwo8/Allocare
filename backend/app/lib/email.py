@@ -8,7 +8,7 @@ resend.api_key = os.getenv("RESEND_API_KEY")
 
 def send_welcome_email(to_email: str, user_name: str):
     params = {
-        "from": "Allocare <onboarding@resend.dev>",
+        "from": "Allocare <welcome@allocare.online>",
         "to": [to_email],
         "subject": "Welcome to Allocare! 🚀",
         "html": f"""
