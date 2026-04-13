@@ -73,8 +73,8 @@ def get_dashboard_data(db_session, session_token):
     # Check if savings are initialized for the current month
     savings_init_stmt = (
         select(func.count(Expense.id))
-        .join(BudgetCategory)
-        .join(BudgetBucket)
+        .join(BudgetCategory, Expense.category_id == BudgetCategory.id)
+        .join(BudgetBucket, BudgetCategory.bucket_id == BudgetBucket.id)
         .where(
             BudgetBucket.user_id == user.id,
             BudgetBucket.name == "savings",
