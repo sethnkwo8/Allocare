@@ -14,7 +14,7 @@ export function useDashboard() {
         setErrorData(null)
 
         try {
-            const res = await fetch(`${apiURL}/dashboard`, {
+            const res = await fetch(`${apiURL}/dashboard/`, {
                 credentials: "include"
             });
 
