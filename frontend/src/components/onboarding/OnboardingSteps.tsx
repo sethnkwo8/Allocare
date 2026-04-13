@@ -185,58 +185,65 @@ export default function OnboardingSteps() {
     if (isComplete) {
         return (
             <div className="min-h-screen flex items-center justify-center p-4 bg-linear-to-br from-[#d4f1f1] to-[#e6f5f5]">
-                <Card className="max-w-2xl w-full p-8 text-center space-y-6">
+                <Card className="max-w-2xl w-full p-6 sm:p-8 text-center space-y-6">
                     <div className="flex justify-center">
                         <div className="h-16 w-16 bg-primary/10 rounded-full flex items-center justify-center">
                             <CheckCircle2 className="h-10 w-10 text-primary" />
                         </div>
                     </div>
                     <div className="space-y-2">
-                        <h2 className="text-3xl">All Set!</h2>
-                        <p className="text-muted-foreground">
+                        <h2 className="text-2xl sm:text-3xl font-bold">All Set!</h2>
+                        <p className="text-sm sm:text-base text-muted-foreground">
                             Your financial profile has been created successfully
                         </p>
                     </div>
 
                     <div className="space-y-4 text-left">
                         <div className="bg-accent p-4 rounded-lg space-y-3">
-                            <h3 className="font-medium">Basic Information</h3>
-                            <div className="grid grid-cols-3 gap-3 text-sm">
-                                <div>
+                            <h3 className="font-medium text-sm sm:text-base">Basic Information</h3>
+                            <div className="grid grid-cols-1 xs:grid-cols-3 gap-4 text-sm">
+                                <div className="flex justify-between xs:block">
                                     <span className="text-muted-foreground block">Currency</span>
                                     <span className="font-medium">{data.currency}</span>
                                 </div>
-                                <div>
+                                <div className="flex justify-between xs:block">
                                     <span className="text-muted-foreground block">Income</span>
-                                    <span className="font-medium">{currencySymbol}{data.income}</span>
+                                    <span className="font-medium truncate block">{currencySymbol}{data.income.toLocaleString()}</span>
                                 </div>
-                                <div>
+                                <div className="flex justify-between xs:block">
                                     <span className="text-muted-foreground block">Frequency</span>
                                     <span className="font-medium capitalize">{data.frequency}</span>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-3 gap-3">
-                            <div className="bg-blue-50 p-4 rounded-lg">
-                                <div className="text-sm text-muted-foreground">Needs</div>
-                                <div className="text-2xl font-medium text-blue-600">{data.mainAllocation.needs}%</div>
-                                <div className="text-sm text-muted-foreground">{currencySymbol}{needsAmount.toFixed(2)}</div>
-                            </div>
-                            <div className="bg-purple-50 p-4 rounded-lg">
-                                <div className="text-sm text-muted-foreground">Wants</div>
-                                <div className="text-2xl font-medium text-purple-600">{data.mainAllocation.wants}%</div>
-                                <div className="text-sm text-muted-foreground">{currencySymbol}{wantsAmount.toFixed(2)}</div>
-                            </div>
-                            <div className="bg-green-50 p-4 rounded-lg">
-                                <div className="text-sm text-muted-foreground">Savings</div>
-                                <div className="text-2xl font-medium text-green-600">{data.mainAllocation.savings}%</div>
-                                <div className="text-sm text-muted-foreground">{currencySymbol}{savingsAmount.toFixed(2)}</div>
-                            </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            {[
+                                { label: "Needs", value: data.mainAllocation.needs, amount: needsAmount, color: "blue" },
+                                { label: "Wants", value: data.mainAllocation.wants, amount: wantsAmount, color: "purple" },
+                                { label: "Savings", value: data.mainAllocation.savings, amount: savingsAmount, color: "green" }
+                            ].map((item) => (
+                                <div
+                                    key={item.label}
+                                    className={`bg-${item.color}-50 p-4 rounded-lg border border-${item.color}-100 flex flex-row sm:flex-col justify-between sm:justify-start items-center sm:items-start gap-2`}
+                                >
+                                    <div className="text-left">
+                                        <div className="text-xs text-muted-foreground font-medium uppercase tracking-wider">{item.label}</div>
+                                        <div className={`text-xl sm:text-2xl font-bold text-${item.color}-600`}>
+                                            {item.value}%
+                                        </div>
+                                    </div>
+                                    <div className="text-right sm:text-left">
+                                        <div className="text-sm font-semibold text-gray-700 break-all">
+                                            {currencySymbol}{item.amount.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     </div>
 
-                    <Button onClick={() => router.push('/dashboard')} className="w-full">
+                    <Button onClick={() => router.push('/dashboard')} className="w-full py-6 text-lg shadow-lg">
                         Go to Dashboard
                     </Button>
                 </Card>
