@@ -20,20 +20,22 @@ def get_monthly_financial_insight(
     # Get current user
     user = get_current_user(db_session, session_token)
 
-    # Default to current month/year
-    now = datetime.now()
-    target_month = month or now.month
-    target_year = year or now.year
+    return {"insight": "AI Financial Insights are coming soon! Keep tracking your expenses to unlock personalized tips."}
 
-    try:
-        insight_text = service.get_and_cache_insight(
-            db_session=db_session, 
-            user_id=user.id, 
-            month=target_month, 
-            year=target_year
-        )
-        return {"insight": insight_text}
-    except Exception as e:
-        # Log error
-        print(f"AI Insight Error: {e}")
-        return {"insight": "AI Financial Insights are coming soon to your dashboard!"}
+    # # Default to current month/year
+    # now = datetime.now()
+    # target_month = month or now.month
+    # target_year = year or now.year
+
+    # try:
+    #     insight_text = service.get_and_cache_insight(
+    #         db_session=db_session, 
+    #         user_id=user.id, 
+    #         month=target_month, 
+    #         year=target_year
+    #     )
+    #     return {"insight": insight_text}
+    # except Exception as e:
+    #     # Log error
+    #     print(f"AI Insight Error: {e}")
+    #     return {"insight": "AI Financial Insights are coming soon to your dashboard!"}
