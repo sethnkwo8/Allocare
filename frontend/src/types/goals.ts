@@ -10,7 +10,7 @@ export interface GoalsOverviewCardProps {
 export interface GoalResponse {
     id: string
     name: string
-    description: string
+    description?: string
     target_amount: number
     current_amount: number
     progress_percentage: number
