@@ -1,10 +1,11 @@
 from . import schema
 from . import service
 from app.onboarding.schema import OnboardingUpdateRequest
-from fastapi import APIRouter, Depends, Response, Cookie
+from fastapi import APIRouter, Depends, Response, Cookie, BackgroundTasks
 from typing import Annotated, Optional
 from app.database import get_session
 from sqlmodel import Session
+from app.lib.email import send_welcome_email
 
 router = APIRouter(prefix="/auth")
 
@@ -12,6 +13,7 @@ router = APIRouter(prefix="/auth")
 @router.post('/register', response_model=schema.RegisterResponse, status_code=201)
 def register(
     payload: schema.RegisterRequest,
+    background_tasks: BackgroundTasks,
     response: Response,
     db_session: Session = Depends(get_session)
 ):
@@ -30,6 +32,9 @@ def register(
                         max_age=604800 # 7 days
                         )
     
+    # Welcome email
+    background_tasks.add_task(send_welcome_email, user.email, user.name)
+
     return schema.RegisterResponse(name=user.name, email=user.email, id=user.id, onboarding=user.onboarding, created_at=user.created_at)
 
 # POST route for login

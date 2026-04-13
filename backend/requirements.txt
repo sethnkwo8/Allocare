@@ -4,6 +4,7 @@ annotated-types==0.7.0
 anyio==4.12.1
 bcrypt==4.0.1
 certifi==2026.2.25
+charset-normalizer==3.4.7
 click==8.3.1
 distro==1.9.0
 dnspython==2.8.0
@@ -36,6 +37,8 @@ Pygments==2.19.2
 python-dotenv==1.2.2
 python-multipart==0.0.22
 PyYAML==6.0.3
+requests==2.33.1
+resend==2.27.0
 rich==14.3.3
 rich-toolkit==0.19.7
 rignore==0.7.6
