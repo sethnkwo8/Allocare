@@ -2,9 +2,7 @@ import { HeaderProps } from "@/types/dashboard"
 import { Button } from "../ui/button"
 import { Bell, Plus, RefreshCw } from "lucide-react"
 import { SettingsDropdown } from "./SettingsDropdown"
-import { getCurrencySymbol } from "@/lib/dashboard/utils"
 import { useState } from "react"
-import { UpdateIncomeDialog } from "./UpdateIncomeDialog"
 import { NotificationDialog } from "./NotificationDialog"
 
 export function Header({ data, setIsExpenseDialogOpen, onRefresh }: HeaderProps) {
@@ -16,14 +14,6 @@ export function Header({ data, setIsExpenseDialogOpen, onRefresh }: HeaderProps)
 
     // Get the current month
     const currentMonth = new Intl.DateTimeFormat('en-US', { month: 'long' }).format(new Date());
-
-    // Get current user currency, income and frequency
-    const currentIncome = data.financial_overview.total_income
-    const currentFrequency = data.financial_overview.income_frequency
-    const currencySymbol = getCurrencySymbol(data.financial_overview.currency_code)
-
-    // State for income dialog
-    const [isIncomeDialogOpen, setIsIncomeDialogOpen] = useState<boolean>(false)
 
     // State for notification dialog
     const [isNotificationsOpen, setIsNotificationsOpen] = useState<boolean>(false)
@@ -74,16 +64,6 @@ export function Header({ data, setIsExpenseDialogOpen, onRefresh }: HeaderProps)
                     <SettingsDropdown />
                 </div>
             </div>
-
-            {/* Income dialog */}
-            <UpdateIncomeDialog
-                isOpen={isIncomeDialogOpen}
-                onClose={() => setIsIncomeDialogOpen(false)}
-                onRefresh={onRefresh}
-                currentIncome={currentIncome}
-                currentFrequency={currentFrequency}
-                currencySymbol={currencySymbol}
-            />
 
             {/* Notifications dialog */}
             <NotificationDialog

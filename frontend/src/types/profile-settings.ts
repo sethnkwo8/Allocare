@@ -4,6 +4,8 @@ export interface ProfileSettingsHeaderProps {
     hasChanges: boolean;
     isSaving: boolean;
     handleBackNavigation(): void
+    data: BudgetSettingsData
+    onRefresh(): void
 }
 
 // Interface for main allocation settings props

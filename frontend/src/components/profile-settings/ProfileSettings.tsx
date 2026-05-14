@@ -202,6 +202,8 @@ export function ProfileSettings() {
                     hasChanges={hasChanges && isValid}
                     isSaving={isSaving}
                     handleBackNavigation={handleBackNavigation}
+                    data={data}
+                    onRefresh={refresh}
                 />
                 {/* Currency settings */}
                 <CurrencySettings value={selectedCurrency} onChange={setSelectedCurrency} />
