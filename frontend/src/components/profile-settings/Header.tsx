@@ -61,7 +61,7 @@ export function Header({ onSave, hasChanges, isSaving, handleBackNavigation, dat
             <UpdateIncomeDialog
                 isOpen={isIncomeDialogOpen}
                 onClose={() => setIsIncomeDialogOpen(false)}
-                onRefresh={onRefresh}
+                onRefresh={onSave}
                 currentIncome={currentIncome}
                 currentFrequency={currentFrequency}
                 currencySymbol={currencySymbol}
