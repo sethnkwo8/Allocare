@@ -91,7 +91,7 @@ export function Dashboard() {
         <div className="min-h-screen bg-linear-to-br from-[#d4f1f1] to-[#e6f5f5] p-4 md:p-8">
             <div className="max-w-7xl mx-auto space-y-6">
                 {/* Header */}
-                <Header data={data} onRefresh={refresh} />
+                <Header data={data} setIsExpenseDialogOpen={setIsExpenseDialogOpen} onRefresh={refresh} />
                 {/* AI Insights Card */}
                 <AIInsightsCard insight={insight} isLoading={insightIsLoading} />
                 {/* Initialize Savings Banner */}
