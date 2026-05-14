@@ -1,6 +1,7 @@
 // Props for Header
 export interface HeaderProps {
     data: DashboardResponse
+    setIsExpenseDialogOpen(value: boolean): void
     onRefresh(): void
 }
 

@@ -1,13 +1,13 @@
 import { HeaderProps } from "@/types/dashboard"
 import { Button } from "../ui/button"
-import { Bell, RefreshCw, Wallet } from "lucide-react"
+import { Bell, Plus, RefreshCw } from "lucide-react"
 import { SettingsDropdown } from "./SettingsDropdown"
 import { getCurrencySymbol } from "@/lib/dashboard/utils"
 import { useState } from "react"
 import { UpdateIncomeDialog } from "./UpdateIncomeDialog"
 import { NotificationDialog } from "./NotificationDialog"
 
-export function Header({ data, onRefresh }: HeaderProps) {
+export function Header({ data, setIsExpenseDialogOpen, onRefresh }: HeaderProps) {
     // Get user's name
     const { name } = data.financial_overview
 
@@ -40,10 +40,10 @@ export function Header({ data, onRefresh }: HeaderProps) {
             <div className="flex flex-wrap items-center gap-3">
                 <Button
                     className="flex-1 md:flex-none bg-[#2E6B6B] hover:bg-[#2E6B6B]/90 text-white h-11"
-                    onClick={() => setIsIncomeDialogOpen(true)}
+                    onClick={() => setIsExpenseDialogOpen(true)}
                 >
-                    <Wallet className="h-4 w-4 mr-2" />
-                    Edit Income
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Expense
                 </Button>
 
                 <div className="flex items-center gap-2">
