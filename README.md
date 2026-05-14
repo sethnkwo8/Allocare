@@ -20,6 +20,13 @@ While building Allocare, I prioritized solving real-world production challenges:
 
 - **High-Performance Transactional Messaging**: Integrated **Resend API** with **FastAPI BackgroundTasks**. This ensures the user receives an immediate "Success" response on the frontend while the email handoff happens asynchronously in the background.
 
+- **Multi-Platform Cloud Deployment**: Architected a distributed deployment strategy using:
+    - **Vercel** for the frontend
+    - **Render** for backend services
+    - **Supabase** PostgreSQL for managed database infrastructure
+
+- **CI/CD Workflow Automation**: Configured deployment pipelines and repository workflows using GitHub Actions.
+
 - **Production-Grade Infrastructure**: Architected a multi-cloud deployment strategy using **Vercel** for the edge-optimized frontend and **Railway** for the containerized Python backend.
 
 ---
@@ -57,8 +64,8 @@ While building Allocare, I prioritized solving real-world production challenges:
 |-----------|--------|
 | **Frontend** | Next.js 14 (App Router), TypeScript, Tailwind CSS, Shadcn UI, Lucide |
 | **Backend** | FastAPI, SQLModel (SQLAlchemy + Pydantic) |
-| **Database** | PostgreSQL |
-| **Infra/DevOps** | Railway, Vercel, Resend (DNS/Email Service), GitHub Actions |
+| **Database** | PostgreSQL (Supabase) |
+| **Infra/DevOps** | Render, Vercel, Resend (DNS/Email Service), GitHub Actions |
 | **Other Tools** | Charting library (for analytics), Fetch API for client-server communication |
 
 ---
@@ -183,7 +190,7 @@ Feel free to reach out or connect:
 ---
 
 ## ⭐️ Acknowledgements
-This project was built as part of a full-stack development jorney, focusing on real-world application design and problem-solving.
+This project was built as part of my journey into full-stack engineering, focusing on real-world architecture, scalable systems, cloud deployment, and production-ready application development.
 
 
 
