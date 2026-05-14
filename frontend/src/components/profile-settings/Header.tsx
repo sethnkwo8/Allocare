@@ -37,7 +37,7 @@ export function Header({ onSave, hasChanges, isSaving, handleBackNavigation, dat
                 <Button
                     variant="outline"
                     className="hover:text-[#2E6B6B] hover:border-[#2E6B6B]"
-                // onClick={}
+                    onClick={() => setIsIncomeDialogOpen(true)}
                 >
                     <Wallet className="h-4 w-4 mr-2" />
                     Edit Income
