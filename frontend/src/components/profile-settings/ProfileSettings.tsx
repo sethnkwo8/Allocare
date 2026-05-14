@@ -13,6 +13,7 @@ import { UpdateBudgetSettings } from "@/lib/api/profile-settings"
 import { useRouter } from "next/navigation"
 import { ErrorSkeleton } from "../error/ErrorSkeleton"
 import { toast } from "sonner"
+import { EditIncome } from "./EditIncome"
 
 export function ProfileSettings() {
     const { data, isLoading, errorData, refresh } = useProfileSettings()
@@ -202,11 +203,11 @@ export function ProfileSettings() {
                     hasChanges={hasChanges && isValid}
                     isSaving={isSaving}
                     handleBackNavigation={handleBackNavigation}
-                    data={data}
-                    onRefresh={refresh}
                 />
                 {/* Currency settings */}
                 <CurrencySettings value={selectedCurrency} onChange={setSelectedCurrency} />
+                {/* Edit Income */}
+                <EditIncome onSave={handleGlobalSave} data={data} />
                 {/* Main Allocation settings */}
                 <MainAllocationSettings
                     data={allocations}

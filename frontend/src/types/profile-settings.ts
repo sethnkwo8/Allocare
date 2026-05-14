@@ -4,8 +4,12 @@ export interface ProfileSettingsHeaderProps {
     hasChanges: boolean;
     isSaving: boolean;
     handleBackNavigation(): void
+}
+
+// Interface for edit income props
+export interface EditIncomeProps {
+    onSave(): void;
     data: BudgetSettingsData
-    onRefresh(): void
 }
 
 // Interface for main allocation settings props
