@@ -148,7 +148,7 @@ SECRET_KEY=your_secret_key
 
 ## 🖼️ Project Screenshots
 
-Below are key screenshots showcasing the main features of the Football Web App:
+Below are key screenshots showcasing the main features of Allocare:
 
 | Feature | Screenshot | Description |
 |---------|------------|-------------|
