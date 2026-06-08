@@ -1,0 +1,44 @@
+services:
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: allocare-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    # Specify .env file
+    env_file:
+      - ./backend/.env
+    # This ensures the backend waits for the database to be ready before starting
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15-alpine
+    container_name: allocare-postgres-db
+    ports:
+      - "5432:5432"
+    environment:
+    # Use ${} to pull data from .env
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  frontend:
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: allocare-frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - "./frontend:/app"
+      - "/app/node_modules"
+
+# Define the persistent volume at the bottom
+volumes:
+  postgres_data:  # Tells Docker to save actual database files on Mac's hard drive
