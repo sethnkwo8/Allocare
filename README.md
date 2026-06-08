@@ -105,7 +105,7 @@ git clone [https://github.com/sethnkwo8/Allocare.git](https://github.com/sethnkw
 **Step 2 - Configure Environment Variables**
 Ensure your .env file exists inside the backend/ folder with your database credentials (DB_USER, DB_PASSWORD, DB_NAME).
 
-**Step 3 - Configure Environment Variables**
+**Step 3 - Spin up the container network**
 ```bash
 docker compose up -d
 ```
