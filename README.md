@@ -91,16 +91,43 @@ Allocare follows a strict Service-Pattern Architecture:
 
 ---
 
-## 🛠 Installation & Setup
+## 🚀 Quickstart with Docker (Recommended)
+
+The easiest way to run the entire stack—including the FastAPI backend, Next.js frontend, and a local PostgreSQL database—is using Docker Compose.
+
+**Prerequisites:** Make sure you have [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed and running.
+
+**Step 1 - Clone the repository**
+```bash
+git clone [https://github.com/sethnkwo8/Allocare.git](https://github.com/sethnkwo8/Allocare.git)
+```
+
+**Step 2 - Configure Environment Variables**
+Ensure your .env file exists inside the backend/ folder with your database credentials (DB_USER, DB_PASSWORD, DB_NAME).
+
+**Step 3 - Configure Environment Variables**
+```bash
+docker compose up -d
+```
+
+The frontend will be live at http://localhost:3000 and the API documentation at http://localhost:8000/docs.
+
+
+## 🛠 Manual Local Installation (Alternative)
+
+If you prefer to run the components individually without Docker:
 
 **Step 1 – Clone & Env Setup**
 ```bash
 git clone https://github.com/sethnkwo8/Allocare.git
 ```
 
+**Step 2 – Database Setip**
+Ensure you have a local PostgreSQL server running, create a database, and configure your connection string in your backend/.env file.
+
 ---
 
-**Step 2 – Backend setup (FastAPI)**
+**Step 3 – Backend setup (FastAPI)**
 ```bash
 cd backend
 pip install -r requirements.txt
@@ -109,7 +136,7 @@ uvicorn main:app --reload
 
 ---
 
-**Step 3 – Frontend setup (Next.js)**
+**Step 4 – Frontend setup (Next.js)**
 ```bash
 cd frontend
 npm install
