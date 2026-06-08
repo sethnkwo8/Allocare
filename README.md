@@ -65,7 +65,7 @@ While building Allocare, I prioritized solving real-world production challenges:
 | **Frontend** | Next.js 14 (App Router), TypeScript, Tailwind CSS, Shadcn UI, Lucide |
 | **Backend** | FastAPI, SQLModel (SQLAlchemy + Pydantic) |
 | **Database** | PostgreSQL (Supabase) |
-| **Infra/DevOps** | Render, Vercel, Resend (DNS/Email Service), GitHub Actions |
+| **Infra/DevOps** | Docker, Docker Compose, Render, Vercel, Resend (DNS/Email Service), GitHub Actions |
 | **Other Tools** | Charting library (for analytics), Fetch API for client-server communication |
 
 ---
@@ -122,7 +122,7 @@ If you prefer to run the components individually without Docker:
 git clone https://github.com/sethnkwo8/Allocare.git
 ```
 
-**Step 2 – Database Setip**
+**Step 2 – Database Setup**
 Ensure you have a local PostgreSQL server running, create a database, and configure your connection string in your backend/.env file.
 
 ---
@@ -154,8 +154,12 @@ NEXT_PUBLIC_API_URL=http://localhost:8000
 
 Create a .env file in the backend:
 ```env
-DATABASE_URL=your_datbase_url
-ENV=development (for development)
+DB_USER=your_docker_db_user
+DB_PASSWORD=your_docker_db_password
+DB_NAME=your_docker_db_name
+
+DATABASE_URL=your_local_or_supabase_postgres_url
+ENV=development
 OPENAI_API_KEY=your_openai_api_key
 RESEND_API_KEY=your_resend_api_key
 SECRET_KEY=your_secret_key
